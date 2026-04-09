@@ -3,115 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio E5 | Mashala Nkole Lenny</title>
+    <title>Portfolio E5 | Mashala Nkole Lenny | SISR</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            bg: '#0a0f1e',
+                            card: '#111827',
+                            border: '#1f2937',
+                            text: '#f1f5f9',
+                            sub: '#94a3b8',
+                            accent: '#38bdf8', // Bleu néon
+                            accent2: '#a78bfa', // Violet néon
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    },
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #0f172a; color: #f1f5f9; scroll-behavior: smooth; }
-        .nav-link:hover { color: #38bdf8; transition: 0.3s; }
-        .project-card { background: rgba(30, 41, 59, 0.7); border: 1px solid #334155; transition: 0.3s; }
-        .project-card:hover { transform: translateY(-5px); border-color: #38bdf8; }
-        .section-title { border-left: 4px solid #38bdf8; padding-left: 15px; margin-bottom: 30px; }
+        body { background-color: #0a0f1e; color: #f1f5f9; scroll-behavior: smooth; font-family: 'Inter', sans-serif; }
+        .gradient-text { background: linear-gradient(90deg, #38bdf8, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-link { position: relative; color: #94a3b8; transition: 0.3s; }
+        .nav-link:hover { color: #f1f5f9; }
+        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 0; background: linear-gradient(90deg, #38bdf8, #a78bfa); transition: 0.3s; }
+        .nav-link:hover::after { width: 100%; }
+        .cyber-card { background: rgba(17, 24, 39, 0.8); border: 1px solid #1f2937; backdrop-filter: blur(10px); transition: 0.4s ease-out; }
+        .cyber-card:hover { transform: translateY(-8px) scale(1.02); border-color: #38bdf8; box-shadow: 0 10px 30px -10px rgba(56, 189, 248, 0.3); }
+        .section-title { position: relative; display: inline-block; padding-bottom: 10px; margin-bottom: 40px; }
+        .section-title::after { content: ''; position: absolute; width: 60px; height: 4px; bottom: 0; left: 0; background: linear-gradient(90deg, #38bdf8, #a78bfa); rounded-full; }
+        .btn-primary { background: linear-gradient(90deg, #38bdf8, #a78bfa); transition: 0.3s; }
+        .btn-primary:hover { opacity: 0.9; transform: scale(1.05); }
+        .btn-secondary { border: 1px solid #1f2937; background: rgba(31, 41, 55, 0.5); transition: 0.3s; }
+        .btn-secondary:hover { border-color: #38bdf8; background: rgba(31, 41, 55, 0.8); }
     </style>
 </head>
 <body>
 
-    <nav class="fixed w-full z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-6 py-4">
-        <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <span class="text-xl font-bold tracking-tight text-sky-400">LN<span class="text-white">.SISR</span></span>
+    <nav class="fixed w-full z-50 bg-cyber-bg/90 backdrop-blur-lg border-b border-cyber-border px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="#accueil" class="text-2xl font-extrabold tracking-tighter gradient-text">MKL<span class="text-white">.sisr</span></a>
             <div class="hidden md:flex space-x-8 text-sm font-medium">
                 <a href="#accueil" class="nav-link">Accueil</a>
                 <a href="#projets" class="nav-link">Projets E5</a>
                 <a href="#veille" class="nav-link">Veille Techno</a>
-                <a href="#stages" class="nav-link">Stages & Fiches</a>
+                <a href="#documents" class="nav-link">Documents</a>
             </div>
         </div>
     </nav>
 
-    <section id="accueil" class="pt-32 pb-20 px-6">
-        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-            <div>
-                <h1 class="text-5xl font-extrabold mb-6 leading-tight">Mashala Nkole <span class="text-sky-400">Lenny</span></h1>
-                <p class="text-lg text-slate-400 mb-6">Étudiant en 2ème année de BTS SIO - Option SISR à l'INSTA Paris. Futur Expert Réseaux Infrastructures et Sécurité.</p>
-                <div class="flex space-x-4">
-                    <a href="#projets" class="bg-sky-500 hover:bg-sky-600 text-white px-6 py-3 rounded-lg font-bold">Voir mes projets</a>
-                    <a href="mailto:mashalankolelenny@gmail.com" class="border border-slate-700 hover:bg-slate-800 px-6 py-3 rounded-lg font-bold">Me contacter</a>
+    <section id="accueil" class="pt-40 pb-24 px-6 bg-[url('https://www.transparenttextures.com/patterns/dark-dotted-2.png')] bg-repeat">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-5 gap-16 items-center">
+            <div class="md:col-span-3">
+                <div class="inline-block bg-cyber-accent/10 border border-cyber-accent/20 text-cyber-accent px-4 py-1 rounded-full text-xs font-mono mb-4">BTS SIO SISR - Épreuve E5</div>
+                <h1 class="text-6xl font-extrabold mb-6 leading-tight tracking-tight">Mashala Nkole <br><span class="gradient-text">Lenny</span></h1>
+                <p class="text-xl text-cyber-sub mb-8 max-w-2xl">Étudiant en 2ème année à l'INSTA Paris. Passionné par l'administration réseaux, la gestion d'infrastructure et la cybersécurité.</p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#projets" class="btn-primary text-cyber-bg px-8 py-3 rounded-xl font-bold text-lg flex items-center"><i class="fas fa-folder-open mr-2"></i>Découvrir mes 8 projets</a>
+                    <a href="mailto:mashalankolelenny@gmail.com" class="btn-secondary px-8 py-3 rounded-xl font-bold text-lg flex items-center"><i class="fas fa-envelope mr-2"></i>Me contacter</a>
                 </div>
             </div>
-            <div class="bg-slate-800/50 p-8 rounded-2xl border border-slate-700">
-                <h3 class="text-xl font-bold mb-4 text-sky-400"><i class="fas fa-user-graduate mr-2"></i> Mon Parcours</h3>
-                <ul class="space-y-3 text-slate-300">
-                    <li>📍 <strong>BTS SIO SISR</strong> - INSTA Paris</li>
-                    <li>🎓 <strong>Bac STMG</strong> (Obtenu en 2024)</li>
-                    <li>🎯 <strong>Objectif :</strong> Expert Réseaux & Sécurité (Bac+5)</li>
+            <div class="md:col-span-2 cyber-card p-10 rounded-3xl">
+                <h3 class="text-2xl font-bold mb-6 text-white flex items-center"><i class="fas fa-microchip mr-3 text-cyber-accent2"></i>Mon Profil Tech</h3>
+                <ul class="space-y-4 text-cyber-sub text-lg">
+                    <li><strong class="text-white">Formation :</strong> <span class="text-cyber-accent">BTS SIO SISR</span> @ INSTA Paris</li>
+                    <li><strong class="text-white">Parcours :</strong> Bac STMG (2024)</li>
+                    <li><strong class="text-white">Objectif :</strong> <span class="text-cyber-accent2">Expert Réseaux & Sécurité</span></li>
+                    <li><strong class="text-white">Localisation :</strong> Herblay-sur-Seine (95)</li>
                 </ul>
             </div>
         </div>
     </section>
 
-    <section id="projets" class="py-20 px-6 bg-slate-900/50">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="text-3xl font-bold section-title">Mes Projets (Épreuve E5)</h2>
-            <p class="mb-10 text-slate-400">Sélection de 8 projets réalisés en formation ou en entreprise.</p>
+    <section id="projets" class="py-24 px-6 bg-cyber-card/30">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl font-extrabold section-title text-white">Mes 8 Projets (Épreuve E5)</h2>
+            <p class="mb-12 text-lg text-cyber-sub max-w-3xl">Sélection rigoureuse de projets concrets réalisés en formation ou en entreprise, illustrant mes compétences en Solutions d’Infrastructure, Systèmes et Réseaux.</p>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="project-card p-6 rounded-xl">
-                    <div class="text-sky-400 text-xs font-mono mb-2">PROJET 01</div>
-                    <h3 class="text-xl font-bold mb-3">Installation Serveur AD DS</h3>
-                    <p class="text-sm text-slate-400 mb-4">Mise en place d'un contrôleur de domaine, gestion des GPO et des utilisateurs.</p>
-                    <a href="#" class="text-sky-400 text-sm font-bold hover:underline">Consulter la fiche →</a>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="cyber-card p-8 rounded-2xl flex flex-col">
+                    <div class="text-cyber-accent text-sm font-mono mb-3">PROJET 01 / SISR</div>
+                    <h3 class="text-xl font-bold mb-4 text-white">Installation Serveur AD DS</h3>
+                    <p class="text-base text-cyber-sub mb-6 flex-grow">Mise en place d'un contrôleur de domaine, gestion des GPO et des utilisateurs sous Windows Server 2022.</p>
+                    <a href="#" class="inline-block text-cyber-accent font-bold hover:underline text-sm flex items-center group">
+                        Consulter la fiche technique <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
                 </div>
                 
-                <div class="project-card p-6 rounded-xl">
-                    <div class="text-sky-400 text-xs font-mono mb-2">PROJET 02</div>
-                    <h3 class="text-xl font-bold mb-3">Segmentation VLAN Cisco</h3>
-                    <p class="text-sm text-slate-400 mb-4">Configuration de switches Cisco pour isoler les flux réseaux par service.</p>
-                    <a href="#" class="text-sky-400 text-sm font-bold hover:underline">Consulter la fiche →</a>
+                <div class="cyber-card p-8 rounded-2xl flex flex-col">
+                    <div class="text-cyber-accent text-sm font-mono mb-3">PROJET 02 / RÉSEAU</div>
+                    <h3 class="text-xl font-bold mb-4 text-white">Segmentation VLAN Cisco</h3>
+                    <p class="text-base text-cyber-sub mb-6 flex-grow">Configuration avancée de switches Cisco Catalyst pour isoler les flux réseaux par service.</p>
+                    <a href="#" class="inline-block text-cyber-accent font-bold hover:underline text-sm flex items-center group">
+                        Consulter la fiche technique <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
                 </div>
 
-                <div class="project-card p-6 rounded-xl flex items-center justify-center border-dashed">
-                    <p class="text-slate-500 italic text-sm">Projets 3 à 8 en cours de rédaction...</p>
+                <div class="cyber-card p-8 rounded-2xl flex flex-col">
+                    <div class="text-cyber-accent text-sm font-mono mb-3">PROJET 03 / SÉCURITÉ</div>
+                    <h3 class="text-xl font-bold mb-4 text-white">Déploiement VPN Ipsec</h3>
+                    <p class="text-base text-cyber-sub mb-6 flex-grow">Mise en place d'un tunnel VPN Ipsec site à site pour interconnecter deux agences distantes.</p>
+                    <a href="#" class="inline-block text-cyber-accent font-bold hover:underline text-sm flex items-center group">
+                        Consulter la fiche technique <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+
+                <div class="cyber-card p-8 rounded-2xl flex items-center justify-center border-dashed border-cyber-border text-center">
+                    <p class="text-cyber-sub italic text-sm p-4">Projets 4 à 8 <br>en cours de rédaction technique...</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="veille" class="py-20 px-6">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="text-3xl font-bold section-title">Veille Technologique</h2>
-            <div class="bg-slate-800/40 p-8 rounded-2xl border border-slate-700">
-                <h3 class="text-xl font-bold mb-4">Thème : La Cybersécurité et le Zero Trust</h3>
-                <p class="text-slate-400 mb-6">Suivi des évolutions sur la sécurité des réseaux et les nouvelles menaces.</p>
-                <div class="flex flex-wrap gap-4">
-                    <span class="bg-slate-900 px-3 py-1 rounded text-xs border border-slate-700">Feedly</span>
-                    <span class="bg-slate-900 px-3 py-1 rounded text-xs border border-slate-700">Google Alerts</span>
-                    <span class="bg-slate-900 px-3 py-1 rounded text-xs border border-slate-700">Cyberveille-ANSSI</span>
+    <section id="veille" class="py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl font-extrabold section-title text-white">Veille Technologique</h2>
+            <div class="cyber-card p-10 rounded-3xl border-cyber-accent2/30">
+                <div class="grid md:grid-cols-3 gap-10 items-center">
+                    <div class="md:col-span-2">
+                        <h3 class="text-2xl font-bold mb-5 text-white flex items-center"><i class="fas fa-shield-alt mr-3 text-cyber-accent2"></i>Thème : La Cybersécurité et le modèle Zero Trust</h3>
+                        <p class="text-lg text-cyber-sub mb-6 text-justify">Suivi des évolutions stratégiques sur la sécurité des réseaux, l'authentification multifacteur (MFA), la micro-segmentation et les nouvelles menaces persistantes (APT).</p>
+                        <div class="flex flex-wrap gap-3 font-mono text-sm">
+                            <span class="bg-cyber-card px-4 py-1.5 rounded-lg border border-cyber-border text-cyber-accent2">Cyberveille-ANSSI</span>
+                            <span class="bg-cyber-card px-4 py-1.5 rounded-lg border border-cyber-border text-cyber-accent2">Feedly</span>
+                            <span class="bg-cyber-card px-4 py-1.5 rounded-lg border border-cyber-border text-cyber-accent2">CERT-FR</span>
+                        </div>
+                    </div>
+                    <div class="text-center bg-cyber-accent2/5 p-8 rounded-2xl border border-cyber-accent2/20">
+                        <i class="fas fa-rss text-6xl text-cyber-accent2 mb-4"></i>
+                        <p class="text-sm text-white font-bold">Méthodologie de Veille</p>
+                        <p class="text-xs text-cyber-sub mt-2">Agrégation de flux RSS, alertes Google et suivi des rapports ANSSI.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="stages" class="py-20 px-6 bg-slate-900/50">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="text-3xl font-bold section-title">Documents Officiels</h2>
-            <div class="grid md:grid-cols-2 gap-8">
-                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
-                    <h3 class="text-xl font-bold mb-4"><i class="fas fa-file-pdf mr-2 text-red-400"></i> Attestations de Stage</h3>
-                    <p class="text-sm text-slate-400 mb-4 text-justify">Retrouvez ici mes certificats de stage justifiant mon expérience en entreprise.</p>
-                    <a href="#" class="inline-block bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded text-sm">Ouvrir le dossier</a>
+    <section id="documents" class="py-24 px-6 bg-cyber-card/30">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl font-extrabold section-title text-white">Documents Officiels</h2>
+            <p class="mb-12 text-lg text-cyber-sub max-w-3xl">Accès direct aux pièces justificatives et au récapitulatif de mes compétences pour le jury.</p>
+            
+            <div class="grid md:grid-cols-2 gap-10">
+                <div class="cyber-card p-10 rounded-3xl flex items-center gap-6">
+                    <i class="fas fa-file-pdf text-6xl text-red-400"></i>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-3 text-white">Attestations de Stage</h3>
+                        <p class="text-base text-cyber-sub mb-4">Dossier contenant les certificats justifiant mon expérience professionnelle.</p>
+                        <a href="#" class="btn-secondary px-6 py-2.5 rounded-xl font-bold text-sm flex items-center inline-block">
+                            <i class="fas fa-download mr-2"></i>Télécharger le dossier (PDF)
+                        </a>
+                    </div>
                 </div>
-                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
-                    <h3 class="text-xl font-bold mb-4"><i class="fas fa-file-signature mr-2 text-sky-400"></i> Fiche Synthèse</h3>
-                    <p class="text-sm text-slate-400 mb-4 text-justify">Récapitulatif complet de mes compétences acquises pour l'examen final.</p>
-                    <a href="#" class="inline-block bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded text-sm">Télécharger la fiche</a>
+                <div class="cyber-card p-10 rounded-3xl flex items-center gap-6 border-cyber-accent/30">
+                    <i class="fas fa-file-signature text-6xl text-cyber-accent"></i>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-3 text-white">Fiche Synthèse E5</h3>
+                        <p class="text-base text-cyber-sub mb-4">Récapitulatif complet de mes compétences acquises et validées.</p>
+                        <a href="#" class="btn-primary text-cyber-bg px-6 py-2.5 rounded-xl font-bold text-sm flex items-center inline-block">
+                            <i class="fas fa-file-export mr-2"></i>Télécharger la fiche (PDF)
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <footer class="py-10 border-t border-slate-800 text-center text-slate-500 text-sm">
-        <p>&copy; 2026 Mashala Nkole Lenny - Tous droits réservés.</p>
-        <p class="mt-2 text-sky-900">Portfolio développé pour l'épreuve E5 - BTS SIO SISR</p>
+    <footer class="py-12 border-t border-cyber-border text-center text-cyber-sub text-sm bg-cyber-bg">
+        <div class="max-w-7xl mx-auto px-6">
+            <p class="font-bold text-lg text-white mb-2">Mashala Nkole Lenny</p>
+            <p>&copy; 2026 - Portfolio développé pour l'épreuve E5 du BTS SIO SISR.</p>
+            <div class="flex justify-center space-x-6 mt-6 text-xl text-cyber-sub">
+                <a href="mailto:mashalankolelenny@gmail.com" class="hover:text-cyber-accent"><i class="fas fa-envelope"></i></a>
+                <a href="#" class="hover:text-cyber-accent"><i class="fab fa-linkedin"></i></a>
+                <a href="#" class="hover:text-cyber-accent"><i class="fab fa-github"></i></a>
+            </div>
+        </div>
     </footer>
 
 </body>
