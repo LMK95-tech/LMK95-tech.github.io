@@ -3,43 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LMK95-tech | Portfolio</title>
+    <title>Portfolio E5 | Mashala Nkole Lenny</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #0f172a; color: #f8fafc; }
-        .gradient-text { background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        body { background-color: #0f172a; color: #f1f5f9; scroll-behavior: smooth; }
+        .nav-link:hover { color: #38bdf8; transition: 0.3s; }
+        .project-card { background: rgba(30, 41, 59, 0.7); border: 1px solid #334155; transition: 0.3s; }
+        .project-card:hover { transform: translateY(-5px); border-color: #38bdf8; }
+        .section-title { border-left: 4px solid #38bdf8; padding-left: 15px; margin-bottom: 30px; }
     </style>
 </head>
 <body>
-    <div class="max-w-4xl mx-auto px-6 py-20">
-        <header class="text-center mb-20">
-            <h1 class="text-5xl font-extrabold mb-4">Salut, moi c'est <span class="gradient-text">LMK95-tech</span></h1>
-            <p class="text-xl text-slate-400">Développeur passionné & Créateur de projets</p>
-        </header>
 
-        <section class="mb-20">
-            <h2 class="text-2xl font-bold mb-8 border-b border-slate-700 pb-2">📂 Mes Projets</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-slate-800/50 p-6 rounded-xl border border-slate-700 hover:border-sky-500 transition-all">
-                    <h3 class="text-xl font-bold mb-2 text-sky-400">Nom du Projet 1</h3>
-                    <p class="text-slate-400 mb-4">Description rapide de ce que tu as fait. C'est ici que tu impressionnes ton prof !</p>
-                    <span class="text-xs font-mono bg-slate-900 px-2 py-1 rounded text-slate-300">HTML / CSS</span>
-                </div>
-                <div class="bg-slate-800/50 p-6 rounded-xl border border-slate-700 hover:border-sky-500 transition-all">
-                    <h3 class="text-xl font-bold mb-2 text-sky-400">Nom du Projet 2</h3>
-                    <p class="text-slate-400 mb-4">Un autre projet cool dont tu es fier.</p>
-                    <span class="text-xs font-mono bg-slate-900 px-2 py-1 rounded text-slate-300">JavaScript</span>
+    <nav class="fixed w-full z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-6 py-4">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <span class="text-xl font-bold tracking-tight text-sky-400">LN<span class="text-white">.SISR</span></span>
+            <div class="hidden md:flex space-x-8 text-sm font-medium">
+                <a href="#accueil" class="nav-link">Accueil</a>
+                <a href="#projets" class="nav-link">Projets E5</a>
+                <a href="#veille" class="nav-link">Veille Techno</a>
+                <a href="#stages" class="nav-link">Stages & Fiches</a>
+            </div>
+        </div>
+    </nav>
+
+    <section id="accueil" class="pt-32 pb-20 px-6">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+            <div>
+                <h1 class="text-5xl font-extrabold mb-6 leading-tight">Mashala Nkole <span class="text-sky-400">Lenny</span></h1>
+                <p class="text-lg text-slate-400 mb-6">Étudiant en 2ème année de BTS SIO - Option SISR à l'INSTA Paris. Futur Expert Réseaux Infrastructures et Sécurité.</p>
+                <div class="flex space-x-4">
+                    <a href="#projets" class="bg-sky-500 hover:bg-sky-600 text-white px-6 py-3 rounded-lg font-bold">Voir mes projets</a>
+                    <a href="mailto:mashalankolelenny@gmail.com" class="border border-slate-700 hover:bg-slate-800 px-6 py-3 rounded-lg font-bold">Me contacter</a>
                 </div>
             </div>
-        </section>
+            <div class="bg-slate-800/50 p-8 rounded-2xl border border-slate-700">
+                <h3 class="text-xl font-bold mb-4 text-sky-400"><i class="fas fa-user-graduate mr-2"></i> Mon Parcours</h3>
+                <ul class="space-y-3 text-slate-300">
+                    <li>📍 <strong>BTS SIO SISR</strong> - INSTA Paris</li>
+                    <li>🎓 <strong>Bac STMG</strong> (Obtenu en 2024)</li>
+                    <li>🎯 <strong>Objectif :</strong> Expert Réseaux & Sécurité (Bac+5)</li>
+                </ul>
+            </div>
+        </div>
+    </section>
 
-        <section class="text-center bg-slate-800/30 py-10 rounded-3xl border border-dashed border-slate-700">
-            <h2 class="text-2xl font-bold mb-4">On travaille ensemble ?</h2>
-            <p class="text-slate-400 mb-6">N'hésite pas à me contacter pour toute collaboration.</p>
-            <a href="mailto:ton-email@exemple.com" class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-8 rounded-full transition-all">
-                Me contacter
-            </a>
-        </section>
-    </div>
+    <section id="projets" class="py-20 px-6 bg-slate-900/50">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl font-bold section-title">Mes Projets (Épreuve E5)</h2>
+            <p class="mb-10 text-slate-400">Sélection de 8 projets réalisés en formation ou en entreprise.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="project-card p-6 rounded-xl">
+                    <div class="text-sky-400 text-xs font-mono mb-2">PROJET 01</div>
+                    <h3 class="text-xl font-bold mb-3">Installation Serveur AD DS</h3>
+                    <p class="text-sm text-slate-400 mb-4">Mise en place d'un contrôleur de domaine, gestion des GPO et des utilisateurs.</p>
+                    <a href="#" class="text-sky-400 text-sm font-bold hover:underline">Consulter la fiche →</a>
+                </div>
+                
+                <div class="project-card p-6 rounded-xl">
+                    <div class="text-sky-400 text-xs font-mono mb-2">PROJET 02</div>
+                    <h3 class="text-xl font-bold mb-3">Segmentation VLAN Cisco</h3>
+                    <p class="text-sm text-slate-400 mb-4">Configuration de switches Cisco pour isoler les flux réseaux par service.</p>
+                    <a href="#" class="text-sky-400 text-sm font-bold hover:underline">Consulter la fiche →</a>
+                </div>
+
+                <div class="project-card p-6 rounded-xl flex items-center justify-center border-dashed">
+                    <p class="text-slate-500 italic text-sm">Projets 3 à 8 en cours de rédaction...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="veille" class="py-20 px-6">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl font-bold section-title">Veille Technologique</h2>
+            <div class="bg-slate-800/40 p-8 rounded-2xl border border-slate-700">
+                <h3 class="text-xl font-bold mb-4">Thème : La Cybersécurité et le Zero Trust</h3>
+                <p class="text-slate-400 mb-6">Suivi des évolutions sur la sécurité des réseaux et les nouvelles menaces.</p>
+                <div class="flex flex-wrap gap-4">
+                    <span class="bg-slate-900 px-3 py-1 rounded text-xs border border-slate-700">Feedly</span>
+                    <span class="bg-slate-900 px-3 py-1 rounded text-xs border border-slate-700">Google Alerts</span>
+                    <span class="bg-slate-900 px-3 py-1 rounded text-xs border border-slate-700">Cyberveille-ANSSI</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="stages" class="py-20 px-6 bg-slate-900/50">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl font-bold section-title">Documents Officiels</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                    <h3 class="text-xl font-bold mb-4"><i class="fas fa-file-pdf mr-2 text-red-400"></i> Attestations de Stage</h3>
+                    <p class="text-sm text-slate-400 mb-4 text-justify">Retrouvez ici mes certificats de stage justifiant mon expérience en entreprise.</p>
+                    <a href="#" class="inline-block bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded text-sm">Ouvrir le dossier</a>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                    <h3 class="text-xl font-bold mb-4"><i class="fas fa-file-signature mr-2 text-sky-400"></i> Fiche Synthèse</h3>
+                    <p class="text-sm text-slate-400 mb-4 text-justify">Récapitulatif complet de mes compétences acquises pour l'examen final.</p>
+                    <a href="#" class="inline-block bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded text-sm">Télécharger la fiche</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-10 border-t border-slate-800 text-center text-slate-500 text-sm">
+        <p>&copy; 2026 Mashala Nkole Lenny - Tous droits réservés.</p>
+        <p class="mt-2 text-sky-900">Portfolio développé pour l'épreuve E5 - BTS SIO SISR</p>
+    </footer>
+
 </body>
 </html>
