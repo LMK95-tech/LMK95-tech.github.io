@@ -143,7 +143,91 @@
                 </div>
                 <button onclick="closeModal('modal1')" class="text-gray-500 hover:text-white text-5xl font-light">&times;</button>
             </div>
-            <div id="modal1-content"></div>
+            <style>
+    .tech-grid { background-image: radial-gradient(rgba(139, 92, 246, 0.1) 1px, transparent 1px); background-size: 20px 20px; }
+    .terminal-header { background: #1a1a1a; border-bottom: 1px solid #333; padding: 8px 15px; border-radius: 8px 8px 0 0; }
+    .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+    .doc-section { border-left: 2px solid #8b5cf6; padding-left: 20px; margin-bottom: 40px; }
+    .pulse-orange { box-shadow: 0 0 0 0 rgba(255, 165, 0, 0.7); animation: pulse-orange 2s infinite; }
+    @keyframes pulse-orange { 0% { box-shadow: 0 0 0 0 rgba(255, 165, 0, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(255, 165, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 165, 0, 0); } }
+</style>
+
+<div class="tech-grid p-4 md:p-8">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-16 gap-8">
+        <div class="max-w-2xl">
+            <span class="text-purple-500 font-mono text-xs tracking-[0.5em] uppercase mb-4 block italic">Projet Technique // SISR</span>
+            <h3 class="text-4xl font-black text-white mb-6 italic">Mise en place d'un serveur <span class="text-orange-500 underline">DHCP & Routage Dynamique</span></h3>
+            <p class="text-slate-400 text-sm leading-relaxed text-justify italic">
+                Cette mission consiste à automatiser l'attribution des adresses IP pour l'infrastructure Orange. L'objectif est de supprimer la gestion statique obsolète, d'éviter les doublons d'IP et de permettre une communication fluide entre les segments via RIPv2.
+            </p>
+        </div>
+        <div class="bg-card_bg p-6 rounded-3xl border border-white/5 text-center min-w-[250px] animate-float">
+            <i class="fas fa-network-wired text-5xl text-orange-500 mb-4"></i>
+            <p class="text-white font-black italic">350 Hôtes</p>
+            <p class="text-[10px] text-gray-500 uppercase italic">Capacité Adressage</p>
+        </div>
+    </div>
+
+    <div class="doc-section">
+        <h4 class="text-white font-bold text-xl mb-6 uppercase tracking-tighter flex items-center italic">
+            <i class="fas fa-microchip mr-3 text-purple-500"></i> 01. Analyse & Sizing
+        </h4>
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="glass p-6 rounded-2xl border-purple-900/20">
+                <p class="text-purple-400 font-bold text-[10px] uppercase mb-4 tracking-widest italic underline">Problématique</p>
+                <p class="text-xs text-slate-400 leading-relaxed italic">
+                    L'entreprise utilisait une configuration manuelle provoquant des conflits d'IP critiques. Il fallait une solution auto-gérée pour 350 utilisateurs.
+                </p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-purple-900/20">
+                <p class="text-green-400 font-bold text-[10px] uppercase mb-4 tracking-widest italic underline">Objectifs</p>
+                <ul class="text-[11px] text-slate-400 space-y-2 italic">
+                    <li><i class="fas fa-caret-right text-purple-500 mr-2"></i> Création de Scopes DHCP (Pools)</li>
+                    <li><i class="fas fa-caret-right text-purple-500 mr-2"></i> Routage dynamique RIPv2</li>
+                    <li><i class="fas fa-caret-right text-purple-500 mr-2"></i> Encapsulation 802.1Q</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-16">
+        <h4 class="text-white font-bold text-xl mb-6 uppercase tracking-tighter flex items-center italic">
+            <i class="fas fa-terminal mr-3 text-purple-500"></i> 02. Implémentation Cisco CLI
+        </h4>
+        <div class="terminal-window shadow-2xl border border-white/5 bg-[#0a0a0f]">
+            <div class="terminal-header flex items-center justify-between">
+                <div class="flex gap-2">
+                    <div class="status-dot bg-red-500"></div>
+                    <div class="status-dot bg-yellow-500"></div>
+                    <div class="status-dot bg-green-500"></div>
+                </div>
+                <span class="text-[10px] font-mono text-gray-500 italic">Lenny@Orange_Core_Router:~</span>
+            </div>
+            <div class="p-6 font-mono text-xs md:text-sm leading-relaxed">
+                <p class="text-gray-500 italic mb-2">// Configuration du Pool DHCP</p>
+                <p><span class="text-green-500">Router(config)#</span> ip dhcp pool POOL_ORANGE</p>
+                <p><span class="text-green-500">Router(dhcp-config)#</span> network 192.168.2.0 255.255.255.0</p>
+                <p><span class="text-green-500">Router(dhcp-config)#</span> default-router 192.168.2.254</p>
+                <p class="text-gray-500 italic mt-4 mb-2">// Activation RIPv2</p>
+                <p><span class="text-green-500">Router(config)#</span> router rip</p>
+                <p><span class="text-green-500">Router(config-router)#</span> version 2</p>
+                <p><span class="text-green-500">Router(config-router)#</span> network 192.168.2.0</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-12 p-8 glass rounded-[40px] border border-orange-500/20 bg-orange-500/5">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div>
+                <h5 class="text-white font-bold text-lg italic uppercase italic">Bilan de réalisation</h5>
+                <p class="text-gray-500 text-[10px] uppercase tracking-widest mt-1 italic">Livrable technique E5-01 validé</p>
+            </div>
+            <a href="sujet1.pdf" target="_blank" class="px-10 py-4 bg-orange-600 hover:bg-orange-500 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all shadow-xl italic">
+                <i class="fas fa-file-download mr-2"></i> Rapport Complet
+            </a>
+        </div>
+    </div>
+</div>
         </div>
     </div>
 
