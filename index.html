@@ -1,204 +1,120 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio E5 | Mashala Nkole Lenny | LMK</title>
+    <title>Portfolio E5 | Mashala Nkole Lenny | LMK.SISR</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber_purple: '#8b5cf6',
+                        cyber_glow: '#a855f7',
+                        dark_bg: '#050508',
+                        card_bg: '#0d0d15',
+                        accent: '#d8b4fe'
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    animation: {
+                        'grid-move': 'gridMove 30s linear infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'scanline': 'scanline 6s linear infinite',
+                    },
+                    keyframes: {
+                        gridMove: { '0%': { backgroundPosition: '0 0' }, '100%': { backgroundPosition: '0 40px' } },
+                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-15px)' } },
+                        scanline: { '0%': { top: '-10%' }, '100%': { top: '110%' } }
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Fira+Code:wght@400;500&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; margin: 0; }
-        .wix-hero { background-color: #ffffff; color: #111111; padding-top: 140px; padding-bottom: 60px; }
-        .bento-section { background-color: #030303; color: #ffffff; padding-top: 80px; padding-bottom: 80px; }
-        .bento-card { background: rgba(15, 15, 20, 0.7); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 24px; transition: 0.4s ease; cursor: pointer; }
-        .bento-card:hover { border-color: #a855f7; box-shadow: 0 0 30px rgba(168, 85, 247, 0.15); transform: translateY(-5px); }
-        .modal { display: none; position: fixed; z-index: 100; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(5px); overflow-y: auto; }
-        .modal-content { background: #0d0d1a; margin: 2% auto; padding: 40px; border: 1px solid #a855f7; width: 90%; max-width: 1000px; border-radius: 30px; }
-        .skill-tag { background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); color: #a855f7; padding: 2px 10px; border-radius: 8px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
-        .skill-bar-bg { background: rgba(255,255,255,0.05); height: 6px; border-radius: 10px; overflow: hidden; margin-top: 8px; }
-        .skill-bar-fill { background: linear-gradient(90deg, #818cf8, #a855f7); height: 100%; border-radius: 10px; }
+        body { background-color: #050508; color: #e2e8f0; overflow-x: hidden; }
+        .cyber-grid {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(139, 92, 246, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(139, 92, 246, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px; z-index: -1; animation: grid-move 30s linear infinite;
+        }
+        .glass { background: rgba(13, 13, 21, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(139, 92, 246, 0.1); }
+        .reveal-item { opacity: 0; transform: translateY(20px); transition: all 0.6s ease-out; }
+        .reveal-item.active { opacity: 1; transform: translateY(0); }
+        .terminal-window { font-family: 'JetBrains Mono', monospace; background-color: #0c0c0c; border: 1px solid #1e1e2e; border-radius: 8px; box-shadow: 0 0 20px rgba(139, 92, 246, 0.1); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #8b5cf6; border-radius: 10px; }
     </style>
 </head>
-<body class="antialiased">
+<body>
+    <div class="cyber-grid"></div>
+    <div id="progress-bar" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-cyber_purple to-accent z-[100] w-0 transition-all"></div>
 
-    <nav class="fixed w-full z-50 bg-white/20 backdrop-blur-lg px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-        <a href="#" class="text-2xl font-extrabold tracking-tighter text-black">LMK<span class="text-purple-500">.</span></a>
-        <div class="flex gap-4">
-            <a href="#projets" class="text-[10px] font-bold uppercase tracking-widest text-gray-700 hover:text-purple-600">Projets E5</a>
-            <a href="CV_MASHALA_LENNY.pdf" target="_blank" class="bg-black text-white px-4 py-2 rounded-lg text-[10px] font-bold uppercase hover:bg-purple-700 transition shadow-lg shadow-purple-200">Mon CV</a>
+    <nav class="fixed w-full z-50 glass border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-cyber_purple rounded flex items-center justify-center text-white font-bold shadow-[0_0_15px_#8b5cf6]">LMK</div>
+                <h1 class="font-bold text-white tracking-widest text-sm italic">DOSSIER E5 <span class="text-cyber_purple">SISR</span></h1>
+            </div>
+            <div class="hidden lg:flex gap-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                <a href="#intro" class="hover:text-cyber_purple transition">Accueil</a>
+                <a href="#projets" class="hover:text-cyber_purple transition">Missions E5</a>
+                <a href="#cv" class="hover:text-cyber_purple transition">Parcours</a>
+            </div>
+            <div class="text-[10px] font-mono text-white bg-cyber_purple/20 px-4 py-2 rounded border border-cyber_purple/30">
+                Candidat: Mashala Nkole Lenny
+            </div>
         </div>
     </nav>
 
-    <header id="accueil" class="wix-hero px-6">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-start justify-between gap-16">
-            <div class="md:w-3/5">
-                <h1 class="text-6xl font-extrabold tracking-tight">Monsieur <br><span class="text-purple-600 italic">Mashala Nkole Lenny</span>.</h1>
-                <p class="text-xl text-gray-500 font-semibold mt-4 italic underline decoration-purple-200 underline-offset-4">Futur Expert Réseaux Infrastructures et Sécurité</p>
-                
-                <div class="mt-8 text-gray-600 leading-relaxed text-sm space-y-4">
-                    <p>Étudiant en 2ème année de <strong>BTS SIO SISR</strong> à l'INSTA Paris[cite: 26, 30]. Passionné par la cybersécurité, j'ai obtenu mon <strong>Bac STMG en 2024</strong> avant de me spécialiser[cite: 16, 26, 73].</p>
-                    <p>Mon parcours est marqué par une volonté de sécuriser les infrastructures. Mes stages chez <strong>Visiontec22</strong> [cite: 3, 32] et <strong>EasyFormer</strong> [cite: 62, 79, 82] m'ont permis de valider mes compétences terrain.</p>
-                </div>
-                <div class="flex gap-2 mt-8">
-                    <span class="bg-purple-50 text-purple-700 text-[10px] font-bold uppercase px-3 py-1 rounded-full border border-purple-100 shadow-sm">Dynamique</span>
-                    <span class="bg-gray-50 text-gray-700 text-[10px] font-bold uppercase px-3 py-1 rounded-full border border-gray-100 shadow-sm">Persévérant</span>
-                </div>
+    <section id="intro" class="min-h-screen flex items-center justify-center pt-20">
+        <div class="text-center z-10 max-w-4xl px-4">
+            <div class="inline-block mb-6 animate-float">
+                <span class="px-4 py-2 rounded-full border border-cyber_purple/30 bg-cyber_purple/10 text-cyber_purple font-mono text-xs">
+                    INSTA PARIS | SESSION 2026
+                </span>
             </div>
-
-            <div class="md:w-1/3 w-full space-y-6">
-                <div class="bento-card p-6 bg-white border border-gray-200 text-center w-full shadow-2xl">
-                    <i class="fas fa-shield-alt text-purple-600 text-3xl mb-4"></i>
-                    <h3 class="font-bold text-sm uppercase">Cisco Academy</h3>
-                    <p class="text-[10px] text-gray-500 italic">Introduction to Cybersecurity [cite: 108]</p>
-                    <p class="text-[9px] text-purple-600 font-bold mt-2 italic uppercase underline decoration-purple-200">Validée le 28/04/2025 [cite: 119]</p>
-                </div>
-                
-                <div class="bento-card p-6 bg-gray-50 border border-gray-200 w-full shadow-xl">
-                    <h4 class="text-[10px] font-bold uppercase mb-4 text-gray-400 tracking-widest italic text-center underline">Main Technical Skills</h4>
-                    <div class="space-y-4">
-                        <div>
-                            <div class="flex justify-between text-[9px] font-bold uppercase italic"><span>Windows Server</span><span>85%</span></div>
-                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 85%"></div></div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between text-[9px] font-bold uppercase italic"><span>Cisco Networking</span><span>75%</span></div>
-                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 75%"></div></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <h1 class="text-6xl md:text-8xl font-black text-white mb-6 tracking-tighter reveal-item">
+                INFRASTRUCTURE <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber_purple to-accent">RESEAUX & SECURITE</span>
+            </h1>
+            <p class="text-lg text-slate-400 mb-10 max-w-2xl mx-auto font-light reveal-item italic">
+                Analyse, déploiement et sécurisation des solutions d'infrastructure SI.
+            </p>
         </div>
-    </header>
+    </section>
 
-    <main class="bento-section px-6">
-        <div class="max-w-7xl mx-auto">
-            
-            <div id="projets" class="mb-20">
-                <h2 class="text-3xl font-extrabold mb-10 flex items-center italic uppercase text-white tracking-[0.2em]">
-                    <span class="w-12 h-1 bg-purple-500 mr-6 shadow-[0_0_15px_#a855f7]"></span> Dossier Technique E5
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div class="bento-card p-8 group border-purple-500/20" onclick="openModal('modal1')">
-                        <i class="fas fa-server text-purple-500 mb-6 text-2xl"></i>
-                        <h3 class="font-bold text-lg text-white italic tracking-tighter">DHCP & Routage</h3>
-                        <p class="text-[9px] text-gray-500 uppercase tracking-widest mt-2 font-mono italic">Sujet 01 // Orange</p>
-                    </div>
-
-                    <div class="bento-card p-8 group border-purple-500/20" onclick="openModal('modal2')">
-                        <i class="fas fa-network-wired text-purple-500 mb-6 text-2xl"></i>
-                        <h3 class="font-bold text-lg text-white italic tracking-tighter">VLAN Segmentation</h3>
-                        <p class="text-[9px] text-gray-500 uppercase tracking-widest mt-2 font-mono italic">Sujet 02 // Free</p>
-                    </div>
-
-                    <div class="bento-card p-8 opacity-20 border-dashed border-white/10 flex items-center justify-center italic text-[10px]">Projet 03 en attente</div>
-                    <div class="bento-card p-8 opacity-20 border-dashed border-white/10 flex items-center justify-center italic text-[10px]">Projet 04 en attente</div>
-                    <div class="bento-card p-8 opacity-20 border-dashed border-white/10 flex items-center justify-center italic text-[10px]">Projet 05 en attente</div>
-                    <div class="bento-card p-8 opacity-20 border-dashed border-white/10 flex items-center justify-center italic text-[10px]">Projet 06 en attente</div>
-                    <div class="bento-card p-8 opacity-20 border-dashed border-white/10 flex items-center justify-center italic text-[10px]">Projet 07 en attente</div>
-                    <div class="bento-card p-8 opacity-20 border-dashed border-white/10 flex items-center justify-center italic text-[10px]">Projet 08 en attente</div>
-                </div>
+    <section id="projets" class="py-24 max-w-7xl mx-auto px-6">
+        <h2 class="text-3xl font-bold text-white mb-12 flex items-center gap-4">
+            <span class="w-12 h-1 bg-cyber_purple"></span>
+            MISSIONS E5
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="mission-grid">
             </div>
-
-            <div id="documents" class="grid grid-cols-1 md:grid-cols-1 gap-6 pb-20">
-                <a href="attestation_de_presence_en_entreprise_-_e5 (2).pdf" target="_blank" class="bento-card p-10 flex items-center justify-between group bg-gradient-to-br from-purple-900/10 to-transparent border-purple-500/30">
-                    <div class="flex items-center space-x-6">
-                        <div class="w-16 h-16 bg-purple-500/20 rounded-2xl flex items-center justify-center shadow-[0_0_25px_rgba(168,85,247,0.3)]">
-                            <i class="fas fa-file-pdf text-purple-500 text-2xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-white italic uppercase tracking-tighter">Attestations de Stage</h3>
-                            <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-widest italic">Visiontec22 [cite: 3, 32] & EasyFormer [cite: 62, 79]</p>
-                        </div>
-                    </div>
-                    <i class="fas fa-external-link-alt text-gray-600 group-hover:text-purple-500 transition-all"></i>
-                </a>
-            </div>
-        </div>
-    </main>
-
-    <footer class="bg-black py-12 text-center border-t border-white/5">
-        <p class="text-[10px] text-gray-700 uppercase tracking-[0.5em] font-mono italic">Mashala Nkole Lenny // SISR // 2026</p>
-    </footer>
-
-    <div id="modal1" class="modal">
-        <div class="modal-content">
-            <div class="flex justify-between items-center mb-10 border-b border-white/5 pb-6">
-                <h2 class="text-3xl font-extrabold italic text-white uppercase tracking-tighter">Projet 01 : <span class="text-purple-500 underline">DHCP & Routage Orange</span></h2>
-                <button onclick="closeModal('modal1')" class="text-gray-500 hover:text-white text-4xl">&times;</button>
-            </div>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="space-y-6">
-                    <div class="bg-black/40 p-5 rounded-2xl border border-white/5">
-                        <h4 class="text-purple-400 font-bold uppercase text-[10px] mb-3 tracking-widest italic text-white underline">Le Contexte</h4>
-                        <p class="text-gray-400 text-xs leading-relaxed italic">Passage d'un adressage statique à dynamique pour 350 utilisateurs. Automatisation complète du réseau.</p>
-                    </div>
-                    <div class="bg-purple-950/10 p-5 rounded-2xl border border-purple-500/20">
-                        <h4 class="text-white font-bold text-xs mb-3 italic uppercase">Tech Stack</h4>
-                        <div class="flex flex-wrap gap-2"><span class="skill-tag">DHCP</span><span class="skill-tag">RIPv2</span><span class="skill-tag">802.1Q</span></div>
-                    </div>
-                </div>
-                <div class="md:col-span-2 space-y-6">
-                    <div class="bg-black/80 rounded-3xl border border-white/10 p-2 overflow-hidden shadow-2xl">
-                        <div class="bg-white/5 p-3 flex items-center space-x-2 border-b border-white/5">
-                            <div class="flex space-x-1"><div class="w-2 h-2 rounded-full bg-red-500"></div><div class="w-2 h-2 rounded-full bg-yellow-500"></div><div class="w-2 h-2 rounded-full bg-green-500"></div></div>
-                            <span class="text-[9px] font-mono text-gray-500 italic uppercase">Cisco CLI Simulation</span>
-                        </div>
-                        <div class="aspect-video bg-[#0a0a0f] p-6 font-mono text-[11px] text-purple-300">
-                            <span class="text-green-500 italic font-bold tracking-tighter">Router(config)#</span> ip dhcp pool VLAN_ADMIN<br>
-                            <span class="text-green-500 italic font-bold tracking-tighter">Router(dhcp-config)#</span> network 192.168.2.0 255.255.255.0<br>
-                            <span class="text-green-500 italic font-bold tracking-tighter">Router(dhcp-config)#</span> default-router 192.168.2.254<br>
-                            <span class="text-gray-500 italic opacity-50 underline mt-4 block">// Configuration DHCP Pool validée</span>
-                        </div>
-                    </div>
-                    <a href="sujet1.pdf" target="_blank" class="block bg-purple-600 text-white text-center py-4 rounded-xl font-bold uppercase text-xs hover:bg-purple-500 transition shadow-lg shadow-purple-900/40 italic tracking-widest">Ouvrir le Rapport Technique E5-01</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal2" class="modal">
-        <div class="modal-content">
-            <div class="flex justify-between items-center mb-10 border-b border-white/5 pb-6">
-                <h2 class="text-3xl font-extrabold italic text-white uppercase tracking-tighter">Projet 02 : <span class="text-purple-500 underline">Segmentation VLAN Free</span></h2>
-                <button onclick="closeModal('modal2')" class="text-gray-500 hover:text-white text-4xl">&times;</button>
-            </div>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="space-y-6">
-                    <div class="bg-black/40 p-5 rounded-2xl border border-white/5">
-                        <h4 class="text-purple-400 font-bold uppercase text-[10px] mb-3 tracking-widest italic text-white underline">L'Objectif</h4>
-                        <p class="text-gray-400 text-xs leading-relaxed italic">Isolation de 4 départements (Support, R&D, RH, Finance) pour sécuriser les flux critiques de Free.</p>
-                    </div>
-                    <div class="bg-purple-950/10 p-5 rounded-2xl border border-purple-500/20">
-                        <h4 class="text-white font-bold text-xs mb-3 italic uppercase">Equipements</h4>
-                        <div class="flex flex-wrap gap-2"><span class="skill-tag">Catalyst 2960</span><span class="skill-tag">Trunking</span><span class="skill-tag">Router-on-a-stick</span></div>
-                    </div>
-                </div>
-                <div class="md:col-span-2 space-y-6">
-                    <div class="bg-black/80 rounded-3xl border border-white/10 p-2 overflow-hidden shadow-2xl">
-                        <div class="bg-white/5 p-3 flex items-center space-x-2 border-b border-white/5">
-                            <div class="flex space-x-1"><div class="w-2 h-2 rounded-full bg-red-500"></div><div class="w-2 h-2 rounded-full bg-yellow-500"></div><div class="w-2 h-2 rounded-full bg-green-500"></div></div>
-                            <span class="text-[9px] font-mono text-gray-500 italic uppercase">VLAN Table Status</span>
-                        </div>
-                        <div class="aspect-video bg-[#0a0a0f] p-6 font-mono text-[11px] text-purple-300">
-                            VLAN 10  - Support   - Active - Fa0/1, Fa0/2<br>
-                            VLAN 11  - R&D       - Active - Fa0/5<br>
-                            VLAN 20  - RH        - Active - Fa0/10<br>
-                            VLAN 30  - Finance   - Active - Fa0/15<br><br>
-                            <span class="text-green-500 italic font-bold underline tracking-tighter">Switch#</span> show vlan brief
-                        </div>
-                    </div>
-                    <a href="sujet2.pdf" target="_blank" class="block bg-purple-600 text-white text-center py-4 rounded-xl font-bold uppercase text-xs hover:bg-purple-500 transition shadow-lg shadow-purple-900/40 italic tracking-widest">Ouvrir le Rapport Technique E5-02</a>
-                </div>
-            </div>
-        </div>
-    </div>
+    </section>
 
     <script>
-        function openModal(id) { document.getElementById(id).style.display = "block"; }
-        function closeModal(id) { document.getElementById(id).style.display = "none"; }
-        window.onclick = function(event) { if (event.target.className === 'modal') { event.target.style.display = "none"; } }
-    </script>
+        // Progress Bar
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("progress-bar").style.width = scrolled + "%";
+        });
 
+        // Reveal effect
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal-item').forEach(el => observer.observe(el));
+    </script>
 </body>
 </html>
