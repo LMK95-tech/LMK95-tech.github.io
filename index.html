@@ -9,11 +9,24 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Fira+Code:wght@400;500&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; margin: 0; overflow-x: hidden; }
-        .wix-hero { background-color: #ffffff; color: #111111; padding-top: 140px; padding-bottom: 80px; }
+        
+        /* Styles Wix-Hero */
+        .wix-hero { background-color: #ffffff; color: #111111; padding-top: 140px; padding-bottom: 60px; }
         .wix-title { font-size: 3.5rem; font-weight: 800; tracking-tight; line-height: 1.1; }
-        .bento-section { background-color: #030303; color: #ffffff; padding-top: 80px; padding-bottom: 80px; min-height: 100vh; }
+
+        /* Styles Bento */
+        .bento-section { background-color: #030303; color: #ffffff; padding-top: 80px; padding-bottom: 80px; }
         .bento-card { background: rgba(15, 15, 20, 0.7); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); border-radius: 24px; transition: all 0.4s ease; }
         .bento-card:hover { border-color: #a855f7; box-shadow: 0 0 30px rgba(168, 85, 247, 0.15); transform: translateY(-5px); }
+        
+        /* Barre de progression */
+        .skill-bar-bg { background: rgba(255,255,255,0.05); height: 6px; border-radius: 10px; overflow: hidden; margin-top: 8px; }
+        .skill-bar-fill { background: linear-gradient(90deg, #818cf8, #a855f7); height: 100%; border-radius: 10px; }
+
+        /* Timeline */
+        .timeline-item { border-left: 2px solid rgba(168, 85, 247, 0.3); padding-left: 20px; position: relative; padding-bottom: 30px; }
+        .timeline-item::before { content: ''; position: absolute; left: -7px; top: 0; width: 12px; height: 12px; background: #a855f7; border-radius: 50%; box-shadow: 0 0 10px #a855f7; }
+
         .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); backdrop-filter: blur(5px); }
         .modal-content { background: #0d0d1a; margin: 5% auto; padding: 40px; border: 1px solid #a855f7; width: 80%; max-width: 900px; border-radius: 30px; max-height: 85vh; overflow-y: auto; }
         .skill-tag { background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); color: #a855f7; padding: 2px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; }
@@ -21,34 +34,55 @@
 </head>
 <body class="antialiased">
 
-    <nav class="fixed w-full z-50 bg-white/20 backdrop-blur-lg px-6 py-4 border-b border-gray-100">
+    <nav class="fixed w-full z-50 bg-white/40 backdrop-blur-lg px-6 py-4 border-b border-gray-100">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <a href="#" class="text-2xl font-extrabold tracking-tighter text-black">LMK<span class="text-purple-500">.</span></a>
-            <div class="flex space-x-6 text-xs font-bold uppercase tracking-widest text-gray-700">
+            <div class="hidden md:flex space-x-8 text-xs font-bold uppercase tracking-widest text-gray-700">
+                <a href="#accueil" class="hover:text-purple-600 transition">Parcours</a>
+                <a href="#competences" class="hover:text-purple-600 transition">Skills</a>
                 <a href="#projets" class="hover:text-purple-600 transition">Projets E5</a>
-                <a href="#documents" class="hover:text-purple-600 transition">Dossier Administratif</a>
             </div>
+            <a href="CV_MASHALA_LENNY.pdf" target="_blank" class="bg-black text-white px-5 py-2 rounded-full text-[10px] font-bold uppercase hover:bg-purple-600 transition">CV PDF <i class="fas fa-download ml-2"></i></a>
         </div>
     </nav>
 
     <header id="accueil" class="wix-hero px-6">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12">
-            <div class="md:w-3/5 text-center md:text-left">
-                <h1 class="wix-title">Bienvenue dans le portfolio de<br> Monsieur <span class="text-purple-600">Mashala Nkole Lenny</span>.</h1>
-                <p class="text-xl text-gray-500 font-semibold mt-4 italic">Futur Expert Réseaux Infrastructures et Sécurité</p>
-                <div class="flex flex-wrap gap-2 mt-6 justify-center md:justify-start">
-                    <span class="bg-gray-100 text-gray-700 text-xs font-mono uppercase px-3 py-1 rounded">INSTA Paris</span>
-                    <span class="bg-purple-100 text-purple-700 text-xs font-mono uppercase px-3 py-1 rounded">Option SISR</span>
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-start justify-between gap-16">
+            <div class="md:w-3/5">
+                <h1 class="wix-title">Monsieur <br><span class="text-purple-600 italic">Mashala Nkole Lenny</span>.</h1>
+                <p class="text-xl text-gray-400 font-semibold mt-4">Étudiant en BTS SIO SISR — Cybersécurité & Réseaux</p>
+                
+                <div class="mt-10 grid md:grid-cols-2 gap-8">
+                    <div class="space-y-2">
+                        <h3 class="text-xs font-bold uppercase tracking-[0.2em] text-gray-400 mb-6 italic">Mon Parcours</h3>
+                        <div class="timeline-item">
+                            <h4 class="font-bold text-sm">BTS SIO SISR (Alternance)</h4>
+                            <p class="text-xs text-gray-500">INSTA Paris | 2024 - 2026</p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="font-bold text-sm">Baccalauréat STMG</h4>
+                            <p class="text-xs text-gray-500">Lycée Montesquieu | 2024</p>
+                        </div>
+                    </div>
+                    <div class="text-gray-600 text-sm leading-relaxed">
+                        Passionné par l'administration système et la sécurisation des données. Mon objectif est de devenir Expert en Cybersécurité après mon cursus à l'INSTA Paris.
+                    </div>
                 </div>
             </div>
-            <div class="md:w-2/5 flex flex-col items-center">
-                <div class="w-48 h-48 bg-gray-50 rounded-full flex items-center justify-center border-2 border-dashed border-gray-200 mb-6 shadow-inner">
-                    <i class="fas fa-user-shield text-gray-200 text-6xl"></i>
-                </div>
-                <div class="bento-card p-6 bg-white border border-gray-100 text-center w-full shadow-2xl">
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-2 text-center">Contact</p>
-                    <p class="text-sm font-semibold mb-4 text-black">mashalankolelenny@gmail.com</p>
-                    <a href="mailto:mashalankolelenny@gmail.com" class="inline-block bg-black text-white px-8 py-3 rounded-xl font-bold text-sm hover:bg-purple-600 transition w-full italic">Prendre contact</a>
+
+            <div class="md:w-1/3 w-full">
+                <div class="bento-card p-8 bg-white border border-gray-100 shadow-2xl">
+                    <div class="w-24 h-24 bg-gray-50 rounded-2xl mx-auto mb-6 flex items-center justify-center border border-gray-100">
+                        <i class="fas fa-user-shield text-4xl text-purple-600"></i>
+                    </div>
+                    <div class="text-center space-y-4">
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Contact</p>
+                        <p class="text-sm font-semibold text-black">mashalankolelenny@gmail.com</p>
+                        <div class="flex justify-center space-x-4">
+                            <a href="#" class="text-gray-400 hover:text-purple-600"><i class="fab fa-linkedin text-xl"></i></a>
+                            <a href="#" class="text-gray-400 hover:text-purple-600"><i class="fab fa-github text-xl"></i></a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -57,117 +91,122 @@
     <main class="bento-section px-6">
         <div class="max-w-7xl mx-auto">
             
-            <div id="projets" class="mb-20">
-                <h2 class="text-3xl font-extrabold mb-10 flex items-center italic tracking-widest uppercase text-white">
-                    <span class="w-12 h-1 bg-purple-500 mr-6 shadow-[0_0_10px_#a855f7]"></span> Travaux Pratiques E5
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div class="bento-card p-8 group cursor-pointer border-purple-500/20" onclick="openModal('modal1')">
-                        <div class="flex justify-between items-start mb-6">
-                            <i class="fas fa-server text-2xl text-purple-500"></i>
-                            <span class="text-[10px] font-bold text-gray-600">01</span>
+            <div id="competences" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
+                <div class="bento-card p-8 col-span-1">
+                    <h3 class="text-xs font-bold text-purple-400 uppercase tracking-widest mb-6 italic">Certifications</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4 bg-white/5 p-3 rounded-xl border border-white/5">
+                            <i class="fas fa-certificate text-yellow-500"></i>
+                            <div>
+                                <p class="text-[11px] font-bold uppercase">ANSSI SecNumAcadémie</p>
+                                <p class="text-[9px] text-gray-500">Cybersécurité</p>
+                            </div>
                         </div>
-                        <h3 class="font-extrabold text-xl mb-2 text-white italic">AD DS Server</h3>
-                        <p class="text-gray-500 text-[10px] uppercase tracking-widest mb-6">Windows Server 2022</p>
-                        <span class="text-[10px] font-bold text-purple-400 group-hover:underline uppercase">Ouvrir la fiche technique →</span>
+                        <div class="flex items-center space-x-4 bg-white/5 p-3 rounded-xl border border-white/5">
+                            <i class="fas fa-award text-blue-400"></i>
+                            <div>
+                                <p class="text-[11px] font-bold uppercase">Certification Pix</p>
+                                <p class="text-[9px] text-gray-500">Compétences Numériques</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="bento-card p-8 opacity-20 border-dashed border-white/10 flex items-center justify-center">
-                        <span class="text-[10px] font-bold text-gray-700 italic">Projet 02</span>
-                    </div>
-                    <div class="bento-card p-8 opacity-20 border-dashed border-white/10 flex items-center justify-center">
-                        <span class="text-[10px] font-bold text-gray-700 italic">Projet 03</span>
-                    </div>
-                    <div class="bento-card p-8 opacity-20 border-dashed border-white/10 flex items-center justify-center">
-                        <span class="text-[10px] font-bold text-gray-700 italic">Projet 04</span>
+                </div>
+
+                <div class="bento-card p-8 md:col-span-2">
+                    <h3 class="text-xs font-bold text-purple-400 uppercase tracking-widest mb-6 italic">Skills Techniques</h3>
+                    <div class="grid md:grid-cols-2 gap-x-10 gap-y-6">
+                        <div>
+                            <div class="flex justify-between text-[10px] font-bold uppercase italic"><span>Windows Server / AD</span><span>85%</span></div>
+                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 85%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-[10px] font-bold uppercase italic"><span>Cisco / VLAN / Routage</span><span>70%</span></div>
+                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 70%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-[10px] font-bold uppercase italic"><span>Linux Debian / SSH</span><span>60%</span></div>
+                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 60%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-[10px] font-bold uppercase italic"><span>Sécurisation SI (GPO)</span><span>75%</span></div>
+                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 75%"></div></div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div id="documents" class="grid grid-cols-1 md:grid-cols-3 gap-6 pb-20">
-                
-                <a href="attestation_de_presence_en_entreprise_-_e5 (2).pdf" target="_blank" class="md:col-span-2 bento-card p-10 flex items-center justify-between group bg-gradient-to-br from-purple-900/10 to-transparent border-purple-500/30">
+            <div id="projets" class="mb-20">
+                <h2 class="text-2xl font-bold mb-10 flex items-center italic text-white uppercase tracking-[0.2em]">
+                    <span class="w-10 h-1 bg-purple-500 mr-4"></span> Dossier Technique E5
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="bento-card p-8 group cursor-pointer border-purple-500/10" onclick="openModal('modal1')">
+                        <div class="flex justify-between items-start mb-6 text-purple-500">
+                            <i class="fas fa-server text-2xl"></i>
+                            <span class="text-[10px] font-mono">01</span>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2 text-white italic">AD DS Infrastructure</h3>
+                        <p class="text-[9px] text-gray-500 uppercase tracking-widest mb-6">Gestion de domaine Windows</p>
+                        <span class="text-[10px] font-bold text-purple-400 group-hover:underline">VOIR LE PROJET →</span>
+                    </div>
+                    <div class="bento-card p-8 opacity-10 border-dashed border-white/10 flex items-center justify-center italic text-[10px]">Projet 02</div>
+                    <div class="bento-card p-8 opacity-10 border-dashed border-white/10 flex items-center justify-center italic text-[10px]">Projet 03</div>
+                    <div class="bento-card p-8 opacity-10 border-dashed border-white/10 flex items-center justify-center italic text-[10px]">Projet 04</div>
+                </div>
+            </div>
+
+            <div id="documents" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <a href="attestation_de_presence_en_entreprise_-_e5 (2).pdf" target="_blank" class="md:col-span-2 bento-card p-8 flex items-center justify-between group border-purple-500/20">
                     <div class="flex items-center space-x-6">
-                        <div class="w-16 h-16 bg-purple-500/20 rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.2)]">
-                            <i class="fas fa-file-pdf text-purple-500 text-2xl"></i>
+                        <div class="w-14 h-14 bg-purple-500/20 rounded-xl flex items-center justify-center shadow-lg shadow-purple-900/40">
+                            <i class="fas fa-file-pdf text-purple-500 text-xl"></i>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-white italic uppercase tracking-tighter">Attestations de Stage</h3>
-                            <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-widest">Visiontec22 & EasyFormer</p>
+                            <h3 class="font-bold text-white uppercase italic tracking-tighter text-lg">Attestations de Stage</h3>
+                            <p class="text-[9px] text-gray-500 uppercase tracking-widest mt-1">Visiontec22 & EasyFormer</p>
                         </div>
                     </div>
-                    <i class="fas fa-external-link-alt text-gray-600 group-hover:text-purple-500 transition-all"></i>
+                    <i class="fas fa-external-link-alt text-gray-600 group-hover:text-purple-500 transition"></i>
                 </a>
 
-                <div class="bento-card p-8 flex flex-col justify-between group">
-                    <div class="flex justify-between items-start">
-                        <i class="fas fa-table text-2xl text-purple-400"></i>
-                        <span class="text-[9px] font-bold text-gray-600 uppercase">E5 Annexes</span>
+                <div class="bento-card p-8 border-dashed border-purple-500/20 flex flex-col justify-center">
+                    <div class="flex items-center space-x-3 mb-2">
+                        <i class="fas fa-rss text-purple-500 text-xs"></i>
+                        <h3 class="text-xs font-bold text-white uppercase italic">Veille Technologique</h3>
                     </div>
-                    <div>
-                        <h3 class="text-lg font-bold text-white mb-1 italic">Fiche Synthèse</h3>
-                        <p class="text-[10px] text-gray-500 uppercase mb-4 tracking-tighter">Tableau croisé des compétences</p>
-                        <a href="#" class="text-[10px] font-bold text-purple-400 group-hover:text-white transition uppercase tracking-widest">Télécharger →</a>
-                    </div>
+                    <p class="text-[9px] text-gray-500 leading-relaxed uppercase">Sujet : Le modèle Zero Trust & Cybersécurité</p>
                 </div>
-
-                <div class="md:col-span-3 bento-card p-10 mt-4 border-dashed border-purple-500/20">
-                    <div class="flex flex-col md:flex-row justify-between items-center gap-8">
-                        <div class="flex items-center space-x-6">
-                            <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center">
-                                <i class="fas fa-rss text-purple-500 text-2xl"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-bold text-white italic uppercase">Veille Technologique</h3>
-                                <p class="text-sm text-gray-500 italic max-w-md">Sujet : L'évolution de la Cybersécurité et du modèle Zero Trust au sein des SI.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4">
-                            <div class="bg-black p-4 rounded-xl border border-white/5 text-center px-8">
-                                <p class="text-[10px] font-bold text-purple-500 uppercase tracking-widest">Outils</p>
-                                <p class="text-xs text-gray-400 font-mono">Feedly / ANSSI</p>
-                            </div>
-                            <a href="#" class="bg-white/5 hover:bg-white/10 p-4 px-8 rounded-xl flex items-center transition">
-                                <span class="text-xs font-bold uppercase tracking-widest italic">Consulter la veille</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
             </div>
 
         </div>
     </main>
 
-    <footer class="bg-black py-10 border-t border-white/5 text-center">
-        <p class="text-gray-700 text-[10px] uppercase tracking-[0.4em]">Mashala Nkole Lenny // SISR // © 2026</p>
+    <footer class="bg-black py-12 text-center border-t border-white/5">
+        <p class="text-[10px] text-gray-700 uppercase tracking-[0.5em] font-mono italic">Mashala Nkole Lenny // SISR // 2026</p>
     </footer>
 
     <div id="modal1" class="modal">
-        <div class="modal-content border-purple-500 shadow-[0_0_50px_rgba(168,85,247,0.2)]">
+        <div class="modal-content border-purple-500">
             <div class="flex justify-between items-center mb-10 border-b border-white/5 pb-6">
-                <h2 class="text-3xl font-extrabold italic text-white uppercase tracking-tighter">Projet 01 : <span class="text-purple-500">AD DS Infra</span></h2>
+                <h2 class="text-2xl font-extrabold italic text-white uppercase">Projet 01 : <span class="text-purple-500">AD DS Infra</span></h2>
                 <button onclick="closeModal('modal1')" class="text-gray-500 hover:text-white text-4xl">&times;</button>
             </div>
             <div class="grid md:grid-cols-2 gap-12 text-sm">
                 <div>
-                    <h4 class="text-purple-400 font-bold uppercase text-[10px] mb-4 tracking-widest border-b border-purple-900 pb-2 inline-block">Contexte</h4>
+                    <h4 class="text-purple-400 font-bold uppercase text-[10px] mb-4 tracking-widest">Description</h4>
                     <p class="text-gray-400 leading-relaxed mb-8">
-                        Mise en place d'un domaine Active Directory sous Windows Server 2022 pour centraliser l'authentification et la gestion des postes clients. 
-                        Implémentation de GPO de sécurité pour le durcissement du SI (mots de passe, restriction USB, déploiement software).
+                        Mise en place d'un domaine Active Directory sous Windows Server 2022. 
+                        Gestion des GPO de sécurité et centralisation des authentifications clients.
                     </p>
-                    <h4 class="text-purple-400 font-bold uppercase text-[10px] mb-4 tracking-widest border-b border-purple-900 pb-2 inline-block">Compétences validées</h4>
                     <div class="flex flex-wrap gap-2">
-                        <span class="skill-tag italic uppercase">AD DS</span>
-                        <span class="skill-tag italic uppercase">Windows Server 2022</span>
-                        <span class="skill-tag italic uppercase">Cybersecurity GPO</span>
+                        <span class="skill-tag">WIN_SERVER</span>
+                        <span class="skill-tag">GPO_SECURITY</span>
                     </div>
                 </div>
-                <div class="bg-black rounded-3xl border border-white/5 p-8 flex flex-col items-center justify-center text-center">
-                    <div class="w-12 h-12 bg-white/5 rounded-full mb-4 flex items-center justify-center">
-                        <i class="fas fa-file-pdf text-gray-600"></i>
-                    </div>
-                    <p class="text-gray-600 italic text-[10px] uppercase tracking-widest mb-6">Documentation complète</p>
-                    <a href="#" class="bg-purple-600/20 text-purple-400 px-6 py-2 rounded-lg text-xs font-bold uppercase hover:bg-purple-600 hover:text-white transition">Ouvrir le Rapport</a>
+                <div class="bg-black/50 rounded-3xl border border-white/5 p-10 flex flex-col items-center justify-center text-center">
+                    <i class="fas fa-file-pdf text-gray-600 text-2xl mb-4"></i>
+                    <p class="text-[10px] text-gray-600 uppercase tracking-widest italic mb-6">Documentation technique</p>
+                    <a href="#" class="bg-purple-600 text-white px-8 py-3 rounded-xl text-[10px] font-bold uppercase hover:bg-purple-500 transition">Ouvrir le Rapport</a>
                 </div>
             </div>
         </div>
