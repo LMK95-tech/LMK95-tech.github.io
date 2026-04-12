@@ -9,182 +9,145 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Fira+Code:wght@400;500&display=swap');
 
-        body { 
-            background-color: #030303; 
-            color: #ffffff; 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            scroll-behavior: smooth;
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; margin: 0; overflow-x: hidden; }
+        
+        /* SECTION CLAIRE (Inspirée de Wix) */
+        .wix-hero { background-color: #ffffff; color: #111111; padding-top: 120px; padding-bottom: 80px; }
+        .wix-photo { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 5px solid #eaeaea; }
+        .wix-title { font-size: 3.5rem; font-weight: 800; tracking-tight; line-height: 1.1; }
+        .wix-subtitle { font-size: 1.25rem; color: #666666; font-weight: 600; margin-top: 10px; }
 
-        .bento-card {
-            background: rgba(15, 15, 20, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(12px);
-            border-radius: 24px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .bento-card:hover {
-            border-color: #a855f7;
-            box-shadow: 0 0 30px rgba(168, 85, 247, 0.15);
-            transform: translateY(-5px);
-        }
-
-        .gradient-purple {
-            background: linear-gradient(135deg, #818cf8 0%, #a855f7 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .bg-glow {
-            position: absolute;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, transparent 70%);
-            z-index: -1;
-            filter: blur(60px);
-        }
-
-        .nav-glass {
-            background: rgba(3, 3, 3, 0.7);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .btn-violet {
-            background: linear-gradient(135deg, #818cf8 0%, #a855f7 100%);
-            transition: 0.3s;
-        }
-
-        .btn-violet:hover {
-            box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
-            opacity: 0.9;
-        }
+        /* SECTION SOMBRE (Inspirée du Bento "Cyber-Purple") */
+        .bento-section { background-color: #030303; color: #ffffff; padding-top: 80px; padding-bottom: 80px; }
+        .bento-card { background: rgba(15, 15, 20, 0.7); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); border-radius: 24px; transition: all 0.4s ease; }
+        .bento-card:hover { border-color: #a855f7; box-shadow: 0 0 30px rgba(168, 85, 247, 0.15); transform: translateY(-5px); }
+        .gradient-purple { background: linear-gradient(135deg, #818cf8 0%, #a855f7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); backdrop-filter: blur(5px); }
+        .modal-content { background: #0d0d1a; margin: 5% auto; padding: 40px; border: 1px solid #a855f7; width: 80%; max-width: 900px; border-radius: 30px; max-height: 85vh; overflow-y: auto; }
+        .skill-tag { background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); color: #a855f7; padding: 2px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; }
     </style>
 </head>
 <body class="antialiased">
 
-    <nav class="fixed w-full z-50 nav-glass px-6 py-4">
+    <nav class="fixed w-full z-50 bg-white/20 dark:bg-black/20 backdrop-blur-lg px-6 py-4 border-b border-gray-100 dark:border-white/5">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <a href="#" class="text-2xl font-extrabold tracking-tighter">LMK<span class="text-purple-500">.</span></a>
-            <div class="hidden md:flex space-x-8 text-sm font-semibold text-gray-400">
-                <a href="#accueil" class="hover:text-white transition">Accueil</a>
-                <a href="#projets" class="hover:text-white transition">Projets</a>
-                <a href="#documents" class="hover:text-white transition">Dossier E5</a>
+            <a href="#" class="text-2xl font-extrabold tracking-tighter text-black dark:text-white">LMK<span class="text-purple-500">.</span></a>
+            <div class="flex space-x-6 text-xs font-bold uppercase tracking-widest text-gray-700 dark:text-gray-400">
+                <a href="#projets" class="hover:text-purple-600 transition">Projets E5</a>
+                <a href="#documents" class="hover:text-purple-600 transition">Dossier</a>
             </div>
         </div>
     </nav>
 
-    <main class="pt-32 px-6 max-w-7xl mx-auto">
-        <div class="bg-glow top-0 left-1/4"></div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="md:col-span-2 bento-card p-10 flex flex-col justify-center relative overflow-hidden">
-                <div class="relative z-10">
-                    <span class="text-purple-400 font-mono text-sm mb-4 block tracking-widest uppercase">Expertise Système & Réseau</span>
-                    <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight italic">
-                        Mashala Nkole <span class="gradient-purple">Lenny</span>
-                    </h1>
-                    <p class="text-gray-400 text-lg max-w-xl leading-relaxed">
-                        Étudiant en BTS SIO SISR à l'INSTA Paris. Passionné par l'architecture réseau et la sécurisation des infrastructures.
-                    </p>
+    <header id="accueil" class="wix-hero px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12">
+            <div class="md:w-3/5 text-center md:text-left">
+                <h1 class="wix-title">Bienvenue dans le portfolio de<br> Monsieur <span class="text-purple-600">Mashala Nkole Lenny</span>.</h1>
+                <p class="wix-subtitle">Étudiant en BTS SIO (Services Informatiques aux Organisations)</p>
+                <div class="flex space-x-2 mt-4">
+                    <span class="bg-gray-100 text-gray-700 text-xs font-mono uppercase px-3 py-1 rounded">INSTA Paris</span>
+                    <span class="bg-purple-100 text-purple-700 text-xs font-mono uppercase px-3 py-1 rounded">Option SISR</span>
                 </div>
             </div>
-
-            <div class="bento-card p-8 flex flex-col justify-between">
-                <div>
-                    <h3 class="text-gray-500 font-bold uppercase text-xs tracking-widest mb-6">Profil Tech</h3>
-                    <div class="space-y-4 text-sm">
-                        <div class="flex justify-between border-b border-white/5 pb-2">
-                            <span class="text-gray-400">Formation</span><span class="font-bold">SISR</span>
-                        </div>
-                        <div class="flex justify-between border-b border-white/5 pb-2">
-                            <span class="text-gray-400">Promotion</span><span class="font-bold">2026</span>
-                        </div>
-                        <div class="flex justify-between border-b border-white/5 pb-2">
-                            <span class="text-gray-400">Baccalauréat</span><span class="font-bold">STMG</span>
-                        </div>
-                    </div>
+            <div class="md:w-2/5 flex flex-col items-center">
+                <div class="aspect-square bg-gray-100 rounded-full flex items-center justify-center border-dashed border-gray-300 w-48 h-48 mb-6">
+                    <span class="text-gray-400 text-xs italic uppercase tracking-widest">Photo</span>
                 </div>
-                <div class="mt-8">
-                    <a href="mailto:mashalankolelenny@gmail.com" class="btn-violet w-full py-4 rounded-2xl font-bold flex items-center justify-center">
-                        Contactez-moi <i class="fas fa-arrow-right ml-2 text-xs"></i>
-                    </a>
+                <div class="bento-card p-6 flex flex-col justify-center bg-white border border-gray-200 text-center w-full shadow-lg">
+                    <p class="text-xs font-bold text-gray-600 uppercase tracking-widest mb-2 italic">Contact direct</p>
+                    <p class="text-sm font-medium mb-4 text-gray-900">mashalankolelenny@gmail.com</p>
+                    <a href="mailto:mashalankolelenny@gmail.com" class="bg-purple-600 py-3 rounded-xl text-center font-bold text-sm text-white hover:bg-purple-700 transition">Envoyer un mail</a>
                 </div>
             </div>
+        </div>
+    </header>
 
-            <div id="projets" class="md:col-span-3 mt-4">
-                <h2 class="text-3xl font-extrabold mb-8 flex items-center">
-                    <span class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center mr-4">
-                        <i class="fas fa-folder-open text-purple-500 text-sm"></i>
-                    </span>
-                    Projets Épreuve E5
+    <main class="bento-section px-6">
+        <div class="max-w-7xl mx-auto">
+            <div id="projets" class="mb-10">
+                <h2 class="text-2xl font-bold mb-6 flex items-center italic tracking-widest uppercase underline underline-offset-8 decoration-purple-500 text-white">
+                    Portfolio E5 <span class="ml-4 text-xs font-mono text-gray-600">— 08 Projets Techniques</span>
                 </h2>
-                
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div class="bento-card p-8 group">
-                        <div class="h-12 w-12 bg-white/5 rounded-xl flex items-center justify-center mb-6 group-hover:bg-purple-500/20 transition">
-                            <i class="fas fa-server text-gray-400 group-hover:text-purple-500"></i>
+                    <div class="bento-card p-8 group cursor-pointer border-purple-500/0 hover:border-purple-500/50" onclick="openModal('modal1')">
+                        <div class="flex justify-between items-start mb-6">
+                            <i class="fas fa-server text-2xl text-purple-500"></i>
+                            <span class="text-[10px] font-bold text-gray-500">SISR // 01</span>
                         </div>
-                        <h3 class="font-bold text-xl mb-3">AD DS Server</h3>
-                        <p class="text-gray-500 text-sm leading-relaxed mb-6">Déploiement Windows Server 2022 et GPO.</p>
-                        <a href="#" class="text-xs font-bold uppercase tracking-widest text-purple-400 hover:text-white transition">Voir Fiche</a>
+                        <h3 class="font-extrabold text-xl mb-2 text-white">AD DS Server</h3>
+                        <p class="text-gray-500 text-xs leading-relaxed mb-6 italic uppercase">Infrastructure Active Directory & GPO.</p>
+                        <span class="text-xs font-bold text-purple-400 group-hover:underline uppercase tracking-tighter">Ouvrir la documentation technique →</span>
                     </div>
-
-                    <div class="bento-card p-8 group">
-                        <div class="h-12 w-12 bg-white/5 rounded-xl flex items-center justify-center mb-6 group-hover:bg-purple-500/20 transition">
-                            <i class="fas fa-network-wired text-gray-400 group-hover:text-purple-500"></i>
+                    
+                    <div class="bento-card p-8 group opacity-50">
+                        <div class="flex justify-between items-start mb-6">
+                            <i class="fas fa-network-wired text-2xl text-gray-600"></i>
+                            <span class="text-[10px] font-bold text-gray-500">SISR // 02</span>
                         </div>
-                        <h3 class="font-bold text-xl mb-3">VLAN Cisco</h3>
-                        <p class="text-gray-500 text-sm leading-relaxed mb-6">Segmentation réseau et routage inter-VLAN.</p>
-                        <a href="#" class="text-xs font-bold uppercase tracking-widest text-purple-400 hover:text-white transition">Voir Fiche</a>
-                    </div>
-
-                    <div class="bento-card p-8 border-dashed flex items-center justify-center text-gray-600">
-                        <span class="text-xs font-bold uppercase italic">Projet 03 en attente</span>
-                    </div>
-                    <div class="bento-card p-8 border-dashed flex items-center justify-center text-gray-600">
-                        <span class="text-xs font-bold uppercase italic">Projet 04 en attente</span>
+                        <h3 class="font-extrabold text-xl mb-2 text-white">VLAN Cisco</h3>
+                        <p class="text-gray-500 text-xs leading-relaxed mb-6 italic uppercase underline decoration-purple-500">Segmentation & Routage L3.</p>
                     </div>
                 </div>
             </div>
 
-            <div id="documents" class="bento-card p-8 flex items-center justify-between group">
-                <div>
-                    <h3 class="font-bold text-lg">Fiche Synthèse E5</h3>
-                    <p class="text-gray-500 text-xs mt-1">Tableau croisé des compétences</p>
+            <div id="documents" class="grid grid-cols-1 md:grid-cols-3 gap-6 pb-20">
+                <div class="bento-card p-6 flex items-center space-x-4">
+                    <i class="fas fa-file-pdf text-purple-500"></i>
+                    <span class="text-sm font-bold uppercase tracking-widest italic text-white">Fiche Synthèse</span>
                 </div>
-                <div class="h-10 w-10 bg-white/5 rounded-full flex items-center justify-center group-hover:bg-purple-500 transition">
-                    <i class="fas fa-download text-xs"></i>
+                <div class="bento-card p-6 flex items-center space-x-4">
+                    <i class="fas fa-award text-purple-500"></i>
+                    <span class="text-sm font-bold uppercase tracking-widest italic text-white">Attestations Stage</span>
                 </div>
-            </div>
-
-            <div class="bento-card p-8 flex items-center justify-between group">
-                <div>
-                    <h3 class="font-bold text-lg">Attestations Stage</h3>
-                    <p class="text-gray-500 text-xs mt-1">Justificatifs officiels</p>
-                </div>
-                <div class="h-10 w-10 bg-white/5 rounded-full flex items-center justify-center group-hover:bg-purple-500 transition">
-                    <i class="fas fa-file-pdf text-xs"></i>
+                <div class="bento-card p-6 flex items-center space-x-4 border-dashed">
+                    <i class="fas fa-rss text-purple-900"></i>
+                    <span class="text-sm font-bold uppercase tracking-widest italic text-gray-600">Veille Technologique</span>
                 </div>
             </div>
-
-            <div class="bento-card p-8 flex items-center justify-between group bg-purple-500/5">
-                <div>
-                    <h3 class="font-bold text-lg">Veille Techno</h3>
-                    <p class="text-gray-500 text-xs mt-1">Sujet : Le Zero Trust</p>
-                </div>
-                <div class="h-10 w-10 bg-purple-500/20 rounded-full flex items-center justify-center">
-                    <i class="fas fa-rss text-purple-500 text-xs"></i>
-                </div>
-            </div>
-
         </div>
     </main>
 
-    <footer class="py-20 text-center text-gray-600 text-xs font-mono tracking-widest uppercase">
-        LMK // Portfolio SISR // 2026
-    </footer>
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-8 border-b border-white/5 pb-4">
+                <h2 class="text-3xl font-extrabold italic text-white">Projet 01 : <span class="text-purple-500">AD DS Windows Server</span></h2>
+                <button onclick="closeModal('modal1')" class="text-gray-500 hover:text-white text-2xl">&times;</button>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-10">
+                <div>
+                    <h4 class="text-purple-400 font-bold uppercase text-xs mb-4">Contexte Technique</h4>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                        Mise en place d'une infrastructure centralisée pour une entreprise de 50 collaborateurs. 
+                        L'objectif était de sécuriser l'accès aux ressources et d'automatiser le déploiement des paramètres via GPO.
+                    </p>
+                    <h4 class="text-purple-400 font-bold uppercase text-xs mb-4">Compétences validées</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag">Administration Windows</span>
+                        <span class="skill-tag">Sécurité des accès</span>
+                        <span class="skill-tag">Services DNS/DHCP</span>
+                    </div>
+                </div>
+                <div class="bg-black/50 p-6 rounded-2xl border border-white/5">
+                    <h4 class="text-white font-bold text-sm mb-4 italic uppercase tracking-tighter underline">Capture d'écran de l'infra</h4>
+                    <div class="aspect-video bg-gray-900 rounded-lg flex items-center justify-center border border-dashed border-gray-800">
+                        <span class="text-gray-700 text-xs italic uppercase tracking-widest">Image du serveur à insérer ici</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-10 flex justify-end">
+                <a href="#" class="bg-purple-600 px-6 py-2 rounded-lg font-bold text-sm text-white">Télécharger la fiche E5 complète (PDF)</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(id) { document.getElementById(id).style.display = "block"; }
+        function closeModal(id) { document.getElementById(id).style.display = "none"; }
+        window.onclick = function(event) { if (event.target.className === 'modal') { event.target.style.display = "none"; } }
+    </script>
 
 </body>
 </html>
