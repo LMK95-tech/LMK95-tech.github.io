@@ -6,175 +6,184 @@
     <title>Portfolio E5 | Mashala Nkole Lenny | LMK</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        cyber: {
-                            bg: '#05050a',
-                            card: '#0d0d1a',
-                            border: '#1e1b4b',
-                            text: '#eef2ff',
-                            sub: '#94a3b8',
-                            accent: '#818cf8', // Indigo clair
-                            violet: '#a855f7', // Violet néon
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['Fira Code', 'monospace'],
-                    },
-                }
-            }
-        }
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #05050a; color: #eef2ff; scroll-behavior: smooth; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        .gradient-text { background: linear-gradient(90deg, #818cf8, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .nav-link { position: relative; color: #94a3b8; transition: 0.3s; }
-        .nav-link:hover { color: #a855f7; }
-        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 0; background: #a855f7; transition: 0.3s; }
-        .nav-link:hover::after { width: 100%; }
-        
-        /* Animation Radar/Scanner sur les cartes */
-        .cyber-card { position: relative; background: #0d0d1a; border: 1px solid #1e1b4b; overflow: hidden; transition: 0.4s ease-out; }
-        .cyber-card::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, #a855f7); transition: 0.5s; }
-        .cyber-card:hover::before { left: 100%; }
-        .cyber-card:hover { transform: translateY(-8px); border-color: #a855f7; box-shadow: 0 0 20px rgba(168, 85, 247, 0.2); }
-        
-        .section-title { position: relative; display: inline-block; padding-bottom: 10px; margin-bottom: 40px; }
-        .section-title::after { content: ''; position: absolute; width: 60px; height: 4px; bottom: 0; left: 0; background: #a855f7; border-radius: 9999px; box-shadow: 0 0 10px #a855f7; }
-        
-        .btn-primary { background: linear-gradient(90deg, #818cf8, #a855f7); transition: 0.3s; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3); }
-        .btn-primary:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(168, 85, 247, 0.5); }
-        
-        .skill-badge { background: rgba(30, 27, 75, 0.5); border: 1px solid #1e1b4b; padding: 4px 12px; rounded: 8px; font-size: 0.75rem; color: #818cf8; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Fira+Code:wght@400;500&display=swap');
+
+        body { 
+            background-color: #030303; 
+            color: #ffffff; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            scroll-behavior: smooth;
+        }
+
+        .bento-card {
+            background: rgba(15, 15, 20, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .bento-card:hover {
+            border-color: #a855f7;
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .gradient-purple {
+            background: linear-gradient(135deg, #818cf8 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .bg-glow {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, transparent 70%);
+            z-index: -1;
+            filter: blur(60px);
+        }
+
+        .nav-glass {
+            background: rgba(3, 3, 3, 0.7);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-violet {
+            background: linear-gradient(135deg, #818cf8 0%, #a855f7 100%);
+            transition: 0.3s;
+        }
+
+        .btn-violet:hover {
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+            opacity: 0.9;
+        }
     </style>
 </head>
-<body>
+<body class="antialiased">
 
-    <nav class="fixed w-full z-50 bg-cyber-bg/80 backdrop-blur-xl border-b border-cyber-border px-6 py-4">
+    <nav class="fixed w-full z-50 nav-glass px-6 py-4">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <a href="#accueil" class="text-2xl font-extrabold tracking-tighter gradient-text">LMK<span class="text-white">.sisr</span></a>
-            <div class="hidden md:flex space-x-8 text-sm font-medium">
-                <a href="#accueil" class="nav-link">Accueil</a>
-                <a href="#projets" class="nav-link">Projets E5</a>
-                <a href="#veille" class="nav-link">Veille</a>
-                <a href="#documents" class="nav-link">Documents</a>
+            <a href="#" class="text-2xl font-extrabold tracking-tighter">LMK<span class="text-purple-500">.</span></a>
+            <div class="hidden md:flex space-x-8 text-sm font-semibold text-gray-400">
+                <a href="#accueil" class="hover:text-white transition">Accueil</a>
+                <a href="#projets" class="hover:text-white transition">Projets</a>
+                <a href="#documents" class="hover:text-white transition">Dossier E5</a>
             </div>
         </div>
     </nav>
 
-    <section id="accueil" class="pt-40 pb-24 px-6 relative overflow-hidden">
-        <div class="absolute top-20 right-0 w-96 h-96 bg-purple-600/10 rounded-full blur-[120px]"></div>
-        <div class="max-w-7xl mx-auto grid md:grid-cols-5 gap-16 items-center relative z-10">
-            <div class="md:col-span-3">
-                <div class="inline-block bg-purple-500/10 border border-purple-500/20 text-purple-400 px-4 py-1 rounded-full text-xs font-mono mb-4 tracking-widest">INFRASTRUCTURE & SÉCURITÉ</div>
-                <h1 class="text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">Mashala Nkole <br><span class="gradient-text">Lenny</span></h1>
-                <p class="text-xl text-cyber-sub mb-8 max-w-2xl leading-relaxed">Spécialiste en Solutions d'Infrastructure, Systèmes et Réseaux. En route vers l'expertise en <span class="text-purple-400">Cyber-Résilience</span>.</p>
+    <main class="pt-32 px-6 max-w-7xl mx-auto">
+        <div class="bg-glow top-0 left-1/4"></div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="md:col-span-2 bento-card p-10 flex flex-col justify-center relative overflow-hidden">
+                <div class="relative z-10">
+                    <span class="text-purple-400 font-mono text-sm mb-4 block tracking-widest uppercase">Expertise Système & Réseau</span>
+                    <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight italic">
+                        Mashala Nkole <span class="gradient-purple">Lenny</span>
+                    </h1>
+                    <p class="text-gray-400 text-lg max-w-xl leading-relaxed">
+                        Étudiant en BTS SIO SISR à l'INSTA Paris. Passionné par l'architecture réseau et la sécurisation des infrastructures.
+                    </p>
+                </div>
+            </div>
+
+            <div class="bento-card p-8 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-gray-500 font-bold uppercase text-xs tracking-widest mb-6">Profil Tech</h3>
+                    <div class="space-y-4 text-sm">
+                        <div class="flex justify-between border-b border-white/5 pb-2">
+                            <span class="text-gray-400">Formation</span><span class="font-bold">SISR</span>
+                        </div>
+                        <div class="flex justify-between border-b border-white/5 pb-2">
+                            <span class="text-gray-400">Promotion</span><span class="font-bold">2026</span>
+                        </div>
+                        <div class="flex justify-between border-b border-white/5 pb-2">
+                            <span class="text-gray-400">Baccalauréat</span><span class="font-bold">STMG</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8">
+                    <a href="mailto:mashalankolelenny@gmail.com" class="btn-violet w-full py-4 rounded-2xl font-bold flex items-center justify-center">
+                        Contactez-moi <i class="fas fa-arrow-right ml-2 text-xs"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div id="projets" class="md:col-span-3 mt-4">
+                <h2 class="text-3xl font-extrabold mb-8 flex items-center">
+                    <span class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-folder-open text-purple-500 text-sm"></i>
+                    </span>
+                    Projets Épreuve E5
+                </h2>
                 
-                <div class="flex flex-wrap gap-2 mb-8">
-                    <span class="skill-badge">Active Directory</span>
-                    <span class="skill-badge">Cisco IOS</span>
-                    <span class="skill-badge">Windows Server</span>
-                    <span class="skill-badge">Linux Administration</span>
-                    <span class="skill-badge">Cybersecurity</span>
-                </div>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="bento-card p-8 group">
+                        <div class="h-12 w-12 bg-white/5 rounded-xl flex items-center justify-center mb-6 group-hover:bg-purple-500/20 transition">
+                            <i class="fas fa-server text-gray-400 group-hover:text-purple-500"></i>
+                        </div>
+                        <h3 class="font-bold text-xl mb-3">AD DS Server</h3>
+                        <p class="text-gray-500 text-sm leading-relaxed mb-6">Déploiement Windows Server 2022 et GPO.</p>
+                        <a href="#" class="text-xs font-bold uppercase tracking-widest text-purple-400 hover:text-white transition">Voir Fiche</a>
+                    </div>
 
-                <div class="flex flex-wrap gap-4">
-                    <a href="#projets" class="btn-primary text-white px-8 py-3 rounded-xl font-bold text-lg flex items-center">Les 8 Projets E5</a>
-                    <a href="mailto:mashalankolelenny@gmail.com" class="border border-cyber-border bg-white/5 px-8 py-3 rounded-xl font-bold text-lg flex items-center hover:bg-white/10 transition">Contact</a>
+                    <div class="bento-card p-8 group">
+                        <div class="h-12 w-12 bg-white/5 rounded-xl flex items-center justify-center mb-6 group-hover:bg-purple-500/20 transition">
+                            <i class="fas fa-network-wired text-gray-400 group-hover:text-purple-500"></i>
+                        </div>
+                        <h3 class="font-bold text-xl mb-3">VLAN Cisco</h3>
+                        <p class="text-gray-500 text-sm leading-relaxed mb-6">Segmentation réseau et routage inter-VLAN.</p>
+                        <a href="#" class="text-xs font-bold uppercase tracking-widest text-purple-400 hover:text-white transition">Voir Fiche</a>
+                    </div>
+
+                    <div class="bento-card p-8 border-dashed flex items-center justify-center text-gray-600">
+                        <span class="text-xs font-bold uppercase italic">Projet 03 en attente</span>
+                    </div>
+                    <div class="bento-card p-8 border-dashed flex items-center justify-center text-gray-600">
+                        <span class="text-xs font-bold uppercase italic">Projet 04 en attente</span>
+                    </div>
                 </div>
             </div>
-            
-            <div class="md:col-span-2 cyber-card p-8 rounded-3xl border-purple-500/20">
-                <div class="flex items-center space-x-4 mb-6">
-                    <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(168,85,247,0.5)]">
-                        <i class="fas fa-user-shield text-white text-xl"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-white">Profil SISR</h3>
-                        <p class="text-xs text-purple-400 font-mono italic underline">Statut: Étudiant @ INSTA Paris</p>
-                    </div>
+
+            <div id="documents" class="bento-card p-8 flex items-center justify-between group">
+                <div>
+                    <h3 class="font-bold text-lg">Fiche Synthèse E5</h3>
+                    <p class="text-gray-500 text-xs mt-1">Tableau croisé des compétences</p>
                 </div>
-                <ul class="space-y-3 text-cyber-sub">
-                    <li class="flex justify-between border-b border-cyber-border pb-2 text-sm">
-                        <span>Baccalauréat</span><span class="text-white">STMG (2024)</span>
-                    </li>
-                    <li class="flex justify-between border-b border-cyber-border pb-2 text-sm">
-                        <span>Localisation</span><span class="text-white">Herblay (95)</span>
-                    </li>
-                    <li class="flex justify-between text-sm">
-                        <span>Objectif Master</span><span class="text-purple-400 font-bold">ERIS (Bac+5)</span>
-                    </li>
-                </ul>
+                <div class="h-10 w-10 bg-white/5 rounded-full flex items-center justify-center group-hover:bg-purple-500 transition">
+                    <i class="fas fa-download text-xs"></i>
+                </div>
             </div>
+
+            <div class="bento-card p-8 flex items-center justify-between group">
+                <div>
+                    <h3 class="font-bold text-lg">Attestations Stage</h3>
+                    <p class="text-gray-500 text-xs mt-1">Justificatifs officiels</p>
+                </div>
+                <div class="h-10 w-10 bg-white/5 rounded-full flex items-center justify-center group-hover:bg-purple-500 transition">
+                    <i class="fas fa-file-pdf text-xs"></i>
+                </div>
+            </div>
+
+            <div class="bento-card p-8 flex items-center justify-between group bg-purple-500/5">
+                <div>
+                    <h3 class="font-bold text-lg">Veille Techno</h3>
+                    <p class="text-gray-500 text-xs mt-1">Sujet : Le Zero Trust</p>
+                </div>
+                <div class="h-10 w-10 bg-purple-500/20 rounded-full flex items-center justify-center">
+                    <i class="fas fa-rss text-purple-500 text-xs"></i>
+                </div>
+            </div>
+
         </div>
-    </section>
+    </main>
 
-    <section id="projets" class="py-24 px-6 bg-white/[0.01]">
-        <div class="max-w-7xl mx-auto">
-            <h2 class="text-4xl font-extrabold section-title text-white">Projets Réalisés</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="cyber-card p-8 rounded-2xl flex flex-col">
-                    <i class="fas fa-server text-purple-500 mb-4 text-2xl"></i>
-                    <h3 class="text-xl font-bold mb-4 text-white">Serveur AD DS</h3>
-                    <p class="text-sm text-cyber-sub mb-6 flex-grow leading-relaxed">Infrastructure Windows Server 2022 : GPO, DNS, DHCP et gestion fine des habilitations.</p>
-                    <a href="#" class="text-purple-400 font-bold hover:text-white transition flex items-center text-xs uppercase tracking-wider">
-                        Rapport E5 <i class="fas fa-chevron-right ml-2 text-[10px]"></i>
-                    </a>
-                </div>
-
-                <div class="cyber-card p-8 rounded-2xl flex flex-col">
-                    <i class="fas fa-network-wired text-purple-500 mb-4 text-2xl"></i>
-                    <h3 class="text-xl font-bold mb-4 text-white">VLAN & Routing</h3>
-                    <p class="text-sm text-cyber-sub mb-6 flex-grow leading-relaxed">Segmentation réseau L2/L3 sur Cisco Catalyst pour optimiser la sécurité inter-services.</p>
-                    <a href="#" class="text-purple-400 font-bold hover:text-white transition flex items-center text-xs uppercase tracking-wider">
-                        Rapport E5 <i class="fas fa-chevron-right ml-2 text-[10px]"></i>
-                    </a>
-                </div>
-
-                <div class="cyber-card p-8 rounded-2xl flex flex-col border-dashed border-purple-900/50 flex items-center justify-center text-center opacity-60">
-                    <i class="fas fa-lock text-purple-900 mb-2 text-xl"></i>
-                    <span class="text-xs text-purple-900 uppercase font-bold">Projets suivants</span>
-                    <span class="text-[10px] text-cyber-sub">En cours d'intégration</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="documents" class="py-24 px-6 bg-cyber-bg relative">
-        <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-8">
-            <div class="md:col-span-1">
-                <h2 class="text-4xl font-extrabold section-title text-white">Synthèse</h2>
-                <p class="text-cyber-sub text-lg">Retrouvez les documents administratifs indispensables pour le jury.</p>
-            </div>
-            <div class="md:col-span-2 grid md:grid-cols-2 gap-6">
-                <div class="cyber-card p-8 rounded-2xl flex flex-col justify-between group">
-                    <div>
-                        <i class="fas fa-clipboard-check text-purple-500 text-3xl mb-4 group-hover:scale-110 transition"></i>
-                        <h4 class="text-xl font-bold text-white mb-2">Fiche Synthèse</h4>
-                        <p class="text-sm text-cyber-sub mb-6 leading-relaxed">Le récapitulatif complet de mes compétences professionnelles validées durant le BTS.</p>
-                    </div>
-                    <a href="#" class="bg-purple-600/20 text-purple-400 px-4 py-2 rounded-lg text-center font-bold hover:bg-purple-600 hover:text-white transition">Accéder au PDF</a>
-                </div>
-                <div class="cyber-card p-8 rounded-2xl flex flex-col justify-between group">
-                    <div>
-                        <i class="fas fa-user-check text-purple-500 text-3xl mb-4 group-hover:scale-110 transition"></i>
-                        <h4 class="text-xl font-bold text-white mb-2">Attestations</h4>
-                        <p class="text-sm text-cyber-sub mb-6 leading-relaxed">Justificatifs des périodes de stage effectuées à l'INSTA Paris et en entreprise.</p>
-                    </div>
-                    <a href="#" class="bg-purple-600/20 text-purple-400 px-4 py-2 rounded-lg text-center font-bold hover:bg-purple-600 hover:text-white transition">Accéder au PDF</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer class="py-12 border-t border-cyber-border bg-black/40 text-center">
-        <p class="text-cyber-sub text-sm">Portfolio LMK.SISR &copy; 2026</p>
-        <p class="text-[10px] text-purple-900 font-mono mt-2 tracking-widest uppercase italic">Secure Deployment Ready</p>
+    <footer class="py-20 text-center text-gray-600 text-xs font-mono tracking-widest uppercase">
+        LMK // Portfolio SISR // 2026
     </footer>
 
 </body>
