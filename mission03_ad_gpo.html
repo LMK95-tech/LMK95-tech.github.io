@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission 03 — Active Directory & GPO | BTS SIO SISR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cy_dark:  '#05111c',
+                        cy_card:  '#0a1f30',
+                        cy_cyan:  '#00d4ff',
+                        cy_green: '#00dc82',
+                        cy_purple:'#a855f7',
+                        cy_red:   '#ef4444',
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * { box-sizing: border-box; }
+        body { background-color: #05111c; color: #e2e8f0; font-family: 'Outfit', sans-serif; }
+
+        /* ── Sidebar ── */
+        #sidebar { width: 272px; min-width: 272px; background: #0a1f30; border-right: 1px solid rgba(0,212,255,0.12); display: flex; flex-direction: column; height: 100vh; position: sticky; top: 0; overflow-y: auto; }
+        .nav-group { font-size: 10px; text-transform: uppercase; letter-spacing: .12em; color: #00d4ff; font-weight: 700; padding: 0 16px; margin: 20px 0 6px; }
+        .nav-item { display: flex; align-items: center; gap: 8px; padding: 8px 16px; font-size: 12px; font-weight: 500; color: #94a3b8; cursor: pointer; border-left: 2px solid transparent; transition: all .2s; }
+        .nav-item:hover { background: rgba(255,255,255,.04); color: #fff; }
+        .nav-item.active { border-left-color: #00d4ff; background: rgba(0,212,255,.06); color: #00d4ff; }
+
+        /* ── Sections ── */
+        .doc-section { display: none; }
+        .doc-section.active { display: block; }
+
+        /* ── Typography ── */
+        .doc-h2 { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 28px; padding-bottom: 14px; border-bottom: 1px solid rgba(148,163,184,.2); display: flex; align-items: center; gap: 10px; }
+        .doc-h3 { font-size: 16px; font-weight: 700; color: #00d4ff; margin: 24px 0 10px; display: flex; align-items: center; gap: 8px; }
+        .doc-p { font-size: 14px; color: #94a3b8; line-height: 1.8; margin-bottom: 14px; text-align: justify; }
+        .num { color: rgba(148,163,184,.35); margin-right: 6px; }
+
+        /* ── CLI Terminal ── */
+        .cli-box { background: #000d18; border: 1px solid rgba(0,212,255,.2); border-radius: 8px; overflow: hidden; font-family: 'JetBrains Mono', monospace; }
+        .cli-bar { background: #0d2035; padding: 8px 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid rgba(0,212,255,.1); }
+        .cli-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .cli-title { font-size: 11px; color: #64748b; margin-left: auto; }
+        .cli-body { padding: 16px; font-size: 12px; line-height: 1.8; overflow-x: auto; }
+        .cli-prompt { color: #00d4ff; }
+        .cli-cmd    { color: #e2e8f0; }
+        .cli-comment { color: #3d5a6e; }
+        .cli-key    { color: #a855f7; }
+        .cli-val    { color: #00dc82; }
+        .cli-warn   { color: #f59e0b; }
+
+        /* ── Cards ── */
+        .info-card { background: #0a1f30; border: 1px solid rgba(255,255,255,.05); border-radius: 10px; padding: 20px; }
+        .danger-card { background: rgba(239,68,68,.07); border: 1px solid rgba(239,68,68,.25); border-radius: 10px; padding: 20px; }
+        .success-card { background: rgba(0,220,130,.07); border: 1px solid rgba(0,220,130,.25); border-radius: 10px; padding: 20px; }
+        .warn-card { background: rgba(245,158,11,.07); border: 1px solid rgba(245,158,11,.25); border-radius: 10px; padding: 20px; }
+
+        /* ── Table ── */
+        .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .data-table th { background: #0d2035; color: #94a3b8; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; padding: 10px 16px; text-align: left; }
+        .data-table td { padding: 10px 16px; border-bottom: 1px solid rgba(148,163,184,.08); color: #cbd5e1; }
+        .data-table tr:hover td { background: rgba(0,212,255,.03); }
+        .badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; }
+
+        /* ── Interactive Terminal ── */
+        #live-terminal { background: #000d18; border: 1px solid rgba(0,220,130,.25); border-radius: 8px; padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px; height: 220px; overflow-y: auto; }
+        .test-btn { padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all .2s; border: 1px solid; }
+        .test-btn-green  { background: rgba(0,220,130,.1); border-color: rgba(0,220,130,.4); color: #00dc82; }
+        .test-btn-green:hover  { background: rgba(0,220,130,.2); }
+        .test-btn-cyan   { background: rgba(0,212,255,.1); border-color: rgba(0,212,255,.4); color: #00d4ff; }
+        .test-btn-cyan:hover   { background: rgba(0,212,255,.2); }
+        .test-btn-orange { background: rgba(245,158,11,.1); border-color: rgba(245,158,11,.4); color: #f59e0b; }
+        .test-btn-orange:hover { background: rgba(245,158,11,.2); }
+        .test-btn-purple { background: rgba(168,85,247,.1); border-color: rgba(168,85,247,.4); color: #a855f7; }
+        .test-btn-purple:hover { background: rgba(168,85,247,.2); }
+
+        /* ── AD Tree Diagram ── */
+        .ad-tree { font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 2; }
+        .ad-tree-root { color: #00d4ff; font-weight: 700; }
+        .ad-tree-ou { color: #a855f7; }
+        .ad-tree-user { color: #00dc82; }
+        .ad-tree-gpo { color: #f59e0b; }
+        .ad-tree-indent { color: rgba(148,163,184,.3); }
+
+        /* ── Stat cards ── */
+        .stat-card { background: #0a1f30; border: 1px solid rgba(255,255,255,.06); border-radius: 10px; padding: 20px; text-align: center; }
+        .stat-num { font-size: 32px; font-weight: 900; }
+        .stat-lbl { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: .07em; margin-top: 4px; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(0,212,255,.3); border-radius: 4px; }
+
+        /* Reveal */
+        .reveal { animation: fadeUp .6s ease both; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+
+<body class="flex" style="height:100vh; overflow:hidden;">
+
+<!-- ══════════════════════════════════════
+     SIDEBAR
+══════════════════════════════════════ -->
+<aside id="sidebar">
+    <!-- Logo -->
+    <div style="padding:20px 16px; border-bottom:1px solid rgba(0,212,255,.1);">
+        <div style="display:flex; align-items:center; gap:12px;">
+            <div style="width:38px;height:38px;background:#a855f7;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;box-shadow:0 0 18px rgba(168,85,247,.4);">
+                <i class="fa-solid fa-building-columns"></i>
+            </div>
+            <div>
+                <div style="font-size:13px;font-weight:700;color:#fff;">BTS SIO — SISR</div>
+                <div style="font-size:10px;color:#64748b;">Épreuve E5 · SESSION 2026</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mission badge -->
+    <div style="padding:14px 16px; border-bottom:1px solid rgba(0,212,255,.07);">
+        <div style="background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.3);border-radius:8px;padding:10px 14px;">
+            <div style="font-size:10px;color:#a855f7;font-weight:700;letter-spacing:.1em;text-transform:uppercase;">Mission 03</div>
+            <div style="font-size:13px;font-weight:700;color:#fff;margin-top:2px;">Active Directory & GPO</div>
+            <div style="font-size:10px;color:#64748b;margin-top:2px;">Campus Numérique · campus.lan</div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav style="flex:1;padding:8px 0;">
+        <div class="nav-group">Documentation</div>
+        <div class="nav-item active" data-section="analyse" onclick="navigate(this)">
+            <i class="fa-solid fa-magnifying-glass" style="font-size:11px;width:14px;"></i>
+            Analyse & Contexte
+        </div>
+        <div class="nav-item" data-section="conception" onclick="navigate(this)">
+            <i class="fa-solid fa-diagram-project" style="font-size:11px;width:14px;"></i>
+            Conception AD
+        </div>
+        <div class="nav-item" data-section="mise-en-oeuvre" onclick="navigate(this)">
+            <i class="fa-solid fa-gears" style="font-size:11px;width:14px;"></i>
+            Mise en œuvre
+        </div>
+        <div class="nav-item" data-section="gpo" onclick="navigate(this)">
+            <i class="fa-solid fa-shield-halved" style="font-size:11px;width:14px;"></i>
+            Configuration GPO
+        </div>
+        <div class="nav-item" data-section="validation" onclick="navigate(this)">
+            <i class="fa-solid fa-circle-check" style="font-size:11px;width:14px;"></i>
+            Validation & Tests
+        </div>
+        <div class="nav-item" data-section="conclusion" onclick="navigate(this)">
+            <i class="fa-solid fa-flag-checkered" style="font-size:11px;width:14px;"></i>
+            Conclusion & Bilan
+        </div>
+
+        <div class="nav-group" style="margin-top:16px;">Référence rapide</div>
+
+        <div style="margin:8px 12px;background:#000d18;border:1px solid rgba(0,212,255,.12);border-radius:6px;padding:10px 12px;font-family:'JetBrains Mono',monospace;">
+            <div style="font-size:9px;color:#475569;margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em;">Domaine</div>
+            <div style="font-size:11px;color:#a855f7;font-weight:700;">campus.lan</div>
+            <div style="font-size:9px;color:#475569;margin-top:8px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em;">DC Principal</div>
+            <div style="font-size:11px;color:#00d4ff;">SRV-AD</div>
+            <div style="font-size:9px;color:#475569;margin-top:8px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em;">OS Serveur</div>
+            <div style="font-size:11px;color:#00dc82;">Windows Server 2022</div>
+            <div style="font-size:9px;color:#475569;margin-top:8px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em;">Comptes</div>
+            <div style="font-size:11px;color:#f59e0b;">200 étudiants · 50 profs</div>
+        </div>
+    </nav>
+
+    <!-- Footer -->
+    <div style="padding:12px 16px;border-top:1px solid rgba(0,212,255,.07);font-size:10px;color:#475569;">
+        <div style="display:flex;align-items:center;gap:6px;">
+            <div style="width:6px;height:6px;background:#a855f7;border-radius:50%;box-shadow:0 0 6px #a855f7;"></div>
+            Domaine campus.lan · AD DS Actif
+        </div>
+        <div style="margin-top:4px;color:#334155;">Administration Systèmes Windows</div>
+    </div>
+</aside>
+
+<!-- ══════════════════════════════════════
+     MAIN CONTENT
+══════════════════════════════════════ -->
+<main style="flex:1;overflow-y:auto;padding:40px 48px;max-width:900px;">
+
+    <!-- ── SECTION 1 : ANALYSE ── -->
+    <section id="analyse" class="doc-section active reveal">
+        <div class="doc-h2">
+            <i class="fa-solid fa-magnifying-glass" style="color:#a855f7;font-size:20px;"></i>
+            <span><span class="num">01</span>Analyse & Contexte</span>
+        </div>
+
+        <div class="doc-h3"><i class="fa-solid fa-triangle-exclamation" style="color:#ef4444;"></i> 1.1 — Situation initiale : gestion locale non maîtrisée</div>
+        <p class="doc-p">
+            Le Campus Numérique gère <strong style="color:#fff;">200 étudiants</strong> et une équipe de formateurs répartis sur plusieurs salles de formation équipées de postes Windows 10/11 Pro. Avant l'intervention, chaque poste fonctionnait en mode <strong style="color:#f59e0b;">workgroup (groupe de travail)</strong> : les comptes utilisateurs étaient créés localement, machine par machine, sans aucune supervision centralisée.
+        </p>
+
+        <div class="danger-card" style="margin-bottom:20px;">
+            <div style="font-size:12px;font-weight:700;color:#ef4444;margin-bottom:12px;text-transform:uppercase;letter-spacing:.08em;"><i class="fa-solid fa-circle-xmark"></i> &nbsp;Risques critiques identifiés</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:6px;padding:10px 12px;">
+                    <div style="font-size:11px;font-weight:700;color:#ef4444;margin-bottom:4px;"><i class="fa-solid fa-user-xmark"></i> &nbsp;Prolifération comptes locaux</div>
+                    <div style="font-size:11px;color:#94a3b8;">Environnement vierge à chaque changement de poste</div>
+                </div>
+                <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:6px;padding:10px 12px;">
+                    <div style="font-size:11px;font-weight:700;color:#ef4444;margin-bottom:4px;"><i class="fa-solid fa-unlock"></i> &nbsp;Absence de contrôle</div>
+                    <div style="font-size:11px;color:#94a3b8;">Accès libre au Panneau de config, terminal, logiciels</div>
+                </div>
+                <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:6px;padding:10px 12px;">
+                    <div style="font-size:11px;font-weight:700;color:#ef4444;margin-bottom:4px;"><i class="fa-solid fa-hard-drive"></i> &nbsp;Stockage anarchique</div>
+                    <div style="font-size:11px;color:#94a3b8;">Travaux sur postes locaux — risque permanent de perte</div>
+                </div>
+                <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:6px;padding:10px 12px;">
+                    <div style="font-size:11px;font-weight:700;color:#ef4444;margin-bottom:4px;"><i class="fa-solid fa-clock"></i> &nbsp;Charge admin colossale</div>
+                    <div style="font-size:11px;color:#94a3b8;">Modification politique = intervention sur 200 postes</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="doc-h3"><i class="fa-solid fa-lightbulb" style="color:#00d4ff;"></i> 1.2 — Solution retenue : Active Directory + GPO</div>
+        <p class="doc-p">
+            L'installation du rôle <strong style="color:#fff;">Active Directory Domain Services (AD DS)</strong> sur un serveur dédié sous Windows Server 2022, promu en contrôleur de domaine (DC) du domaine <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#a855f7;font-family:'JetBrains Mono',monospace;">campus.lan</code>. Les Stratégies de Groupe <strong style="color:#fff;">(GPO)</strong> appliquent automatiquement les restrictions pédagogiques à la connexion.
+        </p>
+
+        <div class="success-card" style="margin-bottom:20px;">
+            <div style="font-size:12px;font-weight:700;color:#00dc82;margin-bottom:12px;text-transform:uppercase;letter-spacing:.08em;"><i class="fa-solid fa-circle-check"></i> &nbsp;Bénéfices de la solution AD DS</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+                <div style="display:flex;align-items:flex-start;gap:10px;">
+                    <i class="fa-solid fa-chevron-right" style="color:#00dc82;font-size:10px;margin-top:4px;"></i>
+                    <div style="font-size:13px;color:#94a3b8;"><strong style="color:#fff;">Authentification centralisée</strong> — un seul compte AD par utilisateur, valable sur tous les postes du domaine.</div>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:10px;">
+                    <i class="fa-solid fa-chevron-right" style="color:#00dc82;font-size:10px;margin-top:4px;"></i>
+                    <div style="font-size:13px;color:#94a3b8;"><strong style="color:#fff;">GPO par héritage OU</strong> — restrictions appliquées automatiquement à chaque objet de l'OU concernée.</div>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:10px;">
+                    <i class="fa-solid fa-chevron-right" style="color:#00dc82;font-size:10px;margin-top:4px;"></i>
+                    <div style="font-size:13px;color:#94a3b8;"><strong style="color:#fff;">Lecteur réseau mappé</strong> — dossier Devoirs accessible depuis n'importe quel poste via le lecteur <code style="background:#000d18;padding:1px 6px;border-radius:3px;color:#f59e0b;font-family:'JetBrains Mono',monospace;">S:</code>.</div>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:10px;">
+                    <i class="fa-solid fa-chevron-right" style="color:#00dc82;font-size:10px;margin-top:4px;"></i>
+                    <div style="font-size:13px;color:#94a3b8;"><strong style="color:#fff;">Séparation des droits</strong> — formateurs avec héritage GPO désactivé, aucune restriction appliquée.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="doc-h3"><i class="fa-solid fa-table-list" style="color:#00d4ff;"></i> 1.3 — Architecture du domaine campus.lan</div>
+        <div style="background:#000d18;border:1px solid rgba(0,212,255,.15);border-radius:8px;overflow:hidden;margin-bottom:20px;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Objet AD</th>
+                        <th>Valeur</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><i class="fa-solid fa-globe" style="color:#a855f7;margin-right:8px;"></i>Nom de domaine</td>
+                        <td><code style="background:rgba(168,85,247,.1);padding:2px 8px;border-radius:4px;color:#a855f7;font-family:'JetBrains Mono',monospace;">campus.lan (DC=campus, DC=lan)</code></td>
+                    </tr>
+                    <tr>
+                        <td><i class="fa-solid fa-server" style="color:#00d4ff;margin-right:8px;"></i>Contrôleur de domaine</td>
+                        <td><code style="background:rgba(0,212,255,.08);padding:2px 8px;border-radius:4px;color:#00d4ff;font-family:'JetBrains Mono',monospace;">SRV-AD (Windows Server 2022)</code></td>
+                    </tr>
+                    <tr>
+                        <td><i class="fa-solid fa-sitemap" style="color:#00dc82;margin-right:8px;"></i>Structure OU</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:12px;">
+                            <span style="color:#00dc82;">OU=ETUDIANTS</span> &nbsp;·&nbsp; <span style="color:#00d4ff;">OU=FORMATEURS</span> &nbsp;·&nbsp; <span style="color:#f59e0b;">OU=ADMINISTRATION</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><i class="fa-solid fa-users" style="color:#f59e0b;margin-right:8px;"></i>Groupes de sécurité</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#cbd5e1;">GRP_ETUDIANTS · GRP_FORMATEURS · GRP_ADMINS</td>
+                    </tr>
+                    <tr>
+                        <td><i class="fa-solid fa-shield-halved" style="color:#a855f7;margin-right:8px;"></i>GPO liées</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#cbd5e1;">GPO_FOND_ECRAN · GPO_RESTRICTIONS · GPO_LECTEUR_DEVOIRS</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ── SECTION 2 : CONCEPTION ── -->
+    <section id="conception" class="doc-section">
+        <div class="doc-h2">
+            <i class="fa-solid fa-diagram-project" style="color:#a855f7;font-size:20px;"></i>
+            <span><span class="num">02</span>Conception de l'arborescence AD</span>
+        </div>
+
+        <div class="doc-h3"><i class="fa-solid fa-tree" style="color:#00d4ff;"></i> 2.1 — Arborescence OU du domaine campus.lan</div>
+        <p class="doc-p">L'arborescence Active Directory est conçue selon le principe de <strong style="color:#fff;">séparation des responsabilités</strong>. Chaque Unité d'Organisation (OU) regroupe des objets de même nature, permettant l'application ciblée des GPO par héritage.</p>
+
+        <div class="cli-box" style="margin-bottom:20px;">
+            <div class="cli-bar">
+                <div class="cli-dot" style="background:#ef4444;"></div>
+                <div class="cli-dot" style="background:#f59e0b;"></div>
+                <div class="cli-dot" style="background:#00dc82;"></div>
+                <span class="cli-title">ADUC — Arborescence campus.lan</span>
+            </div>
+            <div class="cli-body ad-tree">
+                <div class="ad-tree-root">🌐 campus.lan (DC=campus, DC=lan)</div>
+                <div style="padding-left:16px;">
+                    <div><span class="ad-tree-indent">├──</span> <i class="fa-solid fa-folder" style="color:#a855f7;"></i> <span class="ad-tree-ou">OU=ETUDIANTS</span> <span style="color:#475569;">← GPO_RESTRICTIONS appliquée</span></div>
+                    <div style="padding-left:20px;">
+                        <div><span class="ad-tree-indent">├──</span> <i class="fa-solid fa-user" style="color:#00dc82;font-size:10px;"></i> <span class="ad-tree-user">Chevalier.Thomas</span></div>
+                        <div><span class="ad-tree-indent">├──</span> <i class="fa-solid fa-user" style="color:#00dc82;font-size:10px;"></i> <span class="ad-tree-user">Martin.Alice</span></div>
+                        <div><span class="ad-tree-indent">├──</span> <i class="fa-solid fa-user" style="color:#00dc82;font-size:10px;"></i> <span class="ad-tree-user">Dubois.Bob</span></div>
+                        <div><span class="ad-tree-indent">└──</span> <span style="color:#475569;font-size:11px;">... 197 autres comptes étudiants</span></div>
+                    </div>
+                    <div><span class="ad-tree-indent">├──</span> <i class="fa-solid fa-folder" style="color:#00d4ff;"></i> <span style="color:#00d4ff;">OU=FORMATEURS</span> <span style="color:#475569;">← Héritage GPO désactivé</span></div>
+                    <div style="padding-left:20px;">
+                        <div><span class="ad-tree-indent">├──</span> <i class="fa-solid fa-user-tie" style="color:#00d4ff;font-size:10px;"></i> <span style="color:#00d4ff;">Dupont.Prof</span></div>
+                        <div><span class="ad-tree-indent">└──</span> <span style="color:#475569;font-size:11px;">... 50 comptes formateurs</span></div>
+                    </div>
+                    <div><span class="ad-tree-indent">└──</span> <i class="fa-solid fa-folder" style="color:#f59e0b;"></i> <span style="color:#f59e0b;">OU=ADMINISTRATION</span></div>
+                    <div style="padding-left:20px;">
+                        <div><span class="ad-tree-indent">└──</span> <i class="fa-solid fa-user-gear" style="color:#f59e0b;font-size:10px;"></i> <span style="color:#f59e0b;">admin.campus</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="doc-h3"><i class="fa-solid fa-shield-halved" style="color:#00d4ff;"></i> 2.2 — Plan des GPO et périmètre d'application</div>
+        <p class="doc-p">Chaque GPO est liée à une OU spécifique. Le mécanisme d'<strong style="color:#fff;">héritage GPO</strong> garantit que toute politique appliquée à <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#a855f7;font-family:'JetBrains Mono',monospace;">OU=ETUDIANTS</code> est automatiquement héritée par les comptes qu'elle contient.</p>
+
+        <div style="background:#000d18;border:1px solid rgba(0,212,255,.15);border-radius:8px;overflow:hidden;margin-bottom:20px;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Nom GPO</th>
+                        <th>OU liée</th>
+                        <th>Paramètre</th>
+                        <th>Valeur</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#f59e0b;">GPO_FOND_ECRAN</code></td>
+                        <td><span style="color:#a855f7;font-size:11px;">OU=Etudiants</span></td>
+                        <td style="font-size:12px;color:#94a3b8;">Fond d'écran imposé</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#cbd5e1;">\\SRVAD\sysvol\fond_campus.jpg</td>
+                        <td><span class="badge" style="background:rgba(0,220,130,.15);color:#00dc82;border:1px solid rgba(0,220,130,.3);">Activé</span></td>
+                    </tr>
+                    <tr>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#f59e0b;">GPO_RESTRICTIONS</code></td>
+                        <td><span style="color:#a855f7;font-size:11px;">OU=Etudiants</span></td>
+                        <td style="font-size:12px;color:#94a3b8;">Masquer Panneau de configuration</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#cbd5e1;">NoControlPanel = 1</td>
+                        <td><span class="badge" style="background:rgba(0,220,130,.15);color:#00dc82;border:1px solid rgba(0,220,130,.3);">Activé</span></td>
+                    </tr>
+                    <tr>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#f59e0b;">GPO_RESTRICTIONS</code></td>
+                        <td><span style="color:#a855f7;font-size:11px;">OU=Etudiants</span></td>
+                        <td style="font-size:12px;color:#94a3b8;">Accès invite de commandes</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#cbd5e1;">DisableCMD = 1</td>
+                        <td><span class="badge" style="background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3);">Bloqué</span></td>
+                    </tr>
+                    <tr>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#f59e0b;">GPO_LECTEUR_DEVOIRS</code></td>
+                        <td><span style="color:#a855f7;font-size:11px;">OU=Etudiants</span></td>
+                        <td style="font-size:12px;color:#94a3b8;">Mappage lecteur réseau S:</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#cbd5e1;">\\SRV-AD\Devoirs</td>
+                        <td><span class="badge" style="background:rgba(0,220,130,.15);color:#00dc82;border:1px solid rgba(0,220,130,.3);">Activé</span></td>
+                    </tr>
+                    <tr>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00d4ff;">GPO_FORMATEURS</code></td>
+                        <td><span style="color:#00d4ff;font-size:11px;">OU=Formateurs</span></td>
+                        <td style="font-size:12px;color:#94a3b8;">Droits étendus (pas de restrictions)</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#cbd5e1;">Héritage désactivé</td>
+                        <td><span class="badge" style="background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3);">Exempt</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="doc-h3"><i class="fa-solid fa-key" style="color:#00d4ff;"></i> 2.3 — Politique de mot de passe domaine</div>
+        <div class="info-card">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+                <div style="text-align:center;padding:12px;background:#000d18;border-radius:8px;border:1px solid rgba(168,85,247,.2);">
+                    <div style="font-size:22px;font-weight:900;color:#a855f7;">12</div>
+                    <div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-top:4px;">Caractères min.</div>
+                </div>
+                <div style="text-align:center;padding:12px;background:#000d18;border-radius:8px;border:1px solid rgba(0,220,130,.2);">
+                    <div style="font-size:22px;font-weight:900;color:#00dc82;">42</div>
+                    <div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-top:4px;">Jours (expiration)</div>
+                </div>
+                <div style="text-align:center;padding:12px;background:#000d18;border-radius:8px;border:1px solid rgba(245,158,11,.2);">
+                    <div style="font-size:22px;font-weight:900;color:#f59e0b;">5</div>
+                    <div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-top:4px;">Tentatives avant verr.</div>
+                </div>
+            </div>
+            <div style="margin-top:12px;font-size:12px;color:#64748b;">
+                <i class="fa-solid fa-circle-info" style="color:#00d4ff;margin-right:6px;"></i>
+                Complexité activée : Majuscule + Minuscule + Chiffre + Caractère spécial obligatoires
+            </div>
+        </div>
+    </section>
+
+    <!-- ── SECTION 3 : MISE EN OEUVRE ── -->
+    <section id="mise-en-oeuvre" class="doc-section">
+        <div class="doc-h2">
+            <i class="fa-solid fa-gears" style="color:#a855f7;font-size:20px;"></i>
+            <span><span class="num">03</span>Mise en œuvre technique</span>
+        </div>
+
+        <div class="doc-h3"><i class="fa-solid fa-download" style="color:#00d4ff;"></i> 3.1 — Installation du rôle AD DS et promotion en DC</div>
+        <p class="doc-p">Le rôle <strong style="color:#fff;">Active Directory Domain Services</strong> est installé depuis le Gestionnaire de serveur via « Ajouter des rôles et fonctionnalités ». L'assistant de promotion configure le serveur en tant que nouveau contrôleur de domaine pour une nouvelle forêt <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#a855f7;font-family:'JetBrains Mono',monospace;">campus.lan</code>. Niveau fonctionnel fixé à <strong style="color:#fff;">Windows Server 2016</strong>.</p>
+
+        <div class="cli-box" style="margin-bottom:20px;">
+            <div class="cli-bar">
+                <div class="cli-dot" style="background:#ef4444;"></div>
+                <div class="cli-dot" style="background:#f59e0b;"></div>
+                <div class="cli-dot" style="background:#00dc82;"></div>
+                <span style="font-size:11px;color:#a855f7;margin-left:8px;font-weight:700;">PowerShell</span>
+                <span class="cli-title">Installation AD DS et promotion DC</span>
+            </div>
+            <div class="cli-body">
+                <div><span class="cli-comment"># Installation du rôle AD DS</span></div>
+                <div><span class="cli-prompt">PS C:\> </span><span class="cli-cmd">Install-WindowsFeature</span> <span class="cli-key">-Name</span> <span class="cli-val">AD-Domain-Services</span> <span class="cli-key">-IncludeManagementTools</span></div>
+                <div style="margin-top:10px;"><span class="cli-comment"># Promotion en contrôleur de domaine — Nouvelle forêt</span></div>
+                <div><span class="cli-prompt">PS C:\> </span><span class="cli-cmd">Install-ADDSForest</span> <span class="cli-cmd">`</span></div>
+                <div style="padding-left:20px;"><span class="cli-key">   -DomainName</span>        <span class="cli-val">"campus.lan"</span> <span class="cli-cmd">`</span></div>
+                <div style="padding-left:20px;"><span class="cli-key">   -DomainNetbiosName</span> <span class="cli-val">"CAMPUS"</span> <span class="cli-cmd">`</span></div>
+                <div style="padding-left:20px;"><span class="cli-key">   -ForestMode</span>        <span class="cli-val">WinThreshold</span> <span class="cli-cmd">`</span></div>
+                <div style="padding-left:20px;"><span class="cli-key">   -DomainMode</span>        <span class="cli-val">WinThreshold</span> <span class="cli-cmd">`</span></div>
+                <div style="padding-left:20px;"><span class="cli-key">   -InstallDns</span> <span class="cli-cmd">`</span></div>
+                <div style="padding-left:20px;"><span class="cli-key">   -Force</span></div>
+                <div style="margin-top:10px;"><span class="cli-comment"># → Le serveur redémarre automatiquement après promotion</span></div>
+                <div style="margin-top:8px;"><span class="cli-warn">WARNING: Windows Server will reboot after installation</span></div>
+                <div><span class="cli-val">✓ ADDSFOREST : La forêt campus.lan a été créée avec succès.</span></div>
+            </div>
+        </div>
+
+        <div class="doc-h3"><i class="fa-solid fa-sitemap" style="color:#00d4ff;"></i> 3.2 — Création des OUs et des comptes utilisateurs</div>
+        <p class="doc-p">Depuis la console <strong style="color:#fff;">Utilisateurs et ordinateurs Active Directory (ADUC)</strong>, trois Unités d'Organisation sont créées sous la racine du domaine. Les comptes étudiants sont créés dans <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#a855f7;font-family:'JetBrains Mono',monospace;">OU=ETUDIANTS</code> et ajoutés au groupe de sécurité <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#00dc82;font-family:'JetBrains Mono',monospace;">GRP_ETUDIANTS</code>.</p>
+
+        <div class="cli-box" style="margin-bottom:20px;">
+            <div class="cli-bar">
+                <div class="cli-dot" style="background:#ef4444;"></div>
+                <div class="cli-dot" style="background:#f59e0b;"></div>
+                <div class="cli-dot" style="background:#00dc82;"></div>
+                <span style="font-size:11px;color:#a855f7;margin-left:8px;font-weight:700;">PowerShell</span>
+                <span class="cli-title">Création des OUs et d'un compte étudiant</span>
+            </div>
+            <div class="cli-body">
+                <div><span class="cli-comment"># Création des Unités d'Organisation</span></div>
+                <div><span class="cli-prompt">PS C:\> </span><span class="cli-cmd">New-ADOrganizationalUnit</span> <span class="cli-key">-Name</span> <span class="cli-val">"ETUDIANTS"</span>      <span class="cli-key">-Path</span> <span class="cli-val">"DC=campus,DC=lan"</span></div>
+                <div><span class="cli-prompt">PS C:\> </span><span class="cli-cmd">New-ADOrganizationalUnit</span> <span class="cli-key">-Name</span> <span class="cli-val">"FORMATEURS"</span>     <span class="cli-key">-Path</span> <span class="cli-val">"DC=campus,DC=lan"</span></div>
+                <div><span class="cli-prompt">PS C:\> </span><span class="cli-cmd">New-ADOrganizationalUnit</span> <span class="cli-key">-Name</span> <span class="cli-val">"ADMINISTRATION"</span> <span class="cli-key">-Path</span> <span class="cli-val">"DC=campus,DC=lan"</span></div>
+                <div style="margin-top:10px;"><span class="cli-comment"># Création d'un compte étudiant</span></div>
+                <div><span class="cli-prompt">PS C:\> </span><span class="cli-cmd">New-ADUser</span> <span class="cli-key">-Name</span> <span class="cli-val">"Chevalier.Thomas"</span> <span class="cli-cmd">`</span></div>
+                <div style="padding-left:20px;"><span class="cli-key">   -Path</span>            <span class="cli-val">"OU=ETUDIANTS,DC=campus,DC=lan"</span> <span class="cli-cmd">`</span></div>
+                <div style="padding-left:20px;"><span class="cli-key">   -AccountPassword</span> <span class="cli-val">(ConvertTo-SecureString "Campus@2026!" -AsPlainText -Force)</span> <span class="cli-cmd">`</span></div>
+                <div style="padding-left:20px;"><span class="cli-key">   -Enabled</span>         <span class="cli-val">$true</span></div>
+                <div style="margin-top:10px;"><span class="cli-comment"># Ajout au groupe de sécurité</span></div>
+                <div><span class="cli-prompt">PS C:\> </span><span class="cli-cmd">Add-ADGroupMember</span> <span class="cli-key">-Identity</span> <span class="cli-val">"GRP_ETUDIANTS"</span> <span class="cli-key">-Members</span> <span class="cli-val">"Chevalier.Thomas"</span></div>
+                <div style="margin-top:8px;"><span class="cli-val">✓ Compte créé et ajouté au groupe GRP_ETUDIANTS</span></div>
+            </div>
+        </div>
+
+        <div class="doc-h3"><i class="fa-solid fa-laptop" style="color:#00d4ff;"></i> 3.3 — Jonction des postes clients au domaine</div>
+        <p class="doc-p">Sur chaque poste client Windows 10/11 Pro, la jonction au domaine est effectuée via Paramètres → Système → À propos → Domaine. Après redémarrage, le poste est visible dans le conteneur <strong style="color:#fff;">Computers</strong> de l'ADUC.</p>
+
+        <div class="cli-box" style="margin-bottom:20px;">
+            <div class="cli-bar">
+                <div class="cli-dot" style="background:#ef4444;"></div>
+                <div class="cli-dot" style="background:#f59e0b;"></div>
+                <div class="cli-dot" style="background:#00dc82;"></div>
+                <span style="font-size:11px;color:#a855f7;margin-left:8px;font-weight:700;">PowerShell</span>
+                <span class="cli-title">Jonction au domaine (depuis le client)</span>
+            </div>
+            <div class="cli-body">
+                <div><span class="cli-comment"># Jonction au domaine campus.lan</span></div>
+                <div><span class="cli-prompt">PS C:\> </span><span class="cli-cmd">Add-Computer</span> <span class="cli-key">-DomainName</span> <span class="cli-val">"campus.lan"</span> <span class="cli-cmd">`</span></div>
+                <div style="padding-left:20px;"><span class="cli-key">   -Credential</span> <span class="cli-val">(Get-Credential)</span> <span class="cli-cmd">`</span></div>
+                <div style="padding-left:20px;"><span class="cli-key">   -Restart</span></div>
+                <div style="margin-top:10px;"><span class="cli-comment"># Vérification post-jonction</span></div>
+                <div><span class="cli-prompt">PS C:\> </span><span class="cli-val">(Get-WmiObject -Class Win32_ComputerSystem).Domain</span></div>
+                <div><span class="cli-val">campus.lan</span></div>
+                <div style="margin-top:8px;"><span class="cli-val">✓ Poste joint au domaine campus.lan avec succès</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── SECTION 4 : GPO ── -->
+    <section id="gpo" class="doc-section">
+        <div class="doc-h2">
+            <i class="fa-solid fa-shield-halved" style="color:#a855f7;font-size:20px;"></i>
+            <span><span class="num">04</span>Configuration des GPO</span>
+        </div>
+
+        <div class="doc-h3"><i class="fa-solid fa-plus" style="color:#00d4ff;"></i> 4.1 — Création et liaison des GPO</div>
+        <p class="doc-p">Les stratégies de groupe sont créées depuis la console <strong style="color:#fff;">Gestion des stratégies de groupe (GPMC)</strong> et liées à <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#a855f7;font-family:'JetBrains Mono',monospace;">OU=ETUDIANTS</code>. Par mécanisme d'héritage, toutes les GPO liées s'appliquent automatiquement à chaque compte placé dans cette OU.</p>
+
+        <div class="cli-box" style="margin-bottom:20px;">
+            <div class="cli-bar">
+                <div class="cli-dot" style="background:#ef4444;"></div>
+                <div class="cli-dot" style="background:#f59e0b;"></div>
+                <div class="cli-dot" style="background:#00dc82;"></div>
+                <span style="font-size:11px;color:#a855f7;margin-left:8px;font-weight:700;">PowerShell</span>
+                <span class="cli-title">Création et liaison des GPO pédagogiques</span>
+            </div>
+            <div class="cli-body">
+                <div><span class="cli-comment"># Créer la GPO de restrictions pédagogiques</span></div>
+                <div><span class="cli-prompt">PS C:\> </span><span class="cli-cmd">New-GPO</span> <span class="cli-key">-Name</span> <span class="cli-val">"GPO_RESTRICTIONS_PEDAGOGIQUES"</span></div>
+                <div style="margin-top:8px;"><span class="cli-comment"># Lier la GPO à l'OU Etudiants</span></div>
+                <div><span class="cli-prompt">PS C:\> </span><span class="cli-cmd">New-GPLink</span> <span class="cli-key">-Name</span> <span class="cli-val">"GPO_RESTRICTIONS_PEDAGOGIQUES"</span> <span class="cli-cmd">`</span></div>
+                <div style="padding-left:20px;"><span class="cli-key">   -Target</span> <span class="cli-val">"OU=ETUDIANTS,DC=campus,DC=lan"</span></div>
+                <div style="margin-top:8px;"><span class="cli-comment"># Paramètre : bloquer le Panneau de configuration</span></div>
+                <div><span class="cli-prompt">PS C:\> </span><span class="cli-cmd">Set-GPRegistryValue</span> <span class="cli-key">-Name</span> <span class="cli-val">"GPO_RESTRICTIONS_PEDAGOGIQUES"</span> <span class="cli-cmd">`</span></div>
+                <div style="padding-left:20px;"><span class="cli-key">   -Key</span>       <span class="cli-val">"HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"</span> <span class="cli-cmd">`</span></div>
+                <div style="padding-left:20px;"><span class="cli-key">   -ValueName</span> <span class="cli-val">"NoControlPanel"</span> <span class="cli-key">-Type</span> <span class="cli-val">DWord</span> <span class="cli-key">-Value</span> <span class="cli-val">1</span></div>
+                <div style="margin-top:8px;"><span class="cli-comment"># Paramètre : bloquer CMD et PowerShell</span></div>
+                <div><span class="cli-prompt">PS C:\> </span><span class="cli-cmd">Set-GPRegistryValue</span> <span class="cli-key">-Name</span> <span class="cli-val">"GPO_RESTRICTIONS_PEDAGOGIQUES"</span> <span class="cli-cmd">`</span></div>
+                <div style="padding-left:20px;"><span class="cli-key">   -Key</span>       <span class="cli-val">"HKCU\Software\Policies\Microsoft\Windows\System"</span> <span class="cli-cmd">`</span></div>
+                <div style="padding-left:20px;"><span class="cli-key">   -ValueName</span> <span class="cli-val">"DisableCMD"</span> <span class="cli-key">-Type</span> <span class="cli-val">DWord</span> <span class="cli-key">-Value</span> <span class="cli-val">1</span></div>
+                <div style="margin-top:8px;"><span class="cli-val">✓ GPO_RESTRICTIONS_PEDAGOGIQUES créée et liée à OU=ETUDIANTS</span></div>
+            </div>
+        </div>
+
+        <div class="doc-h3"><i class="fa-solid fa-hard-drive" style="color:#00d4ff;"></i> 4.2 — Mappage du lecteur réseau S: (Devoirs)</div>
+        <p class="doc-p">Le lecteur réseau <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#f59e0b;font-family:'JetBrains Mono',monospace;">S:</code> est mappé automatiquement via la GPO <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#f59e0b;font-family:'JetBrains Mono',monospace;">GPO_LECTEUR_DEVOIRS</code> configurée dans <strong style="color:#fff;">Configuration utilisateur → Préférences → Paramètres Windows → Mappages de lecteurs</strong>. Aucune action manuelle n'est requise de la part de l'étudiant.</p>
+
+        <div class="cli-box" style="margin-bottom:20px;">
+            <div class="cli-bar">
+                <div class="cli-dot" style="background:#ef4444;"></div>
+                <div class="cli-dot" style="background:#f59e0b;"></div>
+                <div class="cli-dot" style="background:#00dc82;"></div>
+                <span style="font-size:11px;color:#a855f7;margin-left:8px;font-weight:700;">PowerShell</span>
+                <span class="cli-title">GPO Mappage Lecteur Réseau S:</span>
+            </div>
+            <div class="cli-body">
+                <div><span class="cli-comment"># Créer la GPO de mappage lecteur</span></div>
+                <div><span class="cli-prompt">PS C:\> </span><span class="cli-cmd">New-GPO</span> <span class="cli-key">-Name</span> <span class="cli-val">"GPO_LECTEUR_DEVOIRS"</span></div>
+                <div><span class="cli-prompt">PS C:\> </span><span class="cli-cmd">New-GPLink</span> <span class="cli-key">-Name</span> <span class="cli-val">"GPO_LECTEUR_DEVOIRS"</span> <span class="cli-key">-Target</span> <span class="cli-val">"OU=ETUDIANTS,DC=campus,DC=lan"</span></div>
+                <div style="margin-top:8px;"><span class="cli-comment"># Configuration via GPMC : Préférences > Mappages de lecteurs</span></div>
+                <div><span class="cli-comment"># Lecteur : S:  →  \\SRV-AD\Devoirs</span></div>
+                <div><span class="cli-comment"># Action  : Mettre à jour (Update)</span></div>
+                <div><span class="cli-comment"># Ciblage : GRP_ETUDIANTS uniquement</span></div>
+                <div style="margin-top:8px;"><span class="cli-comment"># Vérification côté client</span></div>
+                <div><span class="cli-prompt">C:\Users\Chevalier.Thomas&gt; </span><span class="cli-cmd">net use</span></div>
+                <div><span class="cli-val">OK    S:    \\SRV-AD\Devoirs    Microsoft Windows Network</span></div>
+                <div style="margin-top:8px;"><span class="cli-val">✓ Lecteur S: mappé sur \\SRV-AD\Devoirs — GPO active</span></div>
+            </div>
+        </div>
+
+        <div class="doc-h3"><i class="fa-solid fa-image" style="color:#00d4ff;"></i> 4.3 — GPO Fond d'écran imposé</div>
+
+        <div class="cli-box" style="margin-bottom:20px;">
+            <div class="cli-bar">
+                <div class="cli-dot" style="background:#ef4444;"></div>
+                <div class="cli-dot" style="background:#f59e0b;"></div>
+                <div class="cli-dot" style="background:#00dc82;"></div>
+                <span style="font-size:11px;color:#a855f7;margin-left:8px;font-weight:700;">PowerShell</span>
+                <span class="cli-title">GPO Fond d'écran bureau — Chemin SYSVOL</span>
+            </div>
+            <div class="cli-body">
+                <div><span class="cli-comment"># Paramètre Clé de registre — Fond d'écran imposé</span></div>
+                <div><span class="cli-prompt">PS C:\> </span><span class="cli-cmd">Set-GPRegistryValue</span> <span class="cli-key">-Name</span> <span class="cli-val">"GPO_FOND_ECRAN"</span> <span class="cli-cmd">`</span></div>
+                <div style="padding-left:20px;"><span class="cli-key">   -Key</span>       <span class="cli-val">"HKCU\Control Panel\Desktop"</span> <span class="cli-cmd">`</span></div>
+                <div style="padding-left:20px;"><span class="cli-key">   -ValueName</span> <span class="cli-val">"Wallpaper"</span> <span class="cli-key">-Type</span> <span class="cli-val">String</span> <span class="cli-cmd">`</span></div>
+                <div style="padding-left:20px;"><span class="cli-key">   -Value</span>     <span class="cli-val">"\\SRVAD\sysvol\campus.lan\Policies\fond_campus.jpg"</span></div>
+                <div style="margin-top:8px;"><span class="cli-comment"># Empêcher la modification par l'utilisateur</span></div>
+                <div><span class="cli-prompt">PS C:\> </span><span class="cli-cmd">Set-GPRegistryValue</span> <span class="cli-key">-Name</span> <span class="cli-val">"GPO_FOND_ECRAN"</span> <span class="cli-cmd">`</span></div>
+                <div style="padding-left:20px;"><span class="cli-key">   -Key</span>       <span class="cli-val">"HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\ActiveDesktop"</span> <span class="cli-cmd">`</span></div>
+                <div style="padding-left:20px;"><span class="cli-key">   -ValueName</span> <span class="cli-val">"NoChangingWallPaper"</span> <span class="cli-key">-Type</span> <span class="cli-val">DWord</span> <span class="cli-key">-Value</span> <span class="cli-val">1</span></div>
+                <div style="margin-top:8px;"><span class="cli-val">✓ Fond d'écran Campus Numérique imposé — modifications bloquées</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── SECTION 5 : VALIDATION ── -->
+    <section id="validation" class="doc-section">
+        <div class="doc-h2">
+            <i class="fa-solid fa-circle-check" style="color:#a855f7;font-size:20px;"></i>
+            <span><span class="num">05</span>Validation & Tests</span>
+        </div>
+
+        <div class="doc-h3"><i class="fa-solid fa-rotate" style="color:#00d4ff;"></i> 5.1 — Mise à jour des GPO et vérification</div>
+        <p class="doc-p">Après connexion avec un compte étudiant <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#a855f7;font-family:'JetBrains Mono',monospace;">CAMPUS\Chevalier.Thomas</code>, l'authentification se fait auprès du DC <strong style="color:#fff;">SRV-AD</strong> via le protocole <strong style="color:#fff;">Kerberos</strong>. Les GPO liées à <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#a855f7;font-family:'JetBrains Mono',monospace;">OU=ETUDIANTS</code> sont appliquées pendant l'ouverture de session.</p>
+
+        <!-- Terminal interactif -->
+        <div style="margin-bottom:24px;">
+            <div style="margin-bottom:12px;font-size:13px;font-weight:700;color:#00d4ff;"><i class="fa-solid fa-terminal"></i> &nbsp;Terminal interactif — Tests en direct</div>
+            <div id="live-terminal">
+                <span style="color:#475569;">Windows PowerShell — Poste Client CAMPUS\Chevalier.Thomas &nbsp;</span><span style="color:#a855f7;" class="cursor">▮</span>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+                <button class="test-btn test-btn-green" onclick="runTest('gpupdate')">
+                    <i class="fa-solid fa-rotate"></i> &nbsp;gpupdate /force
+                </button>
+                <button class="test-btn test-btn-cyan" onclick="runTest('gpresult')">
+                    <i class="fa-solid fa-list-check"></i> &nbsp;gpresult /r
+                </button>
+                <button class="test-btn test-btn-purple" onclick="runTest('netuse')">
+                    <i class="fa-solid fa-hard-drive"></i> &nbsp;net use (Lecteur S:)
+                </button>
+                <button class="test-btn test-btn-orange" onclick="runTest('adgroup')">
+                    <i class="fa-solid fa-users"></i> &nbsp;Vérif. groupe AD
+                </button>
+            </div>
+        </div>
+
+        <div class="doc-h3"><i class="fa-solid fa-ban" style="color:#00d4ff;"></i> 5.2 — Preuve d'application des restrictions GPO</div>
+        <p class="doc-p">La validation finale consiste à tenter d'accéder au Panneau de configuration depuis le compte étudiant. La GPO <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#f59e0b;font-family:'JetBrains Mono',monospace;">NoControlPanel=1</code> intercepte la requête et affiche le message d'erreur système <strong style="color:#ef4444;">« Restrictions »</strong> — preuve irréfutable de l'application correcte de la stratégie de groupe.</p>
+
+        <div class="danger-card" style="margin-bottom:20px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+                <div style="width:32px;height:32px;background:rgba(239,68,68,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                    <i class="fa-solid fa-circle-xmark" style="color:#ef4444;font-size:16px;"></i>
+                </div>
+                <div>
+                    <div style="font-size:13px;font-weight:700;color:#ef4444;">Restrictions</div>
+                    <div style="font-size:11px;color:#94a3b8;">Boîte de dialogue Windows</div>
+                </div>
+            </div>
+            <div style="background:#000d18;border-radius:6px;padding:12px;font-size:12px;color:#94a3b8;font-family:'JetBrains Mono',monospace;border:1px solid rgba(239,68,68,.15);">
+                Cette opération a été annulée en raison de restrictions en vigueur sur cet ordinateur.<br>
+                Veuillez contacter votre administrateur système.
+            </div>
+            <div style="margin-top:10px;font-size:11px;color:#64748b;"><i class="fa-solid fa-circle-info" style="color:#00d4ff;margin-right:6px;"></i>Message déclenché lors de l'accès à Panneau de configuration — GPO NoControlPanel=1 actif</div>
+        </div>
+
+        <div class="doc-h3"><i class="fa-solid fa-vial" style="color:#00d4ff;"></i> 5.3 — Tableau de synthèse des tests effectués</div>
+        <div style="background:#000d18;border:1px solid rgba(0,212,255,.15);border-radius:8px;overflow:hidden;margin-bottom:20px;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Test effectué</th>
+                        <th>Commande / Action</th>
+                        <th>Résultat attendu</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-size:12px;">Jonction domaine</td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">Add-Computer -DomainName campus.lan</code></td>
+                        <td style="font-size:12px;color:#94a3b8;">Poste visible dans ADUC/Computers</td>
+                        <td><span class="badge" style="background:rgba(0,220,130,.15);color:#00dc82;border:1px solid rgba(0,220,130,.3);">✓ OK</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:12px;">Auth. Kerberos</td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">CAMPUS\Chevalier.Thomas login</code></td>
+                        <td style="font-size:12px;color:#94a3b8;">Session ouverte — GPO appliquées</td>
+                        <td><span class="badge" style="background:rgba(0,220,130,.15);color:#00dc82;border:1px solid rgba(0,220,130,.3);">✓ OK</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:12px;">GPO Restrictions</td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">Accès Panneau de config</code></td>
+                        <td style="font-size:12px;color:#94a3b8;">Message "Restrictions" — accès refusé</td>
+                        <td><span class="badge" style="background:rgba(0,220,130,.15);color:#00dc82;border:1px solid rgba(0,220,130,.3);">✓ OK</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:12px;">Lecteur S: (Devoirs)</td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">net use</code></td>
+                        <td style="font-size:12px;color:#94a3b8;">S: mappé sur \\SRV-AD\Devoirs</td>
+                        <td><span class="badge" style="background:rgba(0,220,130,.15);color:#00dc82;border:1px solid rgba(0,220,130,.3);">✓ OK</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:12px;">Compte formateur</td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">CAMPUS\Dupont.Prof login</code></td>
+                        <td style="font-size:12px;color:#94a3b8;">Aucune restriction — héritage désactivé</td>
+                        <td><span class="badge" style="background:rgba(0,220,130,.15);color:#00dc82;border:1px solid rgba(0,220,130,.3);">✓ OK</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ── SECTION 6 : CONCLUSION ── -->
+    <section id="conclusion" class="doc-section">
+        <div class="doc-h2">
+            <i class="fa-solid fa-flag-checkered" style="color:#a855f7;font-size:20px;"></i>
+            <span><span class="num">06</span>Conclusion & Bilan de Migration</span>
+        </div>
+
+        <div class="success-card" style="margin-bottom:28px;">
+            <div style="font-size:12px;font-weight:700;color:#00dc82;margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em;"><i class="fa-solid fa-circle-check"></i> &nbsp;Migration réussie — Active Directory Opérationnel</div>
+            <p style="font-size:14px;color:#94a3b8;line-height:1.8;margin:0;">
+                Le déploiement d'Active Directory Domain Services sur le serveur Windows Server 2022 du Campus Numérique constitue une <strong style="color:#fff;">transformation radicale et maîtrisée</strong> de l'infrastructure de gestion des identités. Les 200 comptes étudiants sont désormais centralisés dans un annuaire LDAP unique, accessibles depuis n'importe quel poste du domaine <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#a855f7;font-family:'JetBrains Mono',monospace;">campus.lan</code>.
+            </p>
+        </div>
+
+        <div class="doc-h3"><i class="fa-solid fa-chart-bar" style="color:#00d4ff;"></i> Statistiques du déploiement</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;">
+            <div class="stat-card">
+                <div class="stat-num" style="color:#a855f7;">200</div>
+                <div class="stat-lbl">Comptes étudiants centralisés</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" style="color:#00d4ff;">3</div>
+                <div class="stat-lbl">GPO déployées</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" style="color:#00dc82;">3</div>
+                <div class="stat-lbl">Unités d'Organisation (OU)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" style="color:#f59e0b;">100%</div>
+                <div class="stat-lbl">Postes joints au domaine</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" style="color:#ef4444;">0</div>
+                <div class="stat-lbl">Postes en mode workgroup</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" style="color:#00dc82;">1</div>
+                <div class="stat-lbl">Compte AD par utilisateur</div>
+            </div>
+        </div>
+
+        <div class="doc-h3"><i class="fa-solid fa-arrow-right-arrow-left" style="color:#00d4ff;"></i> Tableau Avant / Après — Bilan de migration</div>
+        <div style="background:#000d18;border:1px solid rgba(0,212,255,.15);border-radius:8px;overflow:hidden;margin-bottom:28px;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Indicateur</th>
+                        <th style="color:#ef4444;">Avant (Gestion locale)</th>
+                        <th style="color:#00dc82;">Après (Active Directory)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><i class="fa-solid fa-user" style="color:#a855f7;margin-right:8px;"></i>Gestion des comptes</td>
+                        <td style="color:#ef4444;font-size:12px;">Locale sur chaque PC (200 postes)</td>
+                        <td style="color:#00dc82;font-size:12px;">Centralisée sur le DC (domaine .lan)</td>
+                    </tr>
+                    <tr>
+                        <td><i class="fa-solid fa-key" style="color:#a855f7;margin-right:8px;"></i>Authentification</td>
+                        <td style="color:#ef4444;font-size:12px;">Compte local — aucun contrôle</td>
+                        <td style="color:#00dc82;font-size:12px;">Compte AD — stratégie de mot de passe</td>
+                    </tr>
+                    <tr>
+                        <td><i class="fa-solid fa-gears" style="color:#a855f7;margin-right:8px;"></i>Application des règles</td>
+                        <td style="color:#ef4444;font-size:12px;">Manuelle — poste par poste</td>
+                        <td style="color:#00dc82;font-size:12px;">Automatique via GPO à la connexion</td>
+                    </tr>
+                    <tr>
+                        <td><i class="fa-solid fa-hard-drive" style="color:#a855f7;margin-right:8px;"></i>Accès aux ressources</td>
+                        <td style="color:#ef4444;font-size:12px;">Partage manuel, pas de contrôle</td>
+                        <td style="color:#00dc82;font-size:12px;">Lecteur S: mappé par GPO</td>
+                    </tr>
+                    <tr>
+                        <td><i class="fa-solid fa-shield-halved" style="color:#a855f7;margin-right:8px;"></i>Sécurité des postes</td>
+                        <td style="color:#ef4444;font-size:12px;">Panneau de config ouvert à tous</td>
+                        <td style="color:#00dc82;font-size:12px;">Panneau de config bloqué (étudiants)</td>
+                    </tr>
+                    <tr>
+                        <td><i class="fa-solid fa-file-lines" style="color:#a855f7;margin-right:8px;"></i>Traçabilité</td>
+                        <td style="color:#ef4444;font-size:12px;">Nulle</td>
+                        <td style="color:#00dc82;font-size:12px;">Journaux d'événements AD centralisés</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="text-align:center;padding:24px;background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.2);border-radius:10px;margin-bottom:24px;">
+            <div style="font-size:14px;font-weight:700;color:#a855f7;margin-bottom:6px;text-transform:uppercase;letter-spacing:.1em;"><i class="fa-solid fa-circle-check"></i> &nbsp;Compétences SISR E5 démontrées</div>
+            <div style="font-size:12px;color:#64748b;line-height:2;">
+                Installation et promotion AD DS · Conception arborescence OU · Création GPO restrictives<br>
+                Mappage lecteur réseau · Jonction postes au domaine · Validation gpresult
+            </div>
+        </div>
+
+        <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;">
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(168,85,247,.3);padding:4px 14px;border-radius:20px;font-size:11px;color:#a855f7;font-family:'JetBrains Mono',monospace;">AD DS</span>
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(0,212,255,.3);padding:4px 14px;border-radius:20px;font-size:11px;color:#00d4ff;font-family:'JetBrains Mono',monospace;">GPO</span>
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(0,220,130,.3);padding:4px 14px;border-radius:20px;font-size:11px;color:#00dc82;font-family:'JetBrains Mono',monospace;">DNS</span>
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(245,158,11,.3);padding:4px 14px;border-radius:20px;font-size:11px;color:#f59e0b;font-family:'JetBrains Mono',monospace;">Kerberos</span>
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.15);padding:4px 14px;border-radius:20px;font-size:11px;color:#94a3b8;font-family:'JetBrains Mono',monospace;">Windows Server 2022</span>
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.15);padding:4px 14px;border-radius:20px;font-size:11px;color:#94a3b8;font-family:'JetBrains Mono',monospace;">LDAP</span>
+        </div>
+    </section>
+
+</main>
+
+<script>
+function navigate(el) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+    const target = el.getAttribute('data-section');
+    document.querySelectorAll('.doc-section').forEach(s => {
+        s.classList.remove('active');
+        s.classList.remove('reveal');
+    });
+    const section = document.getElementById(target);
+    section.classList.add('active');
+    void section.offsetWidth;
+    section.classList.add('reveal');
+    document.querySelector('main').scrollTop = 0;
+}
+
+const term = document.getElementById('live-terminal');
+
+function typeLines(lines, index, callback) {
+    if (index >= lines.length) { if(callback) callback(); return; }
+    const line = lines[index];
+    if (line.instant) {
+        term.innerHTML += '\n' + line.html;
+        term.scrollTop = term.scrollHeight;
+        setTimeout(() => typeLines(lines, index + 1, callback), line.delay || 200);
+    } else {
+        term.innerHTML += '\n<span id="tl"></span>';
+        term.scrollTop = term.scrollHeight;
+        const span = term.querySelector('#tl');
+        span.removeAttribute('id');
+        let i = 0;
+        const txt = line.text;
+        const color = line.color || '#e2e8f0';
+        span.style.color = color;
+        const iv = setInterval(() => {
+            span.textContent += txt[i++];
+            term.scrollTop = term.scrollHeight;
+            if (i >= txt.length) {
+                clearInterval(iv);
+                setTimeout(() => typeLines(lines, index + 1, callback), line.delay || 150);
+            }
+        }, line.speed || 30);
+    }
+}
+
+const tests = {
+    gpupdate: [
+        { text: 'PS C:\\Users\\Chevalier.Thomas> gpupdate /force', color:'#94a3b8', speed:45, delay:400 },
+        { instant:true, html:'<span style="color:#475569;">Mise à jour de la stratégie...</span>', delay:600 },
+        { instant:true, html:'<span style="color:#475569;">La mise à jour de la stratégie ordinateur s\'est terminée correctement.</span>', delay:400 },
+        { instant:true, html:'<span style="color:#475569;">La mise à jour de la stratégie utilisateur s\'est terminée correctement.</span>', delay:500 },
+        { instant:true, html:'', delay:100 },
+        { instant:true, html:'<span style="color:#00dc82;">Pour terminer le traitement des stratégies de groupe, Windows doit redémarrer.</span>', delay:300 },
+        { instant:true, html:'<span style="color:#f59e0b;">Voulez-vous redémarrer maintenant ? (Oui/Non) N</span>', delay:400 },
+        { instant:true, html:'<span style="color:#00dc82;font-size:11px;">✓ GPO campus.lan appliquées avec succès — GPO_RESTRICTIONS_PEDAGOGIQUES active</span>', delay:0 },
+    ],
+    gpresult: [
+        { text: 'PS C:\\Users\\Chevalier.Thomas> gpresult /r', color:'#94a3b8', speed:50, delay:500 },
+        { instant:true, html:'<span style="color:#475569;">Microsoft (R) Utilitaire Résultats de la stratégie de groupe</span>', delay:400 },
+        { instant:true, html:'<span style="color:#475569;">Système d\'exploitation : Microsoft Windows 10 Professionnel</span>', delay:200 },
+        { instant:true, html:'', delay:100 },
+        { instant:true, html:'<span style="color:#00d4ff;">RÉSULTATS POUR : CAMPUS\\Chevalier.Thomas</span>', delay:300 },
+        { instant:true, html:'<span style="color:#475569;">    Nom du site : Default-First-Site-Name</span>', delay:100 },
+        { instant:true, html:'<span style="color:#475569;">    Contrôleur de domaine : SRV-AD.campus.lan</span>', delay:200 },
+        { instant:true, html:'', delay:100 },
+        { instant:true, html:'<span style="color:#a855f7;">    GPO appliquées à l\'utilisateur :</span>', delay:200 },
+        { instant:true, html:'<span style="color:#00dc82;">        GPO_RESTRICTIONS_PEDAGOGIQUES</span>', delay:150 },
+        { instant:true, html:'<span style="color:#00dc82;">        GPO_LECTEUR_DEVOIRS</span>', delay:150 },
+        { instant:true, html:'<span style="color:#00dc82;">        GPO_FOND_ECRAN</span>', delay:300 },
+        { instant:true, html:'<span style="color:#00dc82;font-size:11px;">✓ 3 GPO actives — Restrictions pédagogiques appliquées</span>', delay:0 },
+    ],
+    netuse: [
+        { text: 'PS C:\\Users\\Chevalier.Thomas> net use', color:'#94a3b8', speed:55, delay:400 },
+        { instant:true, html:'<span style="color:#475569;">Nouvelles connexions réseau mémorisées.</span>', delay:500 },
+        { instant:true, html:'', delay:100 },
+        { instant:true, html:'<span style="color:#94a3b8;">Statut       Local    Distant                   Réseau</span>', delay:200 },
+        { instant:true, html:'<span style="color:#475569;">-------------------------------------------------------------------------------</span>', delay:100 },
+        { instant:true, html:'<span style="color:#00dc82;">OK           S:       \\\\SRV-AD\\Devoirs           Microsoft Windows Network</span>', delay:300 },
+        { instant:true, html:'<span style="color:#475569;">La commande a été exécutée correctement.</span>', delay:400 },
+        { instant:true, html:'<span style="color:#00dc82;font-size:11px;">✓ Lecteur S: mappé sur \\\\SRV-AD\\Devoirs — GPO_LECTEUR_DEVOIRS active</span>', delay:0 },
+    ],
+    adgroup: [
+        { text: 'PS C:\\> Get-ADGroupMember -Identity "GRP_ETUDIANTS"', color:'#94a3b8', speed:40, delay:500 },
+        { instant:true, html:'', delay:300 },
+        { instant:true, html:'<span style="color:#a855f7;">distinguishedName</span> <span style="color:#475569;">: CN=Chevalier.Thomas,OU=ETUDIANTS,DC=campus,DC=lan</span>', delay:150 },
+        { instant:true, html:'<span style="color:#a855f7;">name             </span> <span style="color:#00dc82;">: Chevalier.Thomas</span>', delay:100 },
+        { instant:true, html:'<span style="color:#a855f7;">objectClass      </span> <span style="color:#475569;">: user</span>', delay:150 },
+        { instant:true, html:'<span style="color:#a855f7;">distinguishedName</span> <span style="color:#475569;">: CN=Martin.Alice,OU=ETUDIANTS,DC=campus,DC=lan</span>', delay:150 },
+        { instant:true, html:'<span style="color:#a855f7;">name             </span> <span style="color:#00dc82;">: Martin.Alice</span>', delay:100 },
+        { instant:true, html:'<span style="color:#475569;">... 198 autres membres du groupe GRP_ETUDIANTS</span>', delay:400 },
+        { instant:true, html:'', delay:100 },
+        { instant:true, html:'<span style="color:#00dc82;font-size:11px;">✓ 200 étudiants membres de GRP_ETUDIANTS — GPO héritées correctement</span>', delay:0 },
+    ]
+};
+
+function runTest(type) {
+    term.innerHTML = '<span style="color:#475569;">Windows PowerShell — CAMPUS\\Chevalier.Thomas @ PC-Salle01</span>';
+    typeLines(tests[type], 0);
+}
+</script>
+</body>
+</html>
