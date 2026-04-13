@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission 04 — NAT/PAT pfSense | BTS SIO SISR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { cy_dark:'#05111c', cy_card:'#0a1f30', cy_cyan:'#00d4ff', cy_green:'#00dc82', cy_purple:'#a855f7', cy_red:'#ef4444' }, fontFamily: { sans:['Outfit','sans-serif'], mono:['JetBrains Mono','monospace'] } } }
+        }
+    </script>
+    <style>
+        *{box-sizing:border-box}body{background-color:#05111c;color:#e2e8f0;font-family:'Outfit',sans-serif}
+        #sidebar{width:272px;min-width:272px;background:#0a1f30;border-right:1px solid rgba(0,212,255,.12);display:flex;flex-direction:column;height:100vh;position:sticky;top:0;overflow-y:auto}
+        .nav-group{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:#00d4ff;font-weight:700;padding:0 16px;margin:20px 0 6px}
+        .nav-item{display:flex;align-items:center;gap:8px;padding:8px 16px;font-size:12px;font-weight:500;color:#94a3b8;cursor:pointer;border-left:2px solid transparent;transition:all .2s}
+        .nav-item:hover{background:rgba(255,255,255,.04);color:#fff}
+        .nav-item.active{border-left-color:#00d4ff;background:rgba(0,212,255,.06);color:#00d4ff}
+        .doc-section{display:none}.doc-section.active{display:block}
+        .doc-h2{font-size:24px;font-weight:700;color:#fff;margin-bottom:28px;padding-bottom:14px;border-bottom:1px solid rgba(148,163,184,.2);display:flex;align-items:center;gap:10px}
+        .doc-h3{font-size:16px;font-weight:700;color:#00d4ff;margin:24px 0 10px;display:flex;align-items:center;gap:8px}
+        .doc-p{font-size:14px;color:#94a3b8;line-height:1.8;margin-bottom:14px;text-align:justify}
+        .num{color:rgba(148,163,184,.35);margin-right:6px}
+        .cli-box{background:#000d18;border:1px solid rgba(0,212,255,.2);border-radius:8px;overflow:hidden;font-family:'JetBrains Mono',monospace}
+        .cli-bar{background:#0d2035;padding:8px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(0,212,255,.1)}
+        .cli-dot{width:10px;height:10px;border-radius:50%}
+        .cli-title{font-size:11px;color:#64748b;margin-left:auto}
+        .cli-body{padding:16px;font-size:12px;line-height:1.8;overflow-x:auto}
+        .cli-prompt{color:#00d4ff}.cli-cmd{color:#e2e8f0}.cli-comment{color:#3d5a6e}.cli-key{color:#a855f7}.cli-val{color:#00dc82}.cli-warn{color:#f59e0b}
+        .info-card{background:#0a1f30;border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:20px}
+        .danger-card{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:20px}
+        .success-card{background:rgba(0,220,130,.07);border:1px solid rgba(0,220,130,.25);border-radius:10px;padding:20px}
+        .data-table{width:100%;border-collapse:collapse;font-size:13px}
+        .data-table th{background:#0d2035;color:#94a3b8;font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:10px 16px;text-align:left}
+        .data-table td{padding:10px 16px;border-bottom:1px solid rgba(148,163,184,.08);color:#cbd5e1}
+        .data-table tr:hover td{background:rgba(0,212,255,.03)}
+        .badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 10px;border-radius:4px;font-family:'JetBrains Mono',monospace}
+        #live-terminal{background:#000d18;border:1px solid rgba(0,220,130,.25);border-radius:8px;padding:16px;font-family:'JetBrains Mono',monospace;font-size:12px;height:220px;overflow-y:auto}
+        .test-btn{padding:8px 20px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;border:1px solid}
+        .test-btn-green{background:rgba(0,220,130,.1);border-color:rgba(0,220,130,.4);color:#00dc82}.test-btn-green:hover{background:rgba(0,220,130,.2)}
+        .test-btn-cyan{background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.4);color:#00d4ff}.test-btn-cyan:hover{background:rgba(0,212,255,.2)}
+        .test-btn-orange{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.4);color:#f59e0b}.test-btn-orange:hover{background:rgba(245,158,11,.2)}
+        .test-btn-purple{background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.4);color:#a855f7}.test-btn-purple:hover{background:rgba(168,85,247,.2)}
+        .stat-card{background:#0a1f30;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:20px;text-align:center}
+        .stat-num{font-size:32px;font-weight:900}.stat-lbl{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.07em;margin-top:4px}
+        ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(0,212,255,.3);border-radius:4px}
+        .reveal{animation:fadeUp .6s ease both}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+    </style>
+</head>
+<body class="flex" style="height:100vh;overflow:hidden;">
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+    <div style="padding:20px 16px;border-bottom:1px solid rgba(0,212,255,.1);">
+        <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:38px;height:38px;background:#f59e0b;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#05111c;font-size:18px;box-shadow:0 0 18px rgba(245,158,11,.4);">
+                <i class="fa-solid fa-fire-flame-curved"></i>
+            </div>
+            <div>
+                <div style="font-size:13px;font-weight:700;color:#fff;">BTS SIO — SISR</div>
+                <div style="font-size:10px;color:#64748b;">Épreuve E5 · SESSION 2026</div>
+            </div>
+        </div>
+    </div>
+    <div style="padding:14px 16px;border-bottom:1px solid rgba(0,212,255,.07);">
+        <div style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:8px;padding:10px 14px;">
+            <div style="font-size:10px;color:#f59e0b;font-weight:700;letter-spacing:.1em;text-transform:uppercase;">Mission 04</div>
+            <div style="font-size:13px;font-weight:700;color:#fff;margin-top:2px;">NAT/PAT & pfSense</div>
+            <div style="font-size:10px;color:#64748b;margin-top:2px;">Eco-Tech Solutions · 50 postes</div>
+        </div>
+    </div>
+    <nav style="flex:1;padding:8px 0;">
+        <div class="nav-group">Documentation</div>
+        <div class="nav-item active" data-section="s1" onclick="navigate(this)"><i class="fa-solid fa-magnifying-glass" style="font-size:11px;width:14px;"></i>Analyse & Contexte</div>
+        <div class="nav-item" data-section="s2" onclick="navigate(this)"><i class="fa-solid fa-diagram-project" style="font-size:11px;width:14px;"></i>Architecture réseau</div>
+        <div class="nav-item" data-section="s3" onclick="navigate(this)"><i class="fa-solid fa-arrows-left-right" style="font-size:11px;width:14px;"></i>NAT Outbound</div>
+        <div class="nav-item" data-section="s4" onclick="navigate(this)"><i class="fa-solid fa-right-left" style="font-size:11px;width:14px;"></i>PAT / Port Forwarding</div>
+        <div class="nav-item" data-section="s5" onclick="navigate(this)"><i class="fa-solid fa-shield-halved" style="font-size:11px;width:14px;"></i>Règles ACL LAN</div>
+        <div class="nav-item" data-section="s6" onclick="navigate(this)"><i class="fa-solid fa-circle-check" style="font-size:11px;width:14px;"></i>Validation & Tests</div>
+        <div class="nav-item" data-section="s7" onclick="navigate(this)"><i class="fa-solid fa-flag-checkered" style="font-size:11px;width:14px;"></i>Conclusion & Bilan</div>
+        <div class="nav-group" style="margin-top:16px;">Référence rapide</div>
+        <div style="margin:8px 12px;background:#000d18;border:1px solid rgba(245,158,11,.2);border-radius:6px;padding:10px 12px;font-family:'JetBrains Mono',monospace;">
+            <div style="font-size:9px;color:#475569;margin-bottom:4px;text-transform:uppercase;">IP WAN (publique)</div>
+            <div style="font-size:11px;color:#f59e0b;font-weight:700;">82.124.15.67</div>
+            <div style="font-size:9px;color:#475569;margin-top:6px;margin-bottom:4px;text-transform:uppercase;">Passerelle LAN</div>
+            <div style="font-size:11px;color:#00d4ff;">192.168.10.1 /24</div>
+            <div style="font-size:9px;color:#475569;margin-top:6px;margin-bottom:4px;text-transform:uppercase;">Serveur Web</div>
+            <div style="font-size:11px;color:#00dc82;">192.168.10.50</div>
+            <div style="font-size:9px;color:#475569;margin-top:6px;margin-bottom:4px;text-transform:uppercase;">Firewall</div>
+            <div style="font-size:11px;color:#a855f7;">pfSense 2.7.2</div>
+        </div>
+    </nav>
+    <div style="padding:12px 16px;border-top:1px solid rgba(0,212,255,.07);font-size:10px;color:#475569;">
+        <div style="display:flex;align-items:center;gap:6px;">
+            <div style="width:6px;height:6px;background:#f59e0b;border-radius:50%;box-shadow:0 0 6px #f59e0b;"></div>
+            pfSense 2.7.2 · WAN HAUT · LAN HAUT
+        </div>
+        <div style="margin-top:4px;color:#334155;">Cybersécurité Périmétrique</div>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<main style="flex:1;overflow-y:auto;padding:40px 48px;max-width:900px;">
+
+    <!-- S1 ANALYSE -->
+    <section id="s1" class="doc-section active reveal">
+        <div class="doc-h2"><i class="fa-solid fa-magnifying-glass" style="color:#f59e0b;font-size:20px;"></i><span><span class="num">01</span>Analyse & Contexte</span></div>
+
+        <div class="doc-h3"><i class="fa-solid fa-triangle-exclamation" style="color:#ef4444;"></i>1.1 — Réseau LAN non protégé : risques critiques</div>
+        <p class="doc-p">Eco-Tech Solutions dispose d'un réseau LAN composé de <strong style="color:#fff;">50 postes utilisateurs</strong> et d'un serveur Web interne Debian hébergeant le portail applicatif. Avant l'intervention, les flux Internet transitaient via un simple routeur FAI sans filtrage — le serveur Web n'était accessible que depuis le LAN.</p>
+
+        <div class="danger-card" style="margin-bottom:20px;">
+            <div style="font-size:12px;font-weight:700;color:#ef4444;margin-bottom:12px;text-transform:uppercase;letter-spacing:.08em;"><i class="fa-solid fa-circle-xmark"></i> &nbsp;4 risques critiques identifiés</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:6px;padding:10px 12px;">
+                    <div style="font-size:11px;font-weight:700;color:#ef4444;margin-bottom:4px;"><i class="fa-solid fa-eye"></i> &nbsp;IPs privées exposées</div>
+                    <div style="font-size:11px;color:#94a3b8;">Trames LAN atteignant directement le WAN — topologie interne révélée</div>
+                </div>
+                <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:6px;padding:10px 12px;">
+                    <div style="font-size:11px;font-weight:700;color:#ef4444;margin-bottom:4px;"><i class="fa-solid fa-door-open"></i> &nbsp;Aucun filtrage entrant</div>
+                    <div style="font-size:11px;color:#94a3b8;">Zéro règle bloquant les connexions entrantes — vecteur d'attaque maximal</div>
+                </div>
+                <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:6px;padding:10px 12px;">
+                    <div style="font-size:11px;font-weight:700;color:#ef4444;margin-bottom:4px;"><i class="fa-solid fa-server"></i> &nbsp;Serveur Web inaccessible</div>
+                    <div style="font-size:11px;color:#94a3b8;">Absence de redirection — portail inaccessible depuis l'extérieur</div>
+                </div>
+                <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:6px;padding:10px 12px;">
+                    <div style="font-size:11px;font-weight:700;color:#ef4444;margin-bottom:4px;"><i class="fa-solid fa-file-slash"></i> &nbsp;Aucune traçabilité</div>
+                    <div style="font-size:11px;color:#94a3b8;">Sans pare-feu, aucun journal d'événements réseau disponible</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="doc-h3"><i class="fa-solid fa-lightbulb" style="color:#00d4ff;"></i>1.2 — Solution retenue : passerelle pfSense 2.7.2</div>
+        <p class="doc-p">Installation d'un firewall <strong style="color:#fff;">pfSense 2.7.2</strong> positionné en coupure entre le réseau WAN (FAI) et le LAN. pfSense assure trois fonctions critiques : <strong style="color:#f59e0b;">NAT Outbound</strong> (masquerading), <strong style="color:#00d4ff;">PAT/Port Forwarding</strong> (redirection 80/443 vers le serveur Web interne), et <strong style="color:#00dc82;">filtrage ACL</strong> (contrôle précis des flux autorisés).</p>
+
+        <div class="success-card">
+            <div style="font-size:12px;font-weight:700;color:#00dc82;margin-bottom:10px;text-transform:uppercase;letter-spacing:.08em;"><i class="fa-solid fa-circle-check"></i> &nbsp;Bénéfices pfSense</div>
+            <div style="display:flex;flex-direction:column;gap:7px;">
+                <div style="font-size:13px;color:#94a3b8;"><i class="fa-solid fa-chevron-right" style="color:#00dc82;margin-right:8px;font-size:10px;"></i><strong style="color:#fff;">IP publique unique</strong> 82.124.15.67 masque l'ensemble des 50 postes internes</div>
+                <div style="font-size:13px;color:#94a3b8;"><i class="fa-solid fa-chevron-right" style="color:#00dc82;margin-right:8px;font-size:10px;"></i><strong style="color:#fff;">Serveur Web 192.168.10.50</strong> accessible depuis Internet via Port Forwarding</div>
+                <div style="font-size:13px;color:#94a3b8;"><i class="fa-solid fa-chevron-right" style="color:#00dc82;margin-right:8px;font-size:10px;"></i><strong style="color:#fff;">Logs centralisés</strong> : chaque connexion enregistrée pour audit de sécurité</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- S2 ARCHITECTURE -->
+    <section id="s2" class="doc-section">
+        <div class="doc-h2"><i class="fa-solid fa-diagram-project" style="color:#f59e0b;font-size:20px;"></i><span><span class="num">02</span>Architecture réseau Eco-Tech</span></div>
+
+        <div class="doc-h3"><i class="fa-solid fa-table-list" style="color:#00d4ff;"></i>2.1 — Inventaire des composants</div>
+        <div style="background:#000d18;border:1px solid rgba(0,212,255,.15);border-radius:8px;overflow:hidden;margin-bottom:20px;">
+            <table class="data-table">
+                <thead><tr><th>Composant</th><th>Adresse / Interface</th><th>Rôle</th></tr></thead>
+                <tbody>
+                    <tr><td><i class="fa-solid fa-fire-flame-curved" style="color:#f59e0b;margin-right:8px;"></i>pfSense WAN (em0)</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#f59e0b;">82.124.15.67 (DHCP FAI)</code></td><td style="font-size:12px;color:#94a3b8;">Interface Internet — IP publique</td></tr>
+                    <tr><td><i class="fa-solid fa-network-wired" style="color:#00d4ff;margin-right:8px;"></i>pfSense LAN (em1)</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00d4ff;">192.168.10.1 /24</code></td><td style="font-size:12px;color:#94a3b8;">Passerelle réseau interne</td></tr>
+                    <tr><td><i class="fa-solid fa-server" style="color:#00dc82;margin-right:8px;"></i>Serveur Web Debian</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00dc82;">192.168.10.50</code></td><td style="font-size:12px;color:#94a3b8;">Héberge le portail Eco-Tech (HTTP/HTTPS)</td></tr>
+                    <tr><td><i class="fa-solid fa-laptop" style="color:#a855f7;margin-right:8px;"></i>Postes utilisateurs</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#a855f7;">192.168.10.2 – .49</code></td><td style="font-size:12px;color:#94a3b8;">50 collaborateurs — clients DHCP</td></tr>
+                    <tr><td><i class="fa-solid fa-sitemap" style="color:#64748b;margin-right:8px;"></i>Switch Cisco</td><td style="color:#64748b;">—</td><td style="font-size:12px;color:#94a3b8;">Commutation LAN — VLAN non segmenté</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="doc-h3"><i class="fa-solid fa-network-wired" style="color:#00d4ff;"></i>2.2 — Schéma d'architecture pfSense</div>
+        <div style="background:#000d18;border:1px solid rgba(245,158,11,.2);border-radius:12px;padding:28px;margin-bottom:20px;">
+            <div style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:8px;">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+                    <div style="background:rgba(0,0,0,.4);border:1px solid rgba(100,116,139,.3);border-radius:8px;padding:14px;text-align:center;width:100%;">
+                        <i class="fa-solid fa-globe" style="font-size:24px;color:#64748b;"></i>
+                        <div style="font-size:11px;font-weight:700;color:#fff;margin-top:6px;">Internet (WAN)</div>
+                        <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:#64748b;">IP FAI</div>
+                    </div>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                    <i class="fa-solid fa-arrow-right" style="color:#f59e0b;"></i>
+                    <div style="font-size:9px;color:#475569;font-family:'JetBrains Mono',monospace;">em0</div>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+                    <div style="background:rgba(245,158,11,.1);border:2px solid rgba(245,158,11,.4);border-radius:8px;padding:14px;text-align:center;width:100%;">
+                        <i class="fa-solid fa-fire-flame-curved" style="font-size:28px;color:#f59e0b;"></i>
+                        <div style="font-size:12px;font-weight:700;color:#fff;margin-top:6px;">pfSense 2.7.2</div>
+                        <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:#f59e0b;">Eco-Tech-FW01</div>
+                        <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:#64748b;">WAN: 82.124.15.67</div>
+                        <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:#64748b;">LAN: 192.168.10.1</div>
+                    </div>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                    <i class="fa-solid fa-arrow-right" style="color:#00d4ff;"></i>
+                    <div style="font-size:9px;color:#475569;font-family:'JetBrains Mono',monospace;">em1</div>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+                    <div style="background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.3);border-radius:8px;padding:10px;text-align:center;width:100%;">
+                        <i class="fa-solid fa-server" style="color:#00dc82;font-size:18px;"></i>
+                        <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">Srv Web</div>
+                        <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:#00dc82;">192.168.10.50</div>
+                    </div>
+                    <div style="background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.2);border-radius:8px;padding:10px;text-align:center;width:100%;">
+                        <i class="fa-solid fa-laptop" style="color:#a855f7;font-size:16px;"></i>
+                        <div style="font-size:10px;color:#a855f7;margin-top:4px;">50 postes</div>
+                        <div style="font-size:9px;font-family:'JetBrains Mono',monospace;color:#64748b;">.2 – .49</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- S3 NAT OUTBOUND -->
+    <section id="s3" class="doc-section">
+        <div class="doc-h2"><i class="fa-solid fa-arrows-left-right" style="color:#f59e0b;font-size:20px;"></i><span><span class="num">03</span>NAT Outbound — Masquerading</span></div>
+
+        <div class="doc-h3"><i class="fa-solid fa-gears" style="color:#00d4ff;"></i>3.1 — Configuration NAT Outbound (Mode Hybride)</div>
+        <p class="doc-p">Le <strong style="color:#fff;">NAT Outbound (sortant)</strong> est configuré en mode <strong style="color:#f59e0b;">Hybride</strong> dans Pare-feu → NAT → Sortant. Une règle spécifie que tout trafic provenant de <code style="background:#000d18;padding:2px 6px;border-radius:4px;color:#00dc82;font-family:'JetBrains Mono',monospace;">192.168.10.0/24</code> vers n'importe quel hôte externe est traduit (masqué) vers l'adresse WAN <code style="background:#000d18;padding:2px 6px;border-radius:4px;color:#f59e0b;font-family:'JetBrains Mono',monospace;">82.124.15.67</code>. Les 50 postes LAN sont ainsi invisibles depuis Internet.</p>
+
+        <div class="cli-box" style="margin-bottom:20px;">
+            <div class="cli-bar"><div class="cli-dot" style="background:#ef4444;"></div><div class="cli-dot" style="background:#f59e0b;"></div><div class="cli-dot" style="background:#00dc82;"></div><span style="font-size:11px;color:#f59e0b;margin-left:8px;font-weight:700;">pfSense Shell</span><span class="cli-title">Vérification table NAT active — pfctl</span></div>
+            <div class="cli-body">
+                <div><span class="cli-comment"># Vérification des règles NAT actives depuis le shell pfSense</span></div>
+                <div><span class="cli-prompt">root@Eco-Tech-FW01:~# </span><span class="cli-cmd">pfctl -s nat</span></div>
+                <div style="margin-top:8px;"><span class="cli-comment"># Résultat — NAT Outbound Masquerade</span></div>
+                <div><span class="cli-val">nat on em0 from 192.168.10.0/24 to any -> (em0)</span></div>
+                <div style="margin-top:8px;"><span class="cli-comment"># Résultat — PAT Port Forwarding HTTP/HTTPS</span></div>
+                <div><span class="cli-val">rdr on em0 proto tcp from any to 82.124.15.67 port 80  -> 192.168.10.50</span></div>
+                <div><span class="cli-val">rdr on em0 proto tcp from any to 82.124.15.67 port 443 -> 192.168.10.50</span></div>
+                <div style="margin-top:8px;"><span class="cli-val">✓ NAT Outbound + PAT HTTP/HTTPS opérationnels</span></div>
+            </div>
+        </div>
+
+        <div style="background:#000d18;border:1px solid rgba(0,212,255,.15);border-radius:8px;overflow:hidden;margin-bottom:20px;">
+            <table class="data-table">
+                <thead><tr><th>Type</th><th>Interface</th><th>Source → Destination</th><th>Translation</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><span class="badge" style="background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3);">NAT Outbound</span></td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">WAN</code></td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">192.168.10.0/24 → Any</code></td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#f59e0b;">82.124.15.67</code></td>
+                        <td style="font-size:12px;color:#94a3b8;">Sortie Internet LAN</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge" style="background:rgba(0,212,255,.1);color:#00d4ff;border:1px solid rgba(0,212,255,.3);">PAT HTTP</span></td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">WAN</code></td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">Any → WAN:80</code></td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00dc82;">192.168.10.50:80</code></td>
+                        <td style="font-size:12px;color:#94a3b8;">Serveur Web interne</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge" style="background:rgba(0,220,130,.1);color:#00dc82;border:1px solid rgba(0,220,130,.3);">PAT HTTPS</span></td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">WAN</code></td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">Any → WAN:443</code></td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00dc82;">192.168.10.50:443</code></td>
+                        <td style="font-size:12px;color:#94a3b8;">Serveur Web interne (SSL)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- S4 PAT PORT FORWARDING -->
+    <section id="s4" class="doc-section">
+        <div class="doc-h2"><i class="fa-solid fa-right-left" style="color:#f59e0b;font-size:20px;"></i><span><span class="num">04</span>PAT / Port Forwarding</span></div>
+
+        <div class="doc-h3"><i class="fa-solid fa-plug" style="color:#00d4ff;"></i>4.1 — Exposition contrôlée du serveur Web</div>
+        <p class="doc-p">Le <strong style="color:#fff;">Port Forwarding (DNAT)</strong> est configuré dans Pare-feu → NAT → Transfert de port. Deux règles redirigent les flux entrants sur l'IP publique <code style="background:#000d18;padding:2px 6px;border-radius:4px;color:#f59e0b;font-family:'JetBrains Mono',monospace;">82.124.15.67:80</code> et <code style="background:#000d18;padding:2px 6px;border-radius:4px;color:#f59e0b;font-family:'JetBrains Mono',monospace;">:443</code> vers le serveur Web interne <code style="background:#000d18;padding:2px 6px;border-radius:4px;color:#00dc82;font-family:'JetBrains Mono',monospace;">192.168.10.50:80</code>. pfSense réalise la translation de manière totalement transparente.</p>
+
+        <div class="cli-box" style="margin-bottom:20px;">
+            <div class="cli-bar"><div class="cli-dot" style="background:#ef4444;"></div><div class="cli-dot" style="background:#f59e0b;"></div><div class="cli-dot" style="background:#00dc82;"></div><span style="font-size:11px;color:#f59e0b;margin-left:8px;font-weight:700;">pfSense GUI</span><span class="cli-title">Pare-feu / NAT / Transfert de port</span></div>
+            <div class="cli-body">
+                <div><span class="cli-comment"># Règle 1 — Port Forwarding HTTP (port 80)</span></div>
+                <div><span class="cli-key">Interface   :</span> <span class="cli-val">WAN</span></div>
+                <div><span class="cli-key">Protocole   :</span> <span class="cli-val">TCP</span></div>
+                <div><span class="cli-key">Source      :</span> <span class="cli-val">Tout (any)</span></div>
+                <div><span class="cli-key">Destination :</span> <span class="cli-val">WAN adresse</span></div>
+                <div><span class="cli-key">Port Dest.  :</span> <span class="cli-val">80 (HTTP)</span></div>
+                <div><span class="cli-key">Cible NAT   :</span> <span class="cli-val">192.168.10.50</span></div>
+                <div><span class="cli-key">Port cible  :</span> <span class="cli-val">80 (HTTP)</span></div>
+                <div><span class="cli-key">Description :</span> <span class="cli-warn">ACCES_SERVEUR_WEB_EXTERNE</span></div>
+                <div style="margin-top:10px;"><span class="cli-comment"># Règle 2 — Port Forwarding HTTPS (port 443)</span></div>
+                <div><span class="cli-key">Interface   :</span> <span class="cli-val">WAN</span>  <span class="cli-key">Protocole :</span> <span class="cli-val">TCP</span>  <span class="cli-key">Port Dest. :</span> <span class="cli-val">443</span>  <span class="cli-key">Cible :</span> <span class="cli-val">192.168.10.50:443</span></div>
+                <div style="margin-top:8px;"><span class="cli-val">✓ 2 règles PAT actives — WAN:80+443 → 192.168.10.50</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- S5 ACL LAN -->
+    <section id="s5" class="doc-section">
+        <div class="doc-h2"><i class="fa-solid fa-shield-halved" style="color:#f59e0b;font-size:20px;"></i><span><span class="num">05</span>Règles de filtrage LAN (ACL)</span></div>
+
+        <div class="doc-h3"><i class="fa-solid fa-filter" style="color:#00d4ff;"></i>5.1 — Principe du moindre privilège réseau</div>
+        <p class="doc-p">Les <strong style="color:#fff;">règles de filtrage LAN</strong> définissent précisément les flux autorisés depuis le réseau interne. Seuls le <strong style="color:#00d4ff;">DNS (port 53)</strong>, le <strong style="color:#00dc82;">HTTP (port 80)</strong> et le <strong style="color:#00dc82;">HTTPS (port 443)</strong> sont explicitement autorisés. Tout autre trafic est bloqué par la règle implicite de refus — ce principe de <strong style="color:#fff;">moindre privilège réseau</strong> limite drastiquement la surface d'attaque.</p>
+
+        <div style="background:#000d18;border:1px solid rgba(0,212,255,.15);border-radius:8px;overflow:hidden;margin-bottom:20px;">
+            <table class="data-table">
+                <thead><tr><th>Protocole</th><th>Source</th><th>Port Dest.</th><th>Description</th><th>Action</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">IPv4 TCP/UDP</code></td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#a855f7;">LAN net</code></td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00d4ff;">53 (DNS)</code></td>
+                        <td style="font-size:12px;color:#94a3b8;">Autoriser DNS LAN</td>
+                        <td><span class="badge" style="background:rgba(0,220,130,.15);color:#00dc82;border:1px solid rgba(0,220,130,.3);">✓ Autoriser</span></td>
+                    </tr>
+                    <tr>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">IPv4 TCP</code></td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#a855f7;">LAN net</code></td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00dc82;">80 (HTTP)</code></td>
+                        <td style="font-size:12px;color:#94a3b8;">Autoriser HTTP LAN</td>
+                        <td><span class="badge" style="background:rgba(0,220,130,.15);color:#00dc82;border:1px solid rgba(0,220,130,.3);">✓ Autoriser</span></td>
+                    </tr>
+                    <tr>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">IPv4 TCP</code></td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#a855f7;">LAN net</code></td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00dc82;">443 (HTTPS)</code></td>
+                        <td style="font-size:12px;color:#94a3b8;">Autoriser HTTPS LAN</td>
+                        <td><span class="badge" style="background:rgba(0,220,130,.15);color:#00dc82;border:1px solid rgba(0,220,130,.3);">✓ Autoriser</span></td>
+                    </tr>
+                    <tr>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">IPv4 Any</code></td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#a855f7;">LAN net</code></td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#ef4444;">Any</code></td>
+                        <td style="font-size:12px;color:#94a3b8;">Tout bloquer (règle implicite)</td>
+                        <td><span class="badge" style="background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3);">✖ Bloquer</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- S6 VALIDATION -->
+    <section id="s6" class="doc-section">
+        <div class="doc-h2"><i class="fa-solid fa-circle-check" style="color:#f59e0b;font-size:20px;"></i><span><span class="num">06</span>Validation & Tests de sécurité</span></div>
+
+        <div class="doc-h3"><i class="fa-solid fa-terminal" style="color:#00d4ff;"></i>Terminal interactif — Tests pfSense en direct</div>
+        <div style="margin-bottom:24px;">
+            <div id="live-terminal"><span style="color:#475569;">Administrator: C:\Windows\System32\cmd.exe — Poste LAN Eco-Tech (192.168.10.10)</span></div>
+            <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+                <button class="test-btn test-btn-green" onclick="runTest('ping')"><i class="fa-solid fa-wifi"></i> &nbsp;ping 8.8.8.8</button>
+                <button class="test-btn test-btn-cyan" onclick="runTest('curl')"><i class="fa-solid fa-globe"></i> &nbsp;curl icanhazip.com</button>
+                <button class="test-btn test-btn-orange" onclick="runTest('portfwd')"><i class="fa-solid fa-server"></i> &nbsp;Test Portail Web</button>
+                <button class="test-btn test-btn-purple" onclick="runTest('pfctl')"><i class="fa-solid fa-list-check"></i> &nbsp;pfctl -s nat</button>
+            </div>
+        </div>
+
+        <div class="doc-h3"><i class="fa-solid fa-vial" style="color:#00d4ff;"></i>Tableau de synthèse des tests</div>
+        <div style="background:#000d18;border:1px solid rgba(0,212,255,.15);border-radius:8px;overflow:hidden;margin-bottom:20px;">
+            <table class="data-table">
+                <thead><tr><th>Test</th><th>Commande</th><th>Résultat attendu</th><th>Statut</th></tr></thead>
+                <tbody>
+                    <tr><td style="font-size:12px;">Connectivité Internet LAN</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">ping 8.8.8.8</code></td><td style="font-size:12px;color:#94a3b8;">4/4 paquets reçus, 0% perte</td><td><span class="badge" style="background:rgba(0,220,130,.15);color:#00dc82;border:1px solid rgba(0,220,130,.3);">✓ OK</span></td></tr>
+                    <tr><td style="font-size:12px;">Vérif. IP publique</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">curl icanhazip.com</code></td><td style="font-size:12px;color:#94a3b8;">Retourne 82.124.15.67 (WAN)</td><td><span class="badge" style="background:rgba(0,220,130,.15);color:#00dc82;border:1px solid rgba(0,220,130,.3);">✓ OK</span></td></tr>
+                    <tr><td style="font-size:12px;">Accès portail externe</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">http://82.124.15.67</code></td><td style="font-size:12px;color:#94a3b8;">Portail Eco-Tech affiché</td><td><span class="badge" style="background:rgba(0,220,130,.15);color:#00dc82;border:1px solid rgba(0,220,130,.3);">✓ OK</span></td></tr>
+                    <tr><td style="font-size:12px;">Règles NAT pfctl</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">pfctl -s nat</code></td><td style="font-size:12px;color:#94a3b8;">3 règles actives (NAT+PAT x2)</td><td><span class="badge" style="background:rgba(0,220,130,.15);color:#00dc82;border:1px solid rgba(0,220,130,.3);">✓ OK</span></td></tr>
+                    <tr><td style="font-size:12px;">ACL — Port non autorisé</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">telnet x.x.x.x 25</code></td><td style="font-size:12px;color:#94a3b8;">Connection timeout — ACL bloque</td><td><span class="badge" style="background:rgba(0,220,130,.15);color:#00dc82;border:1px solid rgba(0,220,130,.3);">✓ OK</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- S7 CONCLUSION -->
+    <section id="s7" class="doc-section">
+        <div class="doc-h2"><i class="fa-solid fa-flag-checkered" style="color:#f59e0b;font-size:20px;"></i><span><span class="num">07</span>Conclusion & Bilan de sécurité</span></div>
+
+        <div class="success-card" style="margin-bottom:28px;">
+            <div style="font-size:12px;font-weight:700;color:#00dc82;margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em;"><i class="fa-solid fa-circle-check"></i> &nbsp;Périmètre sécurisé — NAT/PAT Opérationnel</div>
+            <p style="font-size:14px;color:#94a3b8;line-height:1.8;margin:0;">Le déploiement du firewall pfSense 2.7.2 en coupure du réseau Eco-Tech Solutions constitue une <strong style="color:#fff;">sécurisation complète et maîtrisée</strong> du périmètre réseau. Le NAT Outbound masque les 50 postes LAN, le PAT expose le serveur Web de façon contrôlée, et les ACL limitent les flux sortants aux protocoles strictement nécessaires.</p>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;">
+            <div class="stat-card"><div class="stat-num" style="color:#f59e0b;">50</div><div class="stat-lbl">Postes masqués par NAT</div></div>
+            <div class="stat-card"><div class="stat-num" style="color:#00d4ff;">2</div><div class="stat-lbl">Ports exposés (80+443)</div></div>
+            <div class="stat-card"><div class="stat-num" style="color:#00dc82;">3</div><div class="stat-lbl">ACL LAN configurées</div></div>
+        </div>
+
+        <div style="background:#000d18;border:1px solid rgba(0,212,255,.15);border-radius:8px;overflow:hidden;margin-bottom:28px;">
+            <table class="data-table">
+                <thead><tr><th>Indicateur</th><th style="color:#ef4444;">Avant pfSense</th><th style="color:#00dc82;">Après pfSense</th></tr></thead>
+                <tbody>
+                    <tr><td>Accès Internet</td><td style="color:#ef4444;font-size:12px;">Direct / non filtré</td><td style="color:#00dc82;font-size:12px;">Via NAT masquerade — IP unique</td></tr>
+                    <tr><td>Exposition LAN</td><td style="color:#ef4444;font-size:12px;">IPs privées routables vers WAN</td><td style="color:#00dc82;font-size:12px;">Masquées derrière 82.124.15.67</td></tr>
+                    <tr><td>Serveur Web interne</td><td style="color:#ef4444;font-size:12px;">Inaccessible depuis l'extérieur</td><td style="color:#00dc82;font-size:12px;">Port 80/443 redirigé par PAT</td></tr>
+                    <tr><td>Règles de filtrage</td><td style="color:#ef4444;font-size:12px;">Aucune — trafic libre</td><td style="color:#00dc82;font-size:12px;">ACL LAN : DNS, HTTP, HTTPS uniquement</td></tr>
+                    <tr><td>Traçabilité</td><td style="color:#ef4444;font-size:12px;">Nulle</td><td style="color:#00dc82;font-size:12px;">Logs pfSense — chaque connexion</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;">
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(245,158,11,.3);padding:4px 14px;border-radius:20px;font-size:11px;color:#f59e0b;font-family:'JetBrains Mono',monospace;">pfSense 2.7.2</span>
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(0,212,255,.3);padding:4px 14px;border-radius:20px;font-size:11px;color:#00d4ff;font-family:'JetBrains Mono',monospace;">NAT Outbound</span>
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(0,220,130,.3);padding:4px 14px;border-radius:20px;font-size:11px;color:#00dc82;font-family:'JetBrains Mono',monospace;">PAT DNAT</span>
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(168,85,247,.3);padding:4px 14px;border-radius:20px;font-size:11px;color:#a855f7;font-family:'JetBrains Mono',monospace;">ACL Stateful</span>
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.15);padding:4px 14px;border-radius:20px;font-size:11px;color:#94a3b8;font-family:'JetBrains Mono',monospace;">Firewall</span>
+        </div>
+    </section>
+</main>
+
+<script>
+function navigate(el){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');const target=el.getAttribute('data-section');document.querySelectorAll('.doc-section').forEach(s=>{s.classList.remove('active');s.classList.remove('reveal')});const section=document.getElementById(target);section.classList.add('active');void section.offsetWidth;section.classList.add('reveal');document.querySelector('main').scrollTop=0}
+const term=document.getElementById('live-terminal');
+function typeLines(lines,index,callback){if(index>=lines.length){if(callback)callback();return}const line=lines[index];if(line.instant){term.innerHTML+='\n'+line.html;term.scrollTop=term.scrollHeight;setTimeout(()=>typeLines(lines,index+1,callback),line.delay||200)}else{term.innerHTML+='\n<span id="tl"></span>';term.scrollTop=term.scrollHeight;const span=term.querySelector('#tl');span.removeAttribute('id');let i=0;const txt=line.text;const color=line.color||'#e2e8f0';span.style.color=color;const iv=setInterval(()=>{span.textContent+=txt[i++];term.scrollTop=term.scrollHeight;if(i>=txt.length){clearInterval(iv);setTimeout(()=>typeLines(lines,index+1,callback),line.delay||150)}},line.speed||30)}}
+const tests={
+ping:[
+    {text:'C:\\Users\\user10>ping 8.8.8.8',color:'#94a3b8',speed:50,delay:400},
+    {instant:true,html:'<span style="color:#475569;">Envoi d\'une requête Ping vers 8.8.8.8 avec 32 octets de données :</span>',delay:600},
+    {instant:true,html:'<span style="color:#00dc82;">Réponse de 8.8.8.8 : octets=32 temps=11ms TTL=116</span>',delay:300},
+    {instant:true,html:'<span style="color:#00dc82;">Réponse de 8.8.8.8 : octets=32 temps=13ms TTL=116</span>',delay:300},
+    {instant:true,html:'<span style="color:#00dc82;">Réponse de 8.8.8.8 : octets=32 temps=12ms TTL=116</span>',delay:300},
+    {instant:true,html:'<span style="color:#00dc82;">Réponse de 8.8.8.8 : octets=32 temps=11ms TTL=116</span>',delay:400},
+    {instant:true,html:'',delay:100},
+    {instant:true,html:'<span style="color:#475569;">Statistiques Ping pour 8.8.8.8 :</span>',delay:100},
+    {instant:true,html:'<span style="color:#00dc82;font-weight:700;">    Paquets : envoyés = 4, reçus = 4, perdus = 0 (perte 0%)</span>',delay:300},
+    {instant:true,html:'<span style="color:#00dc82;font-size:11px;">✓ NAT Outbound opérationnel — 192.168.10.10 → 82.124.15.67 (masquerade)</span>',delay:0},
+],
+curl:[
+    {text:'C:\\Users\\user10>curl https://icanhazip.com',color:'#94a3b8',speed:45,delay:500},
+    {instant:true,html:'<span style="color:#475569;">  % Total    % Received % Xferd  Average Speed...</span>',delay:700},
+    {instant:true,html:'',delay:100},
+    {instant:true,html:'<span style="color:#f59e0b;font-weight:700;font-size:14px;">82.124.15.67</span>',delay:400},
+    {instant:true,html:'',delay:100},
+    {instant:true,html:'<span style="color:#00dc82;font-size:11px;">✓ IP WAN de pfSense confirmée — 50 postes LAN masqués derrière cette IP</span>',delay:0},
+],
+portfwd:[
+    {text:'C:\\Users\\extern>curl http://82.124.15.67',color:'#94a3b8',speed:45,delay:500},
+    {instant:true,html:'<span style="color:#475569;">Connexion vers 82.124.15.67:80...</span>',delay:600},
+    {instant:true,html:'<span style="color:#64748b;">pfSense DNAT: 82.124.15.67:80 → 192.168.10.50:80</span>',delay:400},
+    {instant:true,html:'<span style="color:#475569;">HTTP/1.1 200 OK</span>',delay:200},
+    {instant:true,html:'<span style="color:#475569;">Content-Type: text/html</span>',delay:100},
+    {instant:true,html:'',delay:100},
+    {instant:true,html:'<span style="color:#00dc82;">&lt;html&gt;&lt;body&gt;Bienvenue sur le portail Eco-Tech Solutions&lt;/body&gt;&lt;/html&gt;</span>',delay:400},
+    {instant:true,html:'<span style="color:#00dc82;font-size:11px;">✓ PAT WAN:80 → 192.168.10.50:80 validé — portail accessible depuis Internet</span>',delay:0},
+],
+pfctl:[
+    {text:'root@Eco-Tech-FW01:~# pfctl -s nat',color:'#94a3b8',speed:45,delay:400},
+    {instant:true,html:'',delay:300},
+    {instant:true,html:'<span style="color:#f59e0b;">nat on em0 from 192.168.10.0/24 to any -> (em0)</span>',delay:300},
+    {instant:true,html:'<span style="color:#00d4ff;">rdr on em0 proto tcp from any to 82.124.15.67 port 80  -> 192.168.10.50</span>',delay:200},
+    {instant:true,html:'<span style="color:#00d4ff;">rdr on em0 proto tcp from any to 82.124.15.67 port 443 -> 192.168.10.50</span>',delay:300},
+    {instant:true,html:'',delay:100},
+    {instant:true,html:'<span style="color:#00dc82;font-size:11px;">✓ 3 règles NAT/PAT actives — masquerade + port forwarding HTTP/HTTPS</span>',delay:0},
+]};
+function runTest(type){term.innerHTML='<span style="color:#475569;">Eco-Tech Solutions — Terminal</span>';typeLines(tests[type],0)}
+</script>
+</body>
+</html>
