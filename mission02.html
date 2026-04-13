@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mission 02 — VLANs Free</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;}body{background:#05111c;color:#e2e8f0;font-family:'Outfit',sans-serif;}
+#sidebar{width:272px;min-width:272px;background:#0a1f30;border-right:1px solid rgba(168,85,247,.15);display:flex;flex-direction:column;height:100vh;position:sticky;top:0;overflow-y:auto;}
+.nav-group{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:#a855f7;font-weight:700;padding:0 16px;margin:20px 0 6px;}
+.nav-item{display:flex;align-items:center;gap:8px;padding:8px 16px;font-size:12px;font-weight:500;color:#94a3b8;cursor:pointer;border-left:2px solid transparent;transition:all .2s;}
+.nav-item:hover{background:rgba(255,255,255,.04);color:#fff;}
+.nav-item.active{border-left-color:#a855f7;background:rgba(168,85,247,.06);color:#a855f7;}
+.doc-section{display:none;}.doc-section.active{display:block;}
+.doc-h2{font-size:24px;font-weight:700;color:#fff;margin-bottom:28px;padding-bottom:14px;border-bottom:1px solid rgba(148,163,184,.2);display:flex;align-items:center;gap:10px;}
+.doc-h3{font-size:16px;font-weight:700;color:#a855f7;margin:24px 0 10px;}
+.doc-p{font-size:14px;color:#94a3b8;line-height:1.8;margin-bottom:14px;text-align:justify;}
+.cli-box{background:#000d18;border:1px solid rgba(168,85,247,.2);border-radius:8px;overflow:hidden;font-family:'JetBrains Mono',monospace;}
+.cli-bar{background:#0d2035;padding:8px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(168,85,247,.1);}
+.cli-dot{width:10px;height:10px;border-radius:50%;}.cli-title{font-size:11px;color:#64748b;margin-left:auto;}
+.cli-body{padding:16px;font-size:12px;line-height:1.8;overflow-x:auto;}
+.cli-prompt{color:#a855f7;}.cli-key{color:#00d4ff;}.cli-val{color:#00dc82;}.cli-comment{color:#3d5a6e;}.cli-warn{color:#f59e0b;}
+.info-card{background:#0a1f30;border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:20px;}
+.danger-card{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:20px;}
+.success-card{background:rgba(0,220,130,.07);border:1px solid rgba(0,220,130,.25);border-radius:10px;padding:20px;}
+.data-table{width:100%;border-collapse:collapse;font-size:13px;}
+.data-table th{background:#0d2035;color:#94a3b8;font-size:11px;text-transform:uppercase;padding:10px 16px;text-align:left;}
+.data-table td{padding:10px 16px;border-bottom:1px solid rgba(148,163,184,.08);color:#cbd5e1;}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 10px;border-radius:4px;font-family:'JetBrains Mono',monospace;}
+#live-terminal{background:#000d18;border:1px solid rgba(168,85,247,.25);border-radius:8px;padding:16px;font-family:'JetBrains Mono',monospace;font-size:12px;height:220px;overflow-y:auto;}
+.test-btn{padding:8px 20px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;border:1px solid;}
+.tb-purple{background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.4);color:#a855f7;}.tb-purple:hover{background:rgba(168,85,247,.2);}
+.tb-cyan{background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.4);color:#00d4ff;}.tb-cyan:hover{background:rgba(0,212,255,.2);}
+.tb-orange{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.4);color:#f59e0b;}.tb-orange:hover{background:rgba(245,158,11,.2);}
+.reveal{animation:fadeUp .6s ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:rgba(168,85,247,.3);border-radius:4px;}
+</style>
+</head>
+<body class="flex" style="height:100vh;overflow:hidden;">
+<aside id="sidebar">
+  <div style="padding:20px 16px;border-bottom:1px solid rgba(168,85,247,.1);">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="width:38px;height:38px;background:#a855f7;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;box-shadow:0 0 18px rgba(168,85,247,.4);"><i class="fa-solid fa-layer-group"></i></div>
+      <div><div style="font-weight:700;color:#fff;font-size:14px;">Mission 02</div><div style="font-size:10px;color:#a855f7;font-family:'JetBrains Mono',monospace;">VLANs & ROUTING</div></div>
+    </div>
+  </div>
+  <nav style="flex:1;padding:8px 0;">
+    <div class="nav-group">Analyse</div>
+    <div class="nav-item active" data-section="s-ctx" onclick="nav(this)"><i class="fa-solid fa-circle-info" style="width:14px;"></i> 1. Contexte</div>
+    <div class="nav-item" data-section="s-sol" onclick="nav(this)"><i class="fa-solid fa-lightbulb" style="width:14px;"></i> 2. Solution</div>
+    <div class="nav-group">Conception</div>
+    <div class="nav-item" data-section="s-adr" onclick="nav(this)"><i class="fa-solid fa-table" style="width:14px;"></i> 3. Plan d'Adressage</div>
+    <div class="nav-item" data-section="s-top" onclick="nav(this)"><i class="fa-solid fa-diagram-project" style="width:14px;"></i> 4. Topologie</div>
+    <div class="nav-group">Mise en Œuvre</div>
+    <div class="nav-item" data-section="s-sw0" onclick="nav(this)"><i class="fa-solid fa-sitemap" style="width:14px;"></i> 5. Switch0</div>
+    <div class="nav-item" data-section="s-sw1" onclick="nav(this)"><i class="fa-solid fa-sitemap" style="width:14px;"></i> 6. Switch1</div>
+    <div class="nav-item" data-section="s-r0" onclick="nav(this)"><i class="fa-solid fa-terminal" style="width:14px;"></i> 7. Router0 (VLAN 10)</div>
+    <div class="nav-item" data-section="s-r1" onclick="nav(this)"><i class="fa-solid fa-terminal" style="width:14px;"></i> 8. Router1 (VLAN 11)</div>
+    <div class="nav-group">Validation</div>
+    <div class="nav-item" data-section="s-tst" onclick="nav(this)"><i class="fa-solid fa-flask" style="width:14px;"></i> 9. Tests</div>
+    <div class="nav-item" data-section="s-bil" onclick="nav(this)"><i class="fa-solid fa-chart-bar" style="width:14px;"></i> 10. Bilan</div>
+  </nav>
+  <div style="padding:14px 16px;border-top:1px solid rgba(168,85,247,.1);background:rgba(0,0,0,.2);">
+    <div style="font-size:10px;color:#475569;">BTS SIO SISR · E5</div>
+    <div style="font-size:13px;font-weight:700;color:#fff;">SESSION 2026</div>
+    <div style="font-size:10px;color:#a855f7;">Client : Free — Infra Interne</div>
+  </div>
+</aside>
+<main style="flex:1;overflow-y:auto;padding:40px 48px;max-width:900px;">
+
+<section id="s-ctx" class="doc-section active reveal">
+  <h2 class="doc-h2"><span style="color:#a855f7;font-family:'JetBrains Mono',monospace;font-size:16px;">01.</span> Contexte & Problématique</h2>
+  <div class="doc-p">L'infrastructure réseau de <strong style="color:#fff;">Free</strong> fonctionnait sur un <strong style="color:#f59e0b;">réseau à plat</strong> : un domaine de broadcast unique regroupant les 4 départements (Support, R&D, RH, Finance) sans isolation logique ni sécurité inter-services.</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+    <div class="info-card">
+      <div class="doc-h3" style="margin-top:0;"><i class="fa-solid fa-building"></i> Périmètre</div>
+      <ul style="font-size:13px;color:#94a3b8;line-height:2;list-style:none;padding:0;margin:0;">
+        <li><i class="fa-solid fa-headset" style="color:#00d4ff;margin-right:8px;"></i> Support Technique → VLAN 10</li>
+        <li><i class="fa-solid fa-flask" style="color:#a855f7;margin-right:8px;"></i> R&D → VLAN 11</li>
+        <li><i class="fa-solid fa-users" style="color:#00dc82;margin-right:8px;"></i> Ressources Humaines → VLAN 20</li>
+        <li><i class="fa-solid fa-euro-sign" style="color:#f59e0b;margin-right:8px;"></i> Finance → VLAN 30</li>
+        <li><i class="fa-solid fa-server" style="color:#64748b;margin-right:8px;"></i> 2× Cisco 2911 · 2× Catalyst 2960</li>
+      </ul>
+    </div>
+    <div class="danger-card">
+      <div style="font-size:15px;font-weight:700;color:#ef4444;margin:0 0 12px;"><i class="fa-solid fa-triangle-exclamation" style="margin-right:8px;"></i>Problèmes réseau à plat</div>
+      <ul style="font-size:13px;color:#fca5a5;line-height:2;list-style:none;padding:0;margin:0;">
+        <li><i class="fa-solid fa-xmark" style="margin-right:8px;"></i>Broadcasts saturent toute la bande passante</li>
+        <li><i class="fa-solid fa-xmark" style="margin-right:8px;"></i>Finance voit le trafic de la R&D</li>
+        <li><i class="fa-solid fa-xmark" style="margin-right:8px;"></i>Aucune identification logique des ports</li>
+        <li><i class="fa-solid fa-xmark" style="margin-right:8px;"></i>Maintenance opaque — réseau illisible</li>
+      </ul>
+    </div>
+  </div>
+  <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:16px 20px;">
+    <div style="font-size:12px;color:#ef4444;font-weight:700;margin-bottom:8px;text-transform:uppercase;">Scénario d'exfiltration</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;">
+      <span style="background:rgba(0,0,0,.3);padding:4px 12px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">Poste Finance</span>
+      <i class="fa-solid fa-arrow-right" style="color:#475569;"></i>
+      <span style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);padding:4px 12px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#fca5a5;">Wireshark</span>
+      <i class="fa-solid fa-arrow-right" style="color:#475569;"></i>
+      <span style="color:#ef4444;font-weight:700;">Données R&D exposées !</span>
+    </div>
+  </div>
+</section>
+
+<section id="s-sol" class="doc-section">
+  <h2 class="doc-h2"><span style="color:#a855f7;font-family:'JetBrains Mono',monospace;font-size:16px;">02.</span> Solution Retenue</h2>
+  <div class="doc-p">Segmentation en <strong style="color:#fff;">4 VLANs distincts</strong> par département avec technique <strong style="color:#fff;">Router-on-a-Stick</strong> : chaque routeur gère son VLAN via une sous-interface dot1Q. Liaison inter-routeurs via transit 172.16.0.0/24 et routage dynamique RIPv2.</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;">
+    <div class="info-card" style="text-align:center;border-top:3px solid #a855f7;"><i class="fa-solid fa-layer-group" style="font-size:28px;color:#a855f7;margin-bottom:8px;display:block;"></i><div style="font-weight:700;color:#fff;">4 VLANs</div><div style="font-size:12px;color:#64748b;">Isolation par dept</div></div>
+    <div class="info-card" style="text-align:center;border-top:3px solid #00d4ff;"><i class="fa-solid fa-code-branch" style="font-size:28px;color:#00d4ff;margin-bottom:8px;display:block;"></i><div style="font-weight:700;color:#fff;">Router-on-a-Stick</div><div style="font-size:12px;color:#64748b;">dot1Q sub-interfaces</div></div>
+    <div class="info-card" style="text-align:center;border-top:3px solid #00dc82;"><i class="fa-solid fa-route" style="font-size:28px;color:#00dc82;margin-bottom:8px;display:block;"></i><div style="font-weight:700;color:#fff;">RIPv2</div><div style="font-size:12px;color:#64748b;">Routage dynamique</div></div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:8px;">
+    <div style="display:flex;gap:10px;font-size:13px;color:#94a3b8;"><i class="fa-solid fa-circle-check" style="color:#00dc82;margin-top:2px;flex-shrink:0;"></i>Isolation des domaines de broadcast : chaque VLAN = un domaine indépendant.</div>
+    <div style="display:flex;gap:10px;font-size:13px;color:#94a3b8;"><i class="fa-solid fa-circle-check" style="color:#00dc82;margin-top:2px;flex-shrink:0;"></i>Contrôle inter-services via le routeur comme point de contrôle unique.</div>
+    <div style="display:flex;gap:10px;font-size:13px;color:#94a3b8;"><i class="fa-solid fa-circle-check" style="color:#00dc82;margin-top:2px;flex-shrink:0;"></i>Identification visuelle des ports : chaque port assigné à un département.</div>
+    <div style="display:flex;gap:10px;font-size:13px;color:#94a3b8;"><i class="fa-solid fa-circle-check" style="color:#00dc82;margin-top:2px;flex-shrink:0;"></i>Évolutivité : l'ajout d'un poste ne concerne que le VLAN du service.</div>
+  </div>
+</section>
+
+<section id="s-adr" class="doc-section">
+  <h2 class="doc-h2"><span style="color:#a855f7;font-family:'JetBrains Mono',monospace;font-size:16px;">03.</span> Plan d'Adressage VLAN</h2>
+  <div style="overflow-x:auto;border-radius:10px;border:1px solid rgba(168,85,247,.15);overflow:hidden;margin-bottom:20px;">
+    <table class="data-table">
+      <thead><tr><th>VLAN</th><th>Département</th><th>Réseau</th><th>Passerelle</th><th>Ports Switch</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge" style="background:rgba(0,212,255,.1);color:#00d4ff;border:1px solid rgba(0,212,255,.3);">VLAN 10</span></td><td>Support Technique</td><td style="font-family:'JetBrains Mono',monospace;font-size:12px;">192.168.10.0/24</td><td style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#00dc82;">192.168.10.254</td><td style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#f59e0b;">Fa0/1–5</td></tr>
+        <tr><td><span class="badge" style="background:rgba(168,85,247,.1);color:#a855f7;border:1px solid rgba(168,85,247,.3);">VLAN 11</span></td><td>R&D</td><td style="font-family:'JetBrains Mono',monospace;font-size:12px;">192.168.11.0/24</td><td style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#00dc82;">192.168.11.254</td><td style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#f59e0b;">Fa0/6–10</td></tr>
+        <tr><td><span class="badge" style="background:rgba(0,220,130,.1);color:#00dc82;border:1px solid rgba(0,220,130,.3);">VLAN 20</span></td><td>Ressources Humaines</td><td style="font-family:'JetBrains Mono',monospace;font-size:12px;">192.168.20.0/24</td><td style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#00dc82;">192.168.20.254</td><td style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#f59e0b;">Fa0/11–15</td></tr>
+        <tr><td><span class="badge" style="background:rgba(245,158,11,.1);color:#f59e0b;border:1px solid rgba(245,158,11,.3);">VLAN 30</span></td><td>Finance</td><td style="font-family:'JetBrains Mono',monospace;font-size:12px;">192.168.30.0/24</td><td style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#00dc82;">192.168.30.254</td><td style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#f59e0b;">Fa0/16–20</td></tr>
+        <tr><td><span class="badge" style="background:rgba(0,0,0,.3);color:#64748b;border:1px solid rgba(255,255,255,.08);">Transit</span></td><td style="color:#64748b;">Liaison inter-routeurs</td><td style="font-family:'JetBrains Mono',monospace;font-size:12px;">172.16.0.0/24</td><td style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#94a3b8;">R0:.254 / R1:.253</td><td style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#64748b;">Gi0/1</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="s-top" class="doc-section">
+  <h2 class="doc-h2"><span style="color:#a855f7;font-family:'JetBrains Mono',monospace;font-size:16px;">04.</span> Topologie Réseau</h2>
+  <div class="doc-p">2× Cisco 2911 reliés par transit 172.16.0.0/24. Chaque routeur dessert son VLAN via une sous-interface dot1Q sur un Catalyst 2960-24TT.</div>
+  <div style="background:#000d18;border:1px solid rgba(168,85,247,.15);border-radius:12px;padding:28px;">
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+        <div style="background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);border-radius:8px;padding:14px;text-align:center;width:100%;">
+          <i class="fa-solid fa-router" style="font-size:24px;color:#00d4ff;"></i>
+          <div style="font-size:12px;font-weight:700;color:#fff;margin-top:6px;">Router0</div>
+          <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:#00d4ff;">G0/0.10 · 192.168.10.254</div>
+        </div>
+        <div style="width:2px;height:16px;background:rgba(0,212,255,.4);"></div>
+        <div style="background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);border-radius:6px;padding:8px;text-align:center;width:100%;font-size:11px;color:#cbd5e1;"><i class="fa-solid fa-sitemap" style="color:#00d4ff;margin-right:4px;"></i>Switch0 — 2960-24TT</div>
+        <div style="width:2px;height:16px;background:rgba(0,212,255,.4);"></div>
+        <div style="background:rgba(0,212,255,.06);border:1px dashed rgba(0,212,255,.25);border-radius:6px;padding:8px;text-align:center;width:100%;">
+          <i class="fa-solid fa-laptop" style="color:#00d4ff;font-size:14px;"></i>
+          <div style="font-size:11px;font-weight:700;color:#00d4ff;margin-top:4px;">VLAN 10 — Support</div>
+          <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:#64748b;">Laptop0 · DHCP</div>
+        </div>
+      </div>
+      <div style="text-align:center;font-size:10px;color:#a855f7;font-family:'JetBrains Mono',monospace;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.2);border-radius:6px;padding:10px 14px;white-space:nowrap;">
+        <i class="fa-solid fa-ethernet" style="font-size:18px;display:block;margin-bottom:6px;"></i>Transit<br>172.16.0.0/24<br><span style="color:#475569;">RIPv2</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+        <div style="background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.3);border-radius:8px;padding:14px;text-align:center;width:100%;">
+          <i class="fa-solid fa-router" style="font-size:24px;color:#a855f7;"></i>
+          <div style="font-size:12px;font-weight:700;color:#fff;margin-top:6px;">Router1</div>
+          <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:#a855f7;">G0/0.11 · 192.168.11.254</div>
+        </div>
+        <div style="width:2px;height:16px;background:rgba(168,85,247,.4);"></div>
+        <div style="background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.2);border-radius:6px;padding:8px;text-align:center;width:100%;font-size:11px;color:#cbd5e1;"><i class="fa-solid fa-sitemap" style="color:#a855f7;margin-right:4px;"></i>Switch1 — 2960-24TT</div>
+        <div style="width:2px;height:16px;background:rgba(168,85,247,.4);"></div>
+        <div style="background:rgba(168,85,247,.06);border:1px dashed rgba(168,85,247,.25);border-radius:6px;padding:8px;text-align:center;width:100%;">
+          <i class="fa-solid fa-laptop" style="color:#a855f7;font-size:14px;"></i>
+          <div style="font-size:11px;font-weight:700;color:#a855f7;margin-top:4px;">VLAN 11 — R&D</div>
+          <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:#64748b;">Laptop1 · DHCP</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="s-sw0" class="doc-section">
+  <h2 class="doc-h2"><span style="color:#a855f7;font-family:'JetBrains Mono',monospace;font-size:16px;">05.</span> Configuration Switch0</h2>
+  <div class="doc-p">VLANs 10 et 11 créés. Port Gi0/1 en mode trunk vers Router0. Ports fa0/1-5 affectés au VLAN 10 (Support Technique) en mode access.</div>
+  <div class="cli-box"><div class="cli-bar"><div class="cli-dot" style="background:#ef4444;"></div><div class="cli-dot" style="background:#f59e0b;"></div><div class="cli-dot" style="background:#00dc82;"></div><span class="cli-title">Switch0 — Catalyst 2960-24TT</span></div>
+  <div class="cli-body">
+<span class="cli-comment">! ── VLANs ──────────────────────────────────────</span>
+<span class="cli-prompt">Switch(config)#</span><span class="cli-key">vlan</span> <span class="cli-val">10</span>
+<span class="cli-prompt">Switch(config-vlan)#</span><span class="cli-key">vlan</span> <span class="cli-val">11</span>
+<span class="cli-comment">! ── Trunk vers Router0 ──────────────────────────</span>
+<span class="cli-prompt">Switch(config-vlan)#</span><span class="cli-cmd">int g0/1</span>
+<span class="cli-prompt">Switch(config-if)#</span><span class="cli-key">switchport mode trunk</span>
+<span class="cli-comment">! ── Access VLAN 10 ──────────────────────────────</span>
+<span class="cli-prompt">Switch(config-if)#</span><span class="cli-cmd">int r f0/1-5</span>
+<span class="cli-prompt">Switch(config-if-range)#</span><span class="cli-key">sw mode access</span>
+<span class="cli-prompt">Switch(config-if-range)#</span><span class="cli-key">sw acc vlan</span> <span class="cli-val">10</span>
+<span class="cli-prompt">Switch(config-if-range)#</span><span class="cli-cmd">end</span>
+<span class="cli-prompt">Switch#</span><span class="cli-cmd">write memory</span>
+<span class="cli-warn">Building configuration... [OK]</span>
+  </div></div>
+</section>
+
+<section id="s-sw1" class="doc-section">
+  <h2 class="doc-h2"><span style="color:#a855f7;font-family:'JetBrains Mono',monospace;font-size:16px;">06.</span> Configuration Switch1</h2>
+  <div class="doc-p">Même logique que Switch0 : VLANs 10 et 11, Gi0/1 trunk vers Router1, ports fa0/1-5 affectés au VLAN 11 (R&D).</div>
+  <div class="cli-box"><div class="cli-bar"><div class="cli-dot" style="background:#ef4444;"></div><div class="cli-dot" style="background:#f59e0b;"></div><div class="cli-dot" style="background:#00dc82;"></div><span class="cli-title">Switch1 — Catalyst 2960-24TT</span></div>
+  <div class="cli-body">
+<span class="cli-prompt">Switch(config)#</span><span class="cli-key">vlan</span> <span class="cli-val">10</span>
+<span class="cli-prompt">Switch(config-vlan)#</span><span class="cli-key">vlan</span> <span class="cli-val">11</span>
+<span class="cli-prompt">Switch(config-vlan)#</span><span class="cli-cmd">int g0/1</span>
+<span class="cli-prompt">Switch(config-if)#</span><span class="cli-key">switchport mode trunk</span>
+<span class="cli-prompt">Switch(config-if)#</span><span class="cli-cmd">int r f0/1-5</span>
+<span class="cli-prompt">Switch(config-if-range)#</span><span class="cli-key">sw mode access</span>
+<span class="cli-prompt">Switch(config-if-range)#</span><span class="cli-key">sw acc vlan</span> <span class="cli-val">11</span>
+<span class="cli-prompt">Switch(config-if-range)#</span><span class="cli-cmd">end</span>
+<span class="cli-prompt">Switch#</span><span class="cli-cmd">write memory</span>
+<span class="cli-warn">Building configuration... [OK]</span>
+  </div></div>
+</section>
+
+<section id="s-r0" class="doc-section">
+  <h2 class="doc-h2"><span style="color:#a855f7;font-family:'JetBrains Mono',monospace;font-size:16px;">07.</span> Router0 — VLAN 10 + DHCP + RIPv2</h2>
+  <div class="doc-p">Sous-interface G0/0.10 encapsulée dot1Q 10, passerelle 192.168.10.254. Pool DHCP <code style="background:rgba(0,0,0,.4);padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#a855f7;">vlan_10</code>. G0/1 = transit 172.16.0.254. RIPv2 propage les 3 réseaux.</div>
+  <div class="cli-box"><div class="cli-bar"><div class="cli-dot" style="background:#ef4444;"></div><div class="cli-dot" style="background:#f59e0b;"></div><div class="cli-dot" style="background:#00dc82;"></div><span class="cli-title">Router0 — Cisco 2911</span></div>
+  <div class="cli-body">
+<span class="cli-prompt">Router(config)#</span><span class="cli-cmd">int g0/1</span>
+<span class="cli-prompt">Router(config-if)#</span><span class="cli-cmd">no shutdown</span>
+<span class="cli-prompt">Router(config-if)#</span><span class="cli-key">ip address</span> <span class="cli-val">172.16.0.254 255.255.255.0</span>
+<span class="cli-prompt">Router(config-if)#</span><span class="cli-cmd">int g0/0</span>
+<span class="cli-prompt">Router(config-if)#</span><span class="cli-cmd">no shutdown</span>
+<span class="cli-prompt">Router(config-if)#</span><span class="cli-cmd">int g0/0.10</span>
+<span class="cli-prompt">Router(config-subif)#</span><span class="cli-key">encapsulation dot1Q</span> <span class="cli-val">10</span>
+<span class="cli-prompt">Router(config-subif)#</span><span class="cli-key">ip address</span> <span class="cli-val">192.168.10.254 255.255.255.0</span>
+<span class="cli-prompt">Router(config-subif)#</span><span class="cli-key">ip dhcp pool</span> <span class="cli-val">vlan_10</span>
+<span class="cli-prompt">Router(dhcp-config)#</span><span class="cli-key">network</span>        <span class="cli-val">192.168.10.0 255.255.255.0</span>
+<span class="cli-prompt">Router(dhcp-config)#</span><span class="cli-key">dns-server</span>     <span class="cli-val">8.8.8.8</span>
+<span class="cli-prompt">Router(dhcp-config)#</span><span class="cli-key">default-router</span> <span class="cli-val">192.168.10.254</span>
+<span class="cli-prompt">Router(dhcp-config)#</span><span class="cli-cmd">router rip</span>
+<span class="cli-prompt">Router(config-router)#</span><span class="cli-key">version 2</span>
+<span class="cli-prompt">Router(config-router)#</span><span class="cli-key">network</span> <span class="cli-val">192.168.10.0</span>
+<span class="cli-prompt">Router(config-router)#</span><span class="cli-key">network</span> <span class="cli-val">192.168.11.0</span>
+<span class="cli-prompt">Router(config-router)#</span><span class="cli-key">network</span> <span class="cli-val">172.16.0.0</span>
+<span class="cli-prompt">Router(config-router)#</span><span class="cli-cmd">end</span>
+<span class="cli-prompt">Router#</span><span class="cli-cmd">write memory</span>
+<span class="cli-warn">Building configuration... [OK]</span>
+  </div></div>
+  <div class="success-card" style="margin-top:16px;"><div style="display:flex;flex-wrap:wrap;gap:16px;"><span style="font-size:12px;color:#6ee7b7;display:flex;align-items:center;gap:6px;"><i class="fa-solid fa-check-circle"></i>G0/0.10 dot1Q 10</span><span style="font-size:12px;color:#6ee7b7;display:flex;align-items:center;gap:6px;"><i class="fa-solid fa-check-circle"></i>Pool vlan_10</span><span style="font-size:12px;color:#6ee7b7;display:flex;align-items:center;gap:6px;"><i class="fa-solid fa-check-circle"></i>RIPv2 vers 2</span><span style="font-size:12px;color:#6ee7b7;display:flex;align-items:center;gap:6px;"><i class="fa-solid fa-check-circle"></i>wr m [OK]</span></div></div>
+</section>
+
+<section id="s-r1" class="doc-section">
+  <h2 class="doc-h2"><span style="color:#a855f7;font-family:'JetBrains Mono',monospace;font-size:16px;">08.</span> Router1 — VLAN 11 + DHCP + RIPv2</h2>
+  <div class="doc-p">Sous-interface G0/0.11 dot1Q 11, passerelle 192.168.11.254. Pool DHCP vlan_11. G0/1 = 172.16.0.253. RIPv2 annonce les mêmes réseaux.</div>
+  <div class="cli-box"><div class="cli-bar"><div class="cli-dot" style="background:#ef4444;"></div><div class="cli-dot" style="background:#f59e0b;"></div><div class="cli-dot" style="background:#00dc82;"></div><span class="cli-title">Router1 — Cisco 2911</span></div>
+  <div class="cli-body">
+<span class="cli-prompt">Router(config)#</span><span class="cli-cmd">int g0/1</span>
+<span class="cli-prompt">Router(config-if)#</span><span class="cli-key">ip address</span> <span class="cli-val">172.16.0.253 255.255.255.0</span>
+<span class="cli-prompt">Router(config-if)#</span><span class="cli-cmd">int g0/0.11</span>
+<span class="cli-prompt">Router(config-subif)#</span><span class="cli-key">encapsulation dot1Q</span> <span class="cli-val">11</span>
+<span class="cli-prompt">Router(config-subif)#</span><span class="cli-key">ip address</span> <span class="cli-val">192.168.11.254 255.255.255.0</span>
+<span class="cli-prompt">Router(config-subif)#</span><span class="cli-key">ip dhcp pool</span> <span class="cli-val">vlan_11</span>
+<span class="cli-prompt">Router(dhcp-config)#</span><span class="cli-key">network</span>        <span class="cli-val">192.168.11.0 255.255.255.0</span>
+<span class="cli-prompt">Router(dhcp-config)#</span><span class="cli-key">dns-server</span>     <span class="cli-val">8.8.8.8</span>
+<span class="cli-prompt">Router(dhcp-config)#</span><span class="cli-key">default-router</span> <span class="cli-val">192.168.11.254</span>
+<span class="cli-prompt">Router(dhcp-config)#</span><span class="cli-cmd">router rip</span>
+<span class="cli-prompt">Router(config-router)#</span><span class="cli-key">version 2</span>
+<span class="cli-prompt">Router(config-router)#</span><span class="cli-key">network</span> <span class="cli-val">192.168.10.0</span>
+<span class="cli-prompt">Router(config-router)#</span><span class="cli-key">network</span> <span class="cli-val">192.168.11.0</span>
+<span class="cli-prompt">Router(config-router)#</span><span class="cli-key">network</span> <span class="cli-val">172.16.0.0</span>
+<span class="cli-prompt">Router(config-router)#</span><span class="cli-cmd">end</span>
+<span class="cli-prompt">Router#</span><span class="cli-cmd">write memory</span>
+<span class="cli-warn">Building configuration... [OK]</span>
+  </div></div>
+</section>
+
+<section id="s-tst" class="doc-section">
+  <h2 class="doc-h2"><span style="color:#a855f7;font-family:'JetBrains Mono',monospace;font-size:16px;">09.</span> Tests & Simulations</h2>
+  <div class="doc-p">Simulation des validations effectuées sur Laptop0 (VLAN 10) et Laptop1 (VLAN 11) lors de la mise en service.</div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+    <button class="test-btn tb-cyan" onclick="runT('d0')"><i class="fa-solid fa-circle-play" style="margin-right:6px;"></i>Bail DHCP — Laptop0 (VLAN 10)</button>
+    <button class="test-btn tb-purple" onclick="runT('d1')"><i class="fa-solid fa-circle-play" style="margin-right:6px;"></i>Bail DHCP — Laptop1 (VLAN 11)</button>
+    <button class="test-btn tb-orange" onclick="runT('ping')"><i class="fa-solid fa-wifi" style="margin-right:6px;"></i>Ping inter-VLAN (11→10)</button>
+    <button class="test-btn" style="border:1px solid rgba(255,255,255,.1);color:#64748b;" onclick="clearT()"><i class="fa-solid fa-trash" style="margin-right:6px;"></i>Effacer</button>
+  </div>
+  <div id="live-terminal"><span style="color:#475569;">Cisco Packet Tracer — PC Command Line&nbsp;</span><span style="color:#a855f7;">▮</span></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px;">
+    <div class="success-card"><div style="font-size:12px;font-weight:700;color:#00dc82;margin-bottom:10px;"><i class="fa-solid fa-check-circle" style="margin-right:6px;"></i>Laptop0 — VLAN 10 — DHCP OK</div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;line-height:2;color:#94a3b8;"><div><span style="color:#475569;">IPv4 :</span> <span style="color:#00d4ff;">192.168.10.1</span></div><div><span style="color:#475569;">GW   :</span> 192.168.10.254</div><div style="color:#00dc82;margin-top:4px;">DHCP request successful.</div></div></div>
+    <div class="success-card"><div style="font-size:12px;font-weight:700;color:#00dc82;margin-bottom:10px;"><i class="fa-solid fa-check-circle" style="margin-right:6px;"></i>Ping inter-VLAN — 0% perte</div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;line-height:2;color:#94a3b8;"><div style="color:#475569;">C:\&gt;ping 192.168.10.1</div><div>Reply: time=11ms TTL=126</div><div>Reply: time=4ms TTL=126</div><div style="color:#00dc82;margin-top:4px;">Sent=4, Received=4, Lost=0</div></div></div>
+  </div>
+</section>
+
+<section id="s-bil" class="doc-section">
+  <h2 class="doc-h2"><span style="color:#a855f7;font-family:'JetBrains Mono',monospace;font-size:16px;">10.</span> Bilan & Conclusion</h2>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px;">
+    <div style="background:#0a1f30;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:20px;text-align:center;"><div style="font-size:32px;font-weight:900;color:#a855f7;">4</div><div style="font-size:11px;color:#64748b;margin-top:4px;text-transform:uppercase;">VLANs actifs</div></div>
+    <div style="background:#0a1f30;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:20px;text-align:center;"><div style="font-size:32px;font-weight:900;color:#00d4ff;">0%</div><div style="font-size:11px;color:#64748b;margin-top:4px;text-transform:uppercase;">Perte paquets</div></div>
+    <div style="background:#0a1f30;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:20px;text-align:center;"><div style="font-size:32px;font-weight:900;color:#00dc82;">5ms</div><div style="font-size:11px;color:#64748b;margin-top:4px;text-transform:uppercase;">Latence inter-VLAN</div></div>
+    <div style="background:#0a1f30;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:20px;text-align:center;"><div style="font-size:32px;font-weight:900;color:#f59e0b;">100%</div><div style="font-size:11px;color:#64748b;margin-top:4px;text-transform:uppercase;">Tests réussis</div></div>
+  </div>
+  <div style="background:linear-gradient(135deg,rgba(168,85,247,.08),rgba(0,212,255,.06));border:1px solid rgba(168,85,247,.2);border-radius:12px;padding:28px;text-align:center;">
+    <div style="font-size:36px;color:#a855f7;margin-bottom:12px;"><i class="fa-solid fa-circle-check"></i></div>
+    <div style="font-size:20px;font-weight:900;color:#fff;margin-bottom:8px;">SEGMENTATION RÉUSSIE</div>
+    <div style="font-size:13px;color:#a855f7;font-family:'JetBrains Mono',monospace;margin-bottom:16px;">4 VLANs ACTIFS · ISOLATION DES FLUX · ROUTAGE INTER-VLAN OK</div>
+    <div style="font-size:13px;color:#94a3b8;max-width:560px;margin:0 auto;line-height:1.8;">Segmentation VLAN, trunking 802.1Q, Router-on-a-Stick, DHCP embarqué, RIPv2 — compétences SISR E5 démontrées.</div>
+    <div style="display:flex;justify-content:center;gap:10px;margin-top:20px;flex-wrap:wrap;">
+      <span style="background:rgba(0,0,0,.3);border:1px solid rgba(168,85,247,.2);padding:4px 14px;border-radius:20px;font-size:11px;color:#a855f7;font-family:'JetBrains Mono',monospace;">VLAN 10/11/20/30</span>
+      <span style="background:rgba(0,0,0,.3);border:1px solid rgba(0,212,255,.2);padding:4px 14px;border-radius:20px;font-size:11px;color:#00d4ff;font-family:'JetBrains Mono',monospace;">802.1Q Trunk</span>
+      <span style="background:rgba(0,0,0,.3);border:1px solid rgba(0,220,130,.2);padding:4px 14px;border-radius:20px;font-size:11px;color:#00dc82;font-family:'JetBrains Mono',monospace;">Router-on-a-Stick</span>
+      <span style="background:rgba(0,0,0,.3);border:1px solid rgba(245,158,11,.2);padding:4px 14px;border-radius:20px;font-size:11px;color:#f59e0b;font-family:'JetBrains Mono',monospace;">RIPv2</span>
+    </div>
+  </div>
+</section>
+
+</main>
+<script>
+function nav(el){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');const t=el.dataset.section;document.querySelectorAll('.doc-section').forEach(s=>{s.classList.remove('active','reveal');});const s=document.getElementById(t);s.classList.add('active');void s.offsetWidth;s.classList.add('reveal');document.querySelector('main').scrollTop=0;}
+const term=document.getElementById('live-terminal');
+function clearT(){term.innerHTML='<span style="color:#475569;">Cisco Packet Tracer — PC Command Line&nbsp;</span><span style="color:#a855f7;">▮</span>';}
+function typeLines(lines,i,cb){if(i>=lines.length){if(cb)cb();return;}const l=lines[i];if(l.instant){term.innerHTML+='\n'+l.html;term.scrollTop=term.scrollHeight;setTimeout(()=>typeLines(lines,i+1,cb),l.delay||200);}else{term.innerHTML+='\n<span id="tl"></span>';const sp=term.querySelector('#tl');sp.removeAttribute('id');sp.style.color=l.color||'#e2e8f0';let j=0;const iv=setInterval(()=>{sp.textContent+=l.text[j++];term.scrollTop=term.scrollHeight;if(j>=l.text.length){clearInterval(iv);setTimeout(()=>typeLines(lines,i+1,cb),l.delay||150);}},l.speed||30);}}
+const tests={
+d0:[{text:'C:\\>ipconfig',color:'#94a3b8',speed:60,delay:500},{instant:true,html:'<span style="color:#00d4ff;">DHCP</span> <span style="color:#00dc82;">DHCP request successful.</span>',delay:400},{instant:true,html:'IPv4: <span style="color:#00d4ff;">192.168.10.1</span> | GW: <span style="color:#cbd5e1;">192.168.10.254</span> | DNS: 8.8.8.8',delay:300},{instant:true,html:'<span style="color:#00d4ff;">✓ Bail DHCP obtenu — VLAN 10 Support</span>',delay:0}],
+d1:[{text:'C:\\>ipconfig',color:'#94a3b8',speed:60,delay:500},{instant:true,html:'<span style="color:#a855f7;">DHCP</span> <span style="color:#00dc82;">DHCP request successful.</span>',delay:400},{instant:true,html:'IPv4: <span style="color:#a855f7;">192.168.11.1</span> | GW: <span style="color:#cbd5e1;">192.168.11.254</span>',delay:300},{instant:true,html:'<span style="color:#a855f7;">✓ Bail DHCP obtenu — VLAN 11 R&D</span>',delay:0}],
+ping:[{text:'C:\\>ping 192.168.10.1',color:'#94a3b8',speed:55,delay:600},{instant:true,html:'Pinging 192.168.10.1...',delay:500},{instant:true,html:'<span style="color:#00dc82;">Reply from 192.168.10.1: time=11ms TTL=126</span>',delay:300},{instant:true,html:'<span style="color:#00dc82;">Reply from 192.168.10.1: time=4ms TTL=126</span>',delay:300},{instant:true,html:'<span style="color:#00dc82;">Reply from 192.168.10.1: time=4ms TTL=126</span>',delay:300},{instant:true,html:'<span style="color:#00dc82;">Reply from 192.168.10.1: time=4ms TTL=126</span>',delay:400},{instant:true,html:'<span style="color:#475569;">Sent=4, Received=4, Lost=0 (0% loss) | Avg=5ms</span>',delay:300},{instant:true,html:'<span style="color:#00dc82;">✓ Routage inter-VLAN validé — VLAN11 → VLAN10</span>',delay:0}]
+};
+function runT(t){term.innerHTML='<span style="color:#475569;">Cisco Packet Tracer</span>';typeLines(tests[t],0);}
+</script>
+</body>
+</html>
