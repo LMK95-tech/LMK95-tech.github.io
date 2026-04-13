@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LMK.SISR — Portfolio E5 | Mashala Nkole Lenny</title>
+  <title>LMK.SISR — Portfolio E5/E6 | Mashala Nkole Lenny</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -31,264 +31,52 @@
     /* ── HEADER ── */
     header {
       position: sticky; top: 0; z-index: 200;
-      height: 62px;
-      background: rgba(255,255,255,.96);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid #e9e9ed;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 2.5rem;
+      height: 62px; background: rgba(255,255,255,.96); backdrop-filter: blur(14px);
+      border-bottom: 1px solid #e9e9ed; display: flex; align-items: center; justify-content: space-between; padding: 0 2.5rem;
     }
     .logo { font-weight: 900; font-size: 1.2rem; letter-spacing: -.03em; color: #0a0a0f; }
     .logo span { color: var(--v); }
     .nav-links { display: flex; align-items: center; gap: .25rem; }
-    .nav-links a {
-      font-size: .84rem; font-weight: 500; color: #374151;
-      text-decoration: none; padding: .42rem .9rem;
-      border-radius: 7px; transition: background .18s, color .18s;
-    }
+    .nav-links a { font-size: .84rem; font-weight: 500; color: #374151; padding: .42rem .9rem; border-radius: 7px; transition: 0.2s; }
     .nav-links a:hover { background: #f3f4f6; color: #0a0a0f; }
     .nav-cta { background: #0a0a0f !important; color: #fff !important; font-weight: 600 !important; margin-left: .4rem; }
-    .nav-cta:hover { background: var(--v) !important; }
 
     /* ── HERO ── */
     .hero { max-width: 1080px; margin: 0 auto; padding: 5rem 2rem 4rem; }
-    .pill {
-      display: inline-flex; align-items: center; gap: .45rem;
-      font-size: .72rem; font-weight: 700; letter-spacing: .1em;
-      text-transform: uppercase; color: var(--v);
-      background: #f3f0ff; border: 1px solid #ddd6fe;
-      padding: .28rem .8rem; border-radius: 999px; margin-bottom: 1.4rem;
-    }
-    .hero-name {
-      font-size: clamp(3rem, 7vw, 5.2rem);
-      font-weight: 900; line-height: 1.0; letter-spacing: -.05em;
-      color: #0a0a0f; margin-bottom: 1.1rem;
-    }
+    .hero-name { font-size: clamp(3rem, 7vw, 5.2rem); font-weight: 900; line-height: 1.0; letter-spacing: -.05em; color: #0a0a0f; margin-bottom: 1.1rem; }
     .hero-name .accent { color: var(--v); }
-    .hero-bio { font-size: 1rem; color: var(--muted); max-width: 520px; line-height: 1.75; margin-bottom: 2rem; }
     .badge-row { display: flex; flex-wrap: wrap; gap: .55rem; margin-bottom: 2rem; }
-    .badge {
-      display: inline-flex; align-items: center; gap: .35rem;
-      background: #f9fafb; border: 1px solid #e5e7eb;
-      border-radius: 7px; padding: .32rem .78rem;
-      font-size: .8rem; font-weight: 500; color: #374151;
-    }
-    .badge i { color: var(--v); font-size: .75rem; }
-    .stages-row { display: flex; flex-wrap: wrap; gap: .9rem; }
-    .stage {
-      flex: 1; min-width: 210px;
-      border: 1px solid #e5e7eb; border-radius: 11px;
-      padding: 1rem 1.2rem; background: #fafafa;
-    }
-    .stage-co { font-weight: 700; font-size: .92rem; color: #0a0a0f; }
-    .stage-co i { color: var(--v); margin-right: .3rem; }
-    .stage-det { font-size: .76rem; color: #9ca3af; margin-top: .2rem; }
+    .badge { display: inline-flex; align-items: center; gap: .35rem; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 7px; padding: .32rem .78rem; font-size: .8rem; font-weight: 500; }
 
     /* ── CERTIFICATIONS ── */
-    .certs-wrap {
-      background: #f9fafb;
-      border-top: 1px solid #e5e7eb; border-bottom: 1px solid #e5e7eb;
-      padding: 2.8rem 2rem;
-    }
+    .certs-wrap { background: #f9fafb; border-top: 1px solid #e5e7eb; border-bottom: 1px solid #e5e7eb; padding: 2.8rem 2rem; }
     .certs-inner { max-width: 1080px; margin: 0 auto; }
-    .sec-eyebrow {
-      font-size: .7rem; font-weight: 700; letter-spacing: .12em;
-      text-transform: uppercase; color: #9ca3af; margin-bottom: 1.2rem;
-    }
-    .certs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: .9rem; }
-    .cert-card {
-      display: flex; align-items: center; gap: 1rem;
-      background: #fff; border: 1.5px solid #e5e7eb;
-      border-radius: 12px; padding: 1.1rem 1.3rem;
-      text-decoration: none; color: inherit;
-      transition: border-color .2s, box-shadow .2s, transform .2s;
-    }
-    .cert-card:not(.placeholder):hover {
-      border-color: var(--v); box-shadow: 0 0 0 3px #ede9fe; transform: translateY(-2px);
-    }
-    .cert-card.placeholder { opacity: .5; cursor: default; }
-    .cert-ico {
-      width: 46px; height: 46px; flex-shrink: 0; border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.3rem; color: #fff;
-    }
+    .certs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+    .cert-card { display: flex; align-items: center; gap: 1rem; background: #fff; border: 1.5px solid #e5e7eb; border-radius: 12px; padding: 1.1rem; transition: 0.2s; text-decoration: none; color: inherit; }
+    .cert-card:hover { border-color: var(--v); box-shadow: 0 4px 20px rgba(0,0,0,0.05); transform: translateY(-2px); }
+    .cert-ico { width: 46px; height: 46px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: #fff; }
     .cert-ico.cisco { background: linear-gradient(135deg,#1ba0d7,#0f5f8a); }
-    .cert-ico.future { background: linear-gradient(135deg,#374151,#6b7280); }
-    .cert-label { font-weight: 700; font-size: .88rem; color: #0a0a0f; }
-    .cert-org { font-size: .74rem; color: var(--muted); margin-top: .15rem; }
-    .cert-badge {
-      margin-left: auto; flex-shrink: 0;
-      font-size: .65rem; font-weight: 700; letter-spacing: .06em;
-      text-transform: uppercase; padding: .18rem .48rem; border-radius: 4px;
-    }
-    .cert-badge.ok  { background: #d1fae5; color: #065f46; }
-    .cert-badge.tbd { background: #f3f4f6; color: #9ca3af; }
+    .cert-ico.inst { background: linear-gradient(135deg,#8b5cf6,#4c1d95); }
 
-    /* ── DARK BENTO ── */
+    /* ── SECTIONS COMMUNES ── */
     .dark-section { background: var(--dark); padding: 4.5rem 2rem; }
     .dark-inner { max-width: 1080px; margin: 0 auto; }
-    .dark-eyebrow {
-      font-size: .7rem; font-weight: 700; letter-spacing: .12em;
-      text-transform: uppercase; color: var(--v); margin-bottom: .5rem;
-    }
-    .dark-title {
-      font-size: clamp(1.9rem, 4vw, 3rem); font-weight: 800; color: #fff;
-      letter-spacing: -.03em; line-height: 1.1; margin-bottom: .6rem;
-    }
-    .dark-sub { font-size: .88rem; color: var(--muted); max-width: 460px; margin-bottom: 2.5rem; }
-
+    .dark-title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; color: #fff; letter-spacing: -.03em; margin-bottom: 2rem; }
     .bento { display: grid; grid-template-columns: repeat(4, 1fr); gap: .9rem; }
-    .bc {
-      position: relative; overflow: hidden;
-      background: var(--card); border: 1px solid var(--edge);
-      border-radius: 14px; padding: 1.4rem; cursor: pointer;
-      transition: border-color .22s, transform .22s, box-shadow .22s;
-    }
-    .bc:hover { border-color: var(--v); transform: translateY(-3px); box-shadow: 0 10px 36px rgba(139,92,246,.18); }
-    .bc:hover .glow { opacity: 1; }
-    .glow {
-      position: absolute; inset: 0; pointer-events: none; opacity: 0;
-      background: radial-gradient(circle at 50% 0%,rgba(139,92,246,.09),transparent 70%);
-      transition: opacity .3s;
-    }
-    .bc-num { font-size: .66rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #3d3d5c; margin-bottom: .9rem; }
-    .bc-icon {
-      width: 38px; height: 38px; border-radius: 8px;
-      background: var(--vl); border: 1px solid var(--vb);
-      display: flex; align-items: center; justify-content: center;
-      color: var(--v); font-size: .95rem; margin-bottom: .9rem;
-    }
-    .bc-title { font-size: .92rem; font-weight: 700; color: #fff; margin-bottom: .3rem; }
-    .bc-client {
-      display: inline-flex; align-items: center; gap: .28rem;
-      font-size: .68rem; font-weight: 600; color: var(--v);
-      background: var(--vl); padding: .16rem .5rem; border-radius: 4px; margin-top: .55rem;
-    }
-    .bc-arrow {
-      position: absolute; bottom: 1.1rem; right: 1.1rem;
-      width: 26px; height: 26px; border-radius: 6px;
-      background: var(--vl); border: 1px solid var(--vb);
-      display: flex; align-items: center; justify-content: center;
-      color: var(--v); font-size: .7rem; transition: background .2s;
-    }
-    .bc:hover .bc-arrow { background: var(--vb); }
-    .bc-soon {
-      cursor: default; opacity: .38;
-      background: repeating-linear-gradient(45deg,var(--card),var(--card) 5px,#0b0b15 5px,#0b0b15 10px);
-    }
-    .bc-soon:hover { transform: none; box-shadow: none; border-color: var(--edge); }
+    .bc { background: var(--card); border: 1px solid var(--edge); border-radius: 14px; padding: 1.4rem; cursor: pointer; transition: 0.2s; position: relative; }
+    .bc:hover { border-color: var(--v); transform: translateY(-3px); }
+    .bc-title { font-size: .95rem; font-weight: 700; color: #fff; margin-top: 0.5rem; }
 
-    /* Grid column spans */
-    .bc:nth-child(1), .bc:nth-child(2) { grid-column: span 2; }
-    .bc:nth-child(3), .bc:nth-child(4) { grid-column: span 1; }
-    .bc:nth-child(5), .bc:nth-child(6) { grid-column: span 2; }
-    .bc:nth-child(7), .bc:nth-child(8) { grid-column: span 1; }
-
-    /* ── DIVIDER ── */
-    .divider {
-      height: 1px;
-      background: linear-gradient(to right, transparent, var(--edge), transparent);
-      max-width: 1080px; margin: 0 auto;
-    }
-
-    /* ── VEILLE ── */
-    .veille-section { background: var(--dark); padding: 0 2rem 4.5rem; }
-    .veille-inner { max-width: 1080px; margin: 0 auto; }
-    .veille-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .9rem; margin-bottom: 1.8rem; }
-    .vc {
-      background: var(--card); border: 1px solid var(--edge);
-      border-radius: 14px; padding: 1.4rem; transition: border-color .2s;
-    }
-    .vc:hover { border-color: rgba(139,92,246,.4); }
-    .vc.wide { grid-column: span 2; }
-    .vc-ico {
-      width: 36px; height: 36px; border-radius: 8px; background: var(--vl);
-      display: flex; align-items: center; justify-content: center;
-      color: var(--v); font-size: .9rem; margin-bottom: .85rem;
-    }
-    .vc-name { font-weight: 700; font-size: .88rem; color: #fff; margin-bottom: .25rem; }
-    .vc-desc { font-size: .76rem; color: var(--muted); line-height: 1.55; }
-    .vc-tag {
-      display: inline-block; font-size: .65rem; font-weight: 600;
-      padding: .14rem .46rem; border-radius: 4px;
-      background: var(--vl); color: var(--v); margin: .45rem .2rem 0 0;
-    }
-    .veille-cta {
-      display: inline-flex; align-items: center; gap: .6rem;
-      background: var(--v); color: #fff;
-      font-weight: 700; font-size: .88rem;
-      padding: .75rem 1.5rem; border-radius: 9px;
-      text-decoration: none;
-      transition: background .2s, transform .2s;
-    }
-    .veille-cta:hover { background: var(--vd); transform: translateY(-1px); }
-
-    /* ── FOOTER ── */
-    footer { background: #060610; border-top: 1px solid var(--edge); padding: 2.5rem 2rem; }
-    .footer-inner {
-      max-width: 1080px; margin: 0 auto;
-      display: flex; flex-wrap: wrap;
-      align-items: center; justify-content: space-between; gap: 1.5rem;
-    }
-    .footer-logo { font-weight: 900; font-size: 1.05rem; color: #fff; }
-    .footer-logo span { color: var(--v); }
-    .footer-copy { font-size: .76rem; color: #374151; margin-top: .3rem; }
-    .footer-btns { display: flex; gap: .7rem; flex-wrap: wrap; }
-    .f-btn {
-      display: inline-flex; align-items: center; gap: .45rem;
-      border: 1px solid #2a2a40; border-radius: 8px;
-      background: var(--card); color: #d1d5db;
-      text-decoration: none; font-size: .82rem; font-weight: 500;
-      padding: .6rem 1.1rem; transition: border-color .2s, color .2s;
-    }
-    .f-btn:hover { border-color: var(--v); color: #fff; }
-    .f-btn i { color: var(--v); }
-
-    /* ── MODAL ── */
-    .modal-wrap {
-      display: none; position: fixed; inset: 0; z-index: 500;
-      background: rgba(0,0,0,.8); backdrop-filter: blur(8px);
-      align-items: center; justify-content: center;
-    }
+    /* ── MODALE ── */
+    .modal-wrap { display: none; position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,.85); backdrop-filter: blur(8px); align-items: center; justify-content: center; }
     .modal-wrap.open { display: flex; }
-    .modal-box {
-      width: 94vw; max-width: 1120px; height: 90vh;
-      background: #0f0f1a; border: 1px solid #2a2a3e;
-      border-radius: 16px; overflow: hidden;
-      display: flex; flex-direction: column;
-      box-shadow: 0 32px 90px rgba(0,0,0,.65);
-    }
-    .modal-bar {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: .85rem 1.4rem; background: #08080f;
-      border-bottom: 1px solid #1a1a2c; flex-shrink: 0;
-    }
-    .modal-ttl { font-weight: 700; font-size: .88rem; color: #fff; display: flex; align-items: center; gap: .5rem; }
-    .modal-ttl i { color: var(--v); }
-    .modal-x {
-      width: 30px; height: 30px; border-radius: 7px;
-      background: #1c1c2e; border: none; color: #9ca3af;
-      font-size: .85rem; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: background .15s, color .15s;
-    }
+    .modal-box { width: 94vw; max-width: 1200px; height: 90vh; background: #0f0f1a; border: 1px solid #2a2a3e; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
+    .modal-bar { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.4rem; background: #08080f; border-bottom: 1px solid #1a1a2c; }
+    .modal-x { background: #1c1c2e; border: none; color: #9ca3af; padding: 0.5rem 1rem; border-radius: 7px; cursor: pointer; }
     .modal-x:hover { background: #ef4444; color: #fff; }
-    .modal-iframe { flex: 1; border: none; background: #fff; width: 100%; }
+    .modal-iframe { flex: 1; border: none; width: 100%; }
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 860px) {
-      .bento, .veille-grid { grid-template-columns: 1fr 1fr; }
-      .bc:nth-child(n) { grid-column: span 1; }
-      .bc:nth-child(1), .bc:nth-child(2) { grid-column: span 2; }
-      .vc.wide { grid-column: span 2; }
-    }
-    @media (max-width: 540px) {
-      .bento, .veille-grid { grid-template-columns: 1fr; }
-      .bc:nth-child(n), .vc.wide { grid-column: span 1; }
-      header { padding: 0 1rem; }
-      .nav-links a:not(.nav-cta) { display: none; }
-      .hero-name { font-size: 2.8rem; }
-    }
+    @media (max-width: 860px) { .bento { grid-template-columns: 1fr 1fr; } }
   </style>
 </head>
 <body>
@@ -296,192 +84,116 @@
 <header>
   <div class="logo">LMK<span>.</span>SISR</div>
   <nav class="nav-links">
-    <a href="#missions">Missions E5</a>
+    <a href="#missions">E5</a>
+    <a href="#projets-e6">E6</a>
     <a href="#veille">Veille</a>
-    <a href="https://lmk95-tech.github.io/CV_MASHALA_LENNY.pdf" target="_blank" class="nav-cta">
-      <i class="fa fa-file-pdf" style="margin-right:.3rem"></i>Mon CV
-    </a>
+    <a href="CV_MASHALA_LENNY.pdf" target="_blank" class="nav-cta">Mon CV</a>
   </nav>
 </header>
 
 <section class="hero">
-  <div class="pill"><i class="fa fa-network-wired"></i> BTS SIO SISR · Portfolio E5 · 2026</div>
   <h1 class="hero-name">MASHALA<br>NKOLE LENNY<span class="accent">.</span></h1>
-  <p class="hero-bio">
-    Étudiant en 2ᵉ année de BTS SIO SISR à l'INSTA Paris. Titulaire d'un Bac STMG (2024), je me spécialise dans l'administration systèmes, les infrastructures réseaux et la cybersécurité.
-  </p>
   <div class="badge-row">
-    <span class="badge"><i class="fa fa-bolt"></i> Dynamique</span>
-    <span class="badge"><i class="fa fa-mountain"></i> Persévérant</span>
-    <span class="badge"><i class="fa fa-shield-halved"></i> Cybersécurité</span>
-    <span class="badge"><i class="fa fa-server"></i> Systèmes &amp; Réseaux</span>
-  </div>
-  <div class="stages-row">
-    <div class="stage">
-      <div class="stage-co"><i class="fa fa-building"></i>Visiontec22</div>
-      <div class="stage-det">Stage 1ʳᵉ année · Herblay-sur-Seine</div>
-    </div>
-    <div class="stage">
-      <div class="stage-co"><i class="fa fa-building"></i>EasyFormer</div>
-      <div class="stage-det">Stage 2ᵉ année · Cergy</div>
-    </div>
+    <span class="badge"><i class="fa fa-school"></i> INSTA Paris</span>
+    <span class="badge"><i class="fa fa-graduation-cap"></i> Bac STMG 2024</span>
+    <span class="badge"><i class="fa fa-bolt"></i> Dynamique & Persévérant</span>
   </div>
 </section>
 
 <div class="certs-wrap">
   <div class="certs-inner">
-    <div class="sec-eyebrow"><i class="fa fa-certificate" style="color:var(--v);margin-right:.35rem"></i>Certifications</div>
+    <h2 style="font-size: .75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #9ca3af; margin-bottom: 1.5rem;">Certifications Obtenues</h2>
     <div class="certs-grid">
-      <a class="cert-card" href="https://lmk95-tech.github.io/I2CSUpdate20260412-31-c2utse.pdf" target="_blank">
+      <a class="cert-card" href="I2CSUpdate20260412-31-c2utse.pdf" target="_blank">
         <div class="cert-ico cisco"><i class="fa fa-shield-halved"></i></div>
         <div>
-          <div class="cert-label">Introduction to Cybersecurity</div>
-          <div class="cert-org">Cisco Networking Academy · Vérifié Avril 2025</div>
+          <div style="font-weight: 700; font-size: .9rem;">Introduction to Cybersecurity</div>
+          <div style="font-size: .75rem; color: #6b7280;">Cisco Networking Academy</div>
         </div>
-        <div class="cert-badge ok"><i class="fa fa-check" style="margin-right:.25rem"></i>Vérifié</div>
       </a>
-      <div class="cert-card placeholder">
-        <div class="cert-ico future"><i class="fa fa-lock"></i></div>
+      <a class="cert-card" href="_certificate_mashalankolelenny-gmail-com_414f2ded-9455-4db6-bd44-22093f308b76.pdf" target="_blank">
+        <div class="cert-ico inst"><i class="fa fa-certificate"></i></div>
         <div>
-          <div class="cert-label">Certification à venir</div>
-          <div class="cert-org">ANSSI / Pix — En préparation</div>
+          <div style="font-weight: 700; font-size: .9rem;">Certificat Professionnel IT</div>
+          <div style="font-size: .75rem; color: #6b7280;">Vérifié · Avril 2026</div>
         </div>
-        <div class="cert-badge tbd"><i class="fa fa-clock" style="margin-right:.25rem"></i>Bientôt</div>
-      </div>
+      </a>
     </div>
   </div>
 </div>
 
 <section class="dark-section" id="missions">
   <div class="dark-inner">
-    <div class="dark-eyebrow"><i class="fa fa-folder-open" style="margin-right:.35rem"></i>Dossier Technique</div>
-    <h2 class="dark-title">Missions E5</h2>
+    <h2 class="dark-title">Missions E5 (SISR)</h2>
     <div class="bento">
-      <div class="bc" onclick="openModal('m1')">
-        <div class="glow"></div>
-        <div class="bc-num">Mission 01</div>
-        <div class="bc-icon"><i class="fa fa-ethernet"></i></div>
-        <div class="bc-title">DHCP &amp; Routage</div>
-        <span class="bc-client"><i class="fa fa-circle" style="font-size:.45rem"></i>Orange</span>
-        <div class="bc-arrow"><i class="fa fa-arrow-right"></i></div>
-      </div>
-      <div class="bc" onclick="openModal('m2')">
-        <div class="glow"></div>
-        <div class="bc-num">Mission 02</div>
-        <div class="bc-icon"><i class="fa fa-layer-group"></i></div>
-        <div class="bc-title">Segmentation VLAN</div>
-        <span class="bc-client"><i class="fa fa-circle" style="font-size:.45rem"></i>Free</span>
-        <div class="bc-arrow"><i class="fa fa-arrow-right"></i></div>
-      </div>
-      <div class="bc" onclick="openModal('m3')">
-        <div class="glow"></div>
-        <div class="bc-num">Mission 03</div>
-        <div class="bc-icon"><i class="fa fa-users-gear"></i></div>
-        <div class="bc-title">Active Directory &amp; GPO</div>
-        <div class="bc-arrow"><i class="fa fa-arrow-right"></i></div>
-      </div>
-      <div class="bc" onclick="openModal('m4')">
-        <div class="glow"></div>
-        <div class="bc-num">Mission 04</div>
-        <div class="bc-icon"><i class="fa fa-fire-flame-curved"></i></div>
-        <div class="bc-title">NAT/PAT pfSense</div>
-        <div class="bc-arrow"><i class="fa fa-arrow-right"></i></div>
-      </div>
-      <div class="bc" onclick="openModal('m5')">
-        <div class="glow"></div>
-        <div class="bc-num">Mission 05</div>
-        <div class="bc-icon"><i class="fa fa-rotate"></i></div>
-        <div class="bc-title">HSRP &amp; Redondance</div>
-        <div class="bc-arrow"><i class="fa fa-arrow-right"></i></div>
-      </div>
-      <div class="bc" onclick="openModal('m6')">
-        <div class="glow"></div>
-        <div class="bc-num">Mission 06</div>
-        <div class="bc-icon"><i class="fa fa-folder-tree"></i></div>
-        <div class="bc-title">NTFS, ABE &amp; FSRM</div>
-        <div class="bc-arrow"><i class="fa fa-arrow-right"></i></div>
-      </div>
-      <div class="bc bc-soon"><div class="bc-num">Mission 07</div><div class="bc-title" style="color:#3d3d5c">En développement</div></div>
-      <div class="bc bc-soon"><div class="bc-num">Mission 08</div><div class="bc-title" style="color:#3d3d5c">En développement</div></div>
+      <div class="bc" onclick="openModal('m1')"><div class="bc-num" style="color:var(--v)">01</div><div class="bc-title">DHCP & Routage (Orange)</div></div>
+      <div class="bc" onclick="openModal('m2')"><div class="bc-num" style="color:var(--v)">02</div><div class="bc-title">Segmentation VLAN (Free)</div></div>
+      <div class="bc" onclick="openModal('m3')"><div class="bc-num" style="color:var(--v)">03</div><div class="bc-title">AD & GPO</div></div>
+      <div class="bc" onclick="openModal('m4')"><div class="bc-num" style="color:var(--v)">04</div><div class="bc-title">NAT/PAT pfSense</div></div>
+      <div class="bc" onclick="openModal('m5')"><div class="bc-num" style="color:var(--v)">05</div><div class="bc-title">HSRP & Redondance</div></div>
+      <div class="bc" onclick="openModal('m6')"><div class="bc-num" style="color:var(--v)">06</div><div class="bc-title">NTFS & FSRM</div></div>
     </div>
   </div>
 </section>
 
-<section class="veille-section" id="veille">
-  <div class="veille-inner">
-    <div class="divider" style="margin-bottom:3.5rem"></div>
-    <div class="dark-eyebrow"><i class="fa fa-rss" style="margin-right:.35rem"></i>Veille</div>
-    <h2 class="dark-title">Veille Technologique</h2>
-    <div class="veille-grid">
-      <div class="vc wide">
-        <div class="vc-ico"><i class="fa fa-rss"></i></div>
-        <div class="vc-name">Flux RSS Agrégés</div>
-        <div class="vc-desc">Veille via CERT-FR, ANSSI et Krebs on Security.</div>
-      </div>
-      <div class="vc">
-        <div class="vc-ico"><i class="fa fa-robot"></i></div>
-        <div class="vc-name">Intelligence Artificielle</div>
-        <div class="vc-desc">LLM, automatisation et risques IA.</div>
-      </div>
-      <div class="vc">
-        <div class="vc-ico"><i class="fa fa-shield-virus"></i></div>
-        <div class="vc-name">Cybersécurité</div>
-        <div class="vc-desc">CVE et menaces APT en temps réel.</div>
-      </div>
+<section class="dark-section" id="projets-e6" style="padding-top:0">
+  <div class="dark-inner">
+    <h2 class="dark-title">Parcours E6 (Cybersécurité)</h2>
+    <div class="grid md:grid-cols-2 gap-4">
+      <a href="SISR-Fiche-presentation-situation (3) (6) 1 (1) (1).pdf" target="_blank" class="bc" style="text-decoration: none;">
+        <i class="fa fa-lock text-purple-500 mb-2"></i>
+        <div class="bc-title">Projet E6 : Analyse Cybersécurité</div>
+        <div style="font-size: 0.75rem; color: #6b7280; margin-top: 5px;">Fiche de présentation officielle SISR</div>
+      </a>
+      <a href="SITUATION 2 (4) (1) (2) (3).pdf" target="_blank" class="bc" style="text-decoration: none;">
+        <i class="fa fa-cloud text-purple-500 mb-2"></i>
+        <div class="bc-title">Projet E6 : Situation Pro n°2</div>
+        <div style="font-size: 0.75rem; color: #6b7280; margin-top: 5px;">Mise en œuvre d'infrastructure sécurisée</div>
+      </a>
     </div>
-    <a class="veille-cta" href="veille_techno.pdf" target="_blank">
-      <i class="fa fa-file-lines"></i> Consulter mon Dossier de Veille
+  </div>
+</section>
+
+<section class="dark-section" id="veille" style="background: #0c0c16">
+  <div class="dark-inner text-center">
+    <h2 class="dark-title">Veille Technologique</h2>
+    <p style="color: #9ca3af; margin-bottom: 2rem;">Suivi de l'évolution des menaces cybersécurité et de l'IA.</p>
+    <a href="veille_techno.pdf" target="_blank" class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-8 rounded-xl transition">
+      <i class="fa fa-book-open"></i> Consulter mon Dossier de Veille
     </a>
   </div>
 </section>
 
 <footer>
-  <div class="footer-inner">
-    <div><div class="footer-logo">LMK<span>.</span>SISR</div><div class="footer-copy">© 2026 Mashala Nkole Lenny</div></div>
-    <div class="footer-btns">
-      <a class="f-btn" href="attestation_de_presence_en_entreprise_-_e5 (2).pdf" target="_blank"><i class="fa fa-file-contract"></i> Stages</a>
-      <a class="f-btn" href="https://lmk95-tech.github.io/CV_MASHALA_LENNY.pdf" target="_blank"><i class="fa fa-id-card"></i> CV</a>
-    </div>
+  <div class="footer-inner" style="padding: 3rem 0; color: #6b7280; font-size: .8rem; text-align: center;">
+    <p>Mashala Nkole Lenny © 2026 · BTS SIO SISR · <a href="attestation_de_presence_en_entreprise_-_e5 (2).pdf" target="_blank" style="color:var(--v)">Attestations de Stage</a></p>
   </div>
 </footer>
 
-<div class="modal-wrap" id="modal-m1"><div class="modal-box"><div class="modal-bar"><div class="modal-ttl">Mission 01</div><button class="modal-x" onclick="closeModal('m1')">×</button></div><iframe class="modal-iframe" id="if-m1" src=""></iframe></div></div>
-<div class="modal-wrap" id="modal-m2"><div class="modal-box"><div class="modal-bar"><div class="modal-ttl">Mission 02</div><button class="modal-x" onclick="closeModal('m2')">×</button></div><iframe class="modal-iframe" id="if-m2" src=""></iframe></div></div>
-<div class="modal-wrap" id="modal-m3"><div class="modal-box"><div class="modal-bar"><div class="modal-ttl">Mission 03</div><button class="modal-x" onclick="closeModal('m3')">×</button></div><iframe class="modal-iframe" id="if-m3" src=""></iframe></div></div>
-<div class="modal-wrap" id="modal-m4"><div class="modal-box"><div class="modal-bar"><div class="modal-ttl">Mission 04</div><button class="modal-x" onclick="closeModal('m4')">×</button></div><iframe class="modal-iframe" id="if-m4" src=""></iframe></div></div>
-<div class="modal-wrap" id="modal-m5"><div class="modal-box"><div class="modal-bar"><div class="modal-ttl">Mission 05</div><button class="modal-x" onclick="closeModal('m5')">×</button></div><iframe class="modal-iframe" id="if-m5" src=""></iframe></div></div>
-<div class="modal-wrap" id="modal-m6"><div class="modal-box"><div class="modal-bar"><div class="modal-ttl">Mission 06</div><button class="modal-x" onclick="closeModal('m6')">×</button></div><iframe class="modal-iframe" id="if-m6" src=""></iframe></div></div>
+<div class="modal-wrap" id="modal-m1"><div class="modal-box"><div class="modal-bar"><div class="modal-ttl">Mission 01</div><button class="modal-x" onclick="closeModal('m1')">×</button></div><iframe class="modal-iframe" id="if-m1"></iframe></div></div>
+<div class="modal-wrap" id="modal-m2"><div class="modal-box"><div class="modal-bar"><div class="modal-ttl">Mission 02</div><button class="modal-x" onclick="closeModal('m2')">×</button></div><iframe class="modal-iframe" id="if-m2"></iframe></div></div>
+<div class="modal-wrap" id="modal-m3"><div class="modal-box"><div class="modal-bar"><div class="modal-ttl">Mission 03</div><button class="modal-x" onclick="closeModal('m3')">×</button></div><iframe class="modal-iframe" id="if-m3"></iframe></div></div>
+<div class="modal-wrap" id="modal-m4"><div class="modal-box"><div class="modal-bar"><div class="modal-ttl">Mission 04</div><button class="modal-x" onclick="closeModal('m4')">×</button></div><iframe class="modal-iframe" id="if-m4"></iframe></div></div>
+<div class="modal-wrap" id="modal-m5"><div class="modal-box"><div class="modal-bar"><div class="modal-ttl">Mission 05</div><button class="modal-x" onclick="closeModal('m5')">×</button></div><iframe class="modal-iframe" id="if-m5"></iframe></div></div>
+<div class="modal-wrap" id="modal-m6"><div class="modal-box"><div class="modal-bar"><div class="modal-ttl">Mission 06</div><button class="modal-x" onclick="closeModal('m6')">×</button></div><iframe class="modal-iframe" id="if-m6"></iframe></div></div>
 
 <script>
   const SRCS = {
-    m1: 'mission01.html',
-    m2: 'mission02.html',
-    m3: 'mission03_ad_gpo.html',
-    m4: 'mission04_nat_pfsense.html',
-    m5: 'mission05_hsrp_lacp.html',
-    m6: 'mission06_ntfs_fsrm.html'
+    m1: 'mission01.html', m2: 'mission02.html', m3: 'mission03_ad_gpo.html',
+    m4: 'mission04_nat_pfsense.html', m5: 'mission05_hsrp_lacp.html', m6: 'mission06_ntfs_fsrm.html'
   };
-
   function openModal(id) {
     const wrap = document.getElementById('modal-' + id);
     const iframe = document.getElementById('if-' + id);
-    if (!iframe.src || iframe.src === window.location.href) {
-      iframe.src = SRCS[id];
-    }
+    if (!iframe.src) iframe.src = SRCS[id];
     wrap.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
-
   function closeModal(id) {
     document.getElementById('modal-' + id).classList.remove('open');
     document.body.style.overflow = '';
   }
-
-  window.onclick = function(event) {
-    if (event.target.classList.contains('modal-wrap')) {
-      closeModal(event.target.id.replace('modal-', ''));
-    }
-  }
+  window.onclick = function(e) { if(e.target.className === 'modal-wrap open') closeModal(e.target.id.replace('modal-', '')); }
 </script>
 
 </body>
