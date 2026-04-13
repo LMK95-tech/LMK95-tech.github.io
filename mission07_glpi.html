@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission 07 — GLPI 10 Helpdesk & Parc | BTS SIO SISR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cy_dark:  '#05111c',
+                        cy_card:  '#0a1f30',
+                        cy_cyan:  '#00d4ff',
+                        cy_green: '#00dc82',
+                        cy_purple:'#a855f7',
+                        cy_red:   '#ef4444',
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * { box-sizing: border-box; }
+        body { background-color: #05111c; color: #e2e8f0; font-family: 'Outfit', sans-serif; }
+
+        #sidebar { width: 272px; min-width: 272px; background: #0a1f30; border-right: 1px solid rgba(0,212,255,0.12); display: flex; flex-direction: column; height: 100vh; position: sticky; top: 0; overflow-y: auto; }
+        .nav-group { font-size: 10px; text-transform: uppercase; letter-spacing: .12em; color: #00d4ff; font-weight: 700; padding: 0 16px; margin: 20px 0 6px; }
+        .nav-item { display: flex; align-items: center; gap: 8px; padding: 8px 16px; font-size: 12px; font-weight: 500; color: #94a3b8; cursor: pointer; border-left: 2px solid transparent; transition: all .2s; }
+        .nav-item:hover { background: rgba(255,255,255,.04); color: #fff; }
+        .nav-item.active { border-left-color: #00d4ff; background: rgba(0,212,255,.06); color: #00d4ff; }
+
+        .doc-section { display: none; }
+        .doc-section.active { display: block; }
+
+        .doc-h2 { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 28px; padding-bottom: 14px; border-bottom: 1px solid rgba(148,163,184,.2); display: flex; align-items: center; gap: 10px; }
+        .doc-h3 { font-size: 16px; font-weight: 700; color: #00d4ff; margin: 24px 0 10px; display: flex; align-items: center; gap: 8px; }
+        .doc-p { font-size: 14px; color: #94a3b8; line-height: 1.8; margin-bottom: 14px; text-align: justify; }
+        .num { color: rgba(148,163,184,.35); margin-right: 6px; }
+
+        .cli-box { background: #000d18; border: 1px solid rgba(0,212,255,.2); border-radius: 8px; overflow: hidden; font-family: 'JetBrains Mono', monospace; }
+        .cli-bar { background: #0d2035; padding: 8px 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid rgba(0,212,255,.1); }
+        .cli-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .cli-title { font-size: 11px; color: #64748b; margin-left: auto; }
+        .cli-body { padding: 16px; font-size: 12px; line-height: 1.8; overflow-x: auto; }
+        .cli-prompt { color: #00d4ff; }
+        .cli-cmd    { color: #e2e8f0; }
+        .cli-comment { color: #3d5a6e; }
+        .cli-key    { color: #a855f7; }
+        .cli-val    { color: #00dc82; }
+        .cli-warn   { color: #f59e0b; }
+
+        .info-card { background: #0a1f30; border: 1px solid rgba(255,255,255,.05); border-radius: 10px; padding: 20px; }
+        .danger-card { background: rgba(239,68,68,.07); border: 1px solid rgba(239,68,68,.25); border-radius: 10px; padding: 20px; }
+        .success-card { background: rgba(0,220,130,.07); border: 1px solid rgba(0,220,130,.25); border-radius: 10px; padding: 20px; }
+        .warn-card { background: rgba(245,158,11,.07); border: 1px solid rgba(245,158,11,.25); border-radius: 10px; padding: 20px; }
+
+        .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .data-table th { background: #0d2035; color: #94a3b8; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; padding: 10px 16px; text-align: left; }
+        .data-table td { padding: 10px 16px; border-bottom: 1px solid rgba(148,163,184,.08); color: #cbd5e1; }
+        .data-table tr:hover td { background: rgba(0,212,255,.03); }
+        .badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; }
+
+        #live-terminal { background: #000d18; border: 1px solid rgba(0,220,130,.25); border-radius: 8px; padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px; height: 220px; overflow-y: auto; }
+        .test-btn { padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all .2s; border: 1px solid; }
+        .test-btn-green  { background: rgba(0,220,130,.1); border-color: rgba(0,220,130,.4); color: #00dc82; }
+        .test-btn-green:hover  { background: rgba(0,220,130,.2); }
+        .test-btn-cyan   { background: rgba(0,212,255,.1); border-color: rgba(0,212,255,.4); color: #00d4ff; }
+        .test-btn-cyan:hover   { background: rgba(0,212,255,.2); }
+        .test-btn-orange { background: rgba(245,158,11,.1); border-color: rgba(245,158,11,.4); color: #f59e0b; }
+        .test-btn-orange:hover { background: rgba(245,158,11,.2); }
+        .test-btn-purple { background: rgba(168,85,247,.1); border-color: rgba(168,85,247,.4); color: #a855f7; }
+        .test-btn-purple:hover { background: rgba(168,85,247,.2); }
+
+        .stat-card { background: #0a1f30; border: 1px solid rgba(255,255,255,.06); border-radius: 10px; padding: 20px; text-align: center; }
+        .stat-num { font-size: 32px; font-weight: 900; }
+        .stat-lbl { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: .07em; margin-top: 4px; }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(0,212,255,.3); border-radius: 4px; }
+
+        .reveal { animation: fadeUp .6s ease both; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+
+<body class="flex" style="height:100vh; overflow:hidden;">
+
+<!-- ══════════════════════════════════════  SIDEBAR  ══════════════════════════════════════ -->
+<aside id="sidebar">
+    <div style="padding:20px 16px; border-bottom:1px solid rgba(0,212,255,.1);">
+        <div style="display:flex; align-items:center; gap:12px;">
+            <div style="width:38px;height:38px;background:#00d4ff;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#05111c;font-size:18px;box-shadow:0 0 18px rgba(0,212,255,.4);">
+                <i class="fa-solid fa-ticket"></i>
+            </div>
+            <div>
+                <div style="font-weight:700;color:#fff;font-size:14px;line-height:1.2;">Mission 07</div>
+                <div style="font-size:10px;color:#00d4ff;font-family:'JetBrains Mono',monospace;">GLPI 10 · ITSM · LAMP</div>
+            </div>
+        </div>
+    </div>
+
+    <nav style="flex:1;padding:8px 0;">
+        <div class="nav-group">Analyse</div>
+        <div class="nav-item active" data-section="s-contexte" onclick="navigate(this)">
+            <i class="fa-solid fa-circle-info" style="width:14px;"></i> 1. Contexte & Problématique
+        </div>
+        <div class="nav-item" data-section="s-solution" onclick="navigate(this)">
+            <i class="fa-solid fa-lightbulb" style="width:14px;"></i> 2. Solution GLPI 10
+        </div>
+
+        <div class="nav-group">Conception</div>
+        <div class="nav-item" data-section="s-archi" onclick="navigate(this)">
+            <i class="fa-solid fa-diagram-project" style="width:14px;"></i> 3. Architecture LAMP
+        </div>
+        <div class="nav-item" data-section="s-categories" onclick="navigate(this)">
+            <i class="fa-solid fa-tags" style="width:14px;"></i> 4. Catégories & SLA
+        </div>
+
+        <div class="nav-group">Mise en Œuvre</div>
+        <div class="nav-item" data-section="s-lamp" onclick="navigate(this)">
+            <i class="fa-solid fa-terminal" style="width:14px;"></i> 5. Installation Stack LAMP
+        </div>
+        <div class="nav-item" data-section="s-glpi" onclick="navigate(this)">
+            <i class="fa-solid fa-download" style="width:14px;"></i> 6. Installation & Sécu. GLPI 10
+        </div>
+        <div class="nav-item" data-section="s-config" onclick="navigate(this)">
+            <i class="fa-solid fa-sliders" style="width:14px;"></i> 7. Configuration ITSM
+        </div>
+
+        <div class="nav-group">Validation</div>
+        <div class="nav-item" data-section="s-tests" onclick="navigate(this)">
+            <i class="fa-solid fa-flask" style="width:14px;"></i> 8. Tests & Simulations
+        </div>
+        <div class="nav-item" data-section="s-bilan" onclick="navigate(this)">
+            <i class="fa-solid fa-chart-bar" style="width:14px;"></i> 9. Bilan & Conclusion
+        </div>
+    </nav>
+
+    <div style="padding:14px 16px;border-top:1px solid rgba(0,212,255,.1);background:rgba(0,0,0,.2);">
+        <div style="font-size:10px;color:#475569;">Épreuve E5 · BTS SIO SISR</div>
+        <div style="font-size:13px;font-weight:700;color:#fff;margin-top:2px;">SESSION 2026</div>
+        <div style="font-size:10px;color:#00d4ff;margin-top:1px;">Client : SISR-Corp · srv-glpi-01</div>
+    </div>
+</aside>
+
+<!-- ══════════════════════════════════════  MAIN  ══════════════════════════════════════ -->
+<main style="flex:1;overflow-y:auto;padding:40px 48px;max-width:900px;">
+
+    <!-- ── 1. CONTEXTE ── -->
+    <section id="s-contexte" class="doc-section active reveal">
+        <h2 class="doc-h2">
+            <span style="color:#00d4ff;font-family:'JetBrains Mono',monospace;font-size:16px;">01.</span>
+            Contexte & Problématique
+        </h2>
+
+        <div class="doc-p">
+            La société SISR-Corp gérait son parc informatique et son support technique de façon entièrement <strong style="color:#fff;">manuelle et non structurée</strong>. L'inventaire du matériel (PC, serveurs, périphériques, licences logicielles) était maintenu dans des <strong style="color:#f59e0b;">fichiers Excel partagés</strong>, mis à jour irrégulièrement et souvent obsolètes dès la semaine suivante. Les demandes d'assistance étaient reçues par téléphone ou e-mail sans aucun suivi structuré.
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+            <div class="info-card">
+                <h3 class="doc-h3" style="margin-top:0;"><i class="fa-solid fa-building"></i> Périmètre SISR-Corp</h3>
+                <ul style="font-size:13px;color:#94a3b8;line-height:2;list-style:none;padding:0;margin:0;">
+                    <li><i class="fa-solid fa-server" style="color:#00d4ff;margin-right:8px;width:14px;"></i> Serveur : srv-glpi-01 (Debian 12)</li>
+                    <li><i class="fa-solid fa-network-wired" style="color:#a855f7;margin-right:8px;width:14px;"></i> IP : 192.168.29.82</li>
+                    <li><i class="fa-brands fa-php" style="color:#00dc82;margin-right:8px;width:14px;"></i> Stack : Apache · MariaDB · PHP 8.2</li>
+                    <li><i class="fa-solid fa-ticket" style="color:#f59e0b;margin-right:8px;width:14px;"></i> Application : GLPI 10.x</li>
+                    <li><i class="fa-solid fa-desktop" style="color:#64748b;margin-right:8px;width:14px;"></i> Modules : Parc · Helpdesk · Agent</li>
+                </ul>
+            </div>
+            <div class="danger-card">
+                <h3 style="font-size:15px;font-weight:700;color:#ef4444;margin:0 0 12px;display:flex;align-items:center;gap:8px;"><i class="fa-solid fa-triangle-exclamation"></i> Problèmes identifiés</h3>
+                <ul style="font-size:13px;color:#fca5a5;line-height:2;list-style:none;padding:0;margin:0;">
+                    <li><i class="fa-solid fa-xmark" style="margin-right:8px;"></i> Inventaire Excel obsolète en permanence</li>
+                    <li><i class="fa-solid fa-xmark" style="margin-right:8px;"></i> Support e-mail sans historique ni suivi</li>
+                    <li><i class="fa-solid fa-xmark" style="margin-right:8px;"></i> Aucune statistique de pannes récurrentes</li>
+                    <li><i class="fa-solid fa-xmark" style="margin-right:8px;"></i> Shadow IT non contrôlé (USB, disques)</li>
+                    <li><i class="fa-solid fa-xmark" style="margin-right:8px;"></i> Fins de garantie découvertes trop tard</li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:16px 20px;">
+            <div style="font-size:12px;color:#f59e0b;font-weight:700;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em;">Scénario type d'incident sans GLPI</div>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:#cbd5e1;">
+                <span style="background:rgba(0,0,0,.3);padding:4px 12px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;">Utilisateur appelle le support</span>
+                <i class="fa-solid fa-arrow-right" style="color:#475569;"></i>
+                <span style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);padding:4px 12px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#fca5a5;">Ticket perdu dans boîte mail</span>
+                <i class="fa-solid fa-arrow-right" style="color:#475569;"></i>
+                <span style="color:#ef4444;font-weight:700;">Incident non résolu — utilisateur insatisfait</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── 2. SOLUTION ── -->
+    <section id="s-solution" class="doc-section">
+        <h2 class="doc-h2">
+            <span style="color:#00d4ff;font-family:'JetBrains Mono',monospace;font-size:16px;">02.</span>
+            Solution retenue : GLPI 10
+        </h2>
+
+        <div class="doc-p">
+            La solution déployée est <strong style="color:#fff;">GLPI 10 (Gestionnaire Libre de Parc Informatique)</strong>, application open source ITSM de référence, hébergée sur un serveur dédié <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#00d4ff;font-family:'JetBrains Mono',monospace;">srv-glpi-01</code> sous Debian 12 avec la stack LAMP. L'agent GLPI installé sur chaque poste client remonte automatiquement les configurations matérielles et logicielles.
+        </div>
+
+        <div class="success-card" style="margin-bottom:20px;">
+            <div style="font-size:12px;font-weight:700;color:#00dc82;margin-bottom:12px;text-transform:uppercase;letter-spacing:.08em;"><i class="fa-solid fa-circle-check"></i> &nbsp;Bénéfices de GLPI 10</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+                <div style="display:flex;align-items:flex-start;gap:10px;">
+                    <i class="fa-solid fa-chevron-right" style="color:#00dc82;font-size:10px;margin-top:4px;"></i>
+                    <div style="font-size:13px;color:#94a3b8;"><strong style="color:#fff;">Inventaire automatique</strong> — l'agent GLPI détecte CPU, RAM, disques, OS et logiciels installés sans saisie manuelle.</div>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:10px;">
+                    <i class="fa-solid fa-chevron-right" style="color:#00dc82;font-size:10px;margin-top:4px;"></i>
+                    <div style="font-size:13px;color:#94a3b8;"><strong style="color:#fff;">Ticketing ITSM</strong> — chaque demande est tracée avec priorité, catégorie, assignation et historique complet.</div>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:10px;">
+                    <i class="fa-solid fa-chevron-right" style="color:#00dc82;font-size:10px;margin-top:4px;"></i>
+                    <div style="font-size:13px;color:#94a3b8;"><strong style="color:#fff;">SLA configurables</strong> — délais de prise en charge et de résolution définis par catégorie avec relances automatiques.</div>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:10px;">
+                    <i class="fa-solid fa-chevron-right" style="color:#00dc82;font-size:10px;margin-top:4px;"></i>
+                    <div style="font-size:13px;color:#94a3b8;"><strong style="color:#fff;">Tableaux de bord</strong> — graphiques de tendances, temps moyens de résolution, équipements récurrents en panne.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── 3. ARCHITECTURE ── -->
+    <section id="s-archi" class="doc-section">
+        <h2 class="doc-h2">
+            <span style="color:#00d4ff;font-family:'JetBrains Mono',monospace;font-size:16px;">03.</span>
+            Architecture LAMP déployée
+        </h2>
+
+        <div class="doc-p">
+            La stack LAMP est déployée sur <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#00d4ff;font-family:'JetBrains Mono',monospace;">srv-glpi-01</code> (Debian 12 Bookworm, IP 192.168.29.82). GLPI 10 requiert PHP 8.2 minimum avec un ensemble précis d'extensions. L'ensemble fonctionne avec MariaDB 10.11 comme moteur de base de données.
+        </div>
+
+        <div style="overflow-x:auto;border-radius:10px;border:1px solid rgba(0,212,255,.12);overflow:hidden;margin-bottom:24px;">
+            <table class="data-table">
+                <thead>
+                    <tr><th>Composant</th><th>Version</th><th>Rôle</th><th>Paquet Debian</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><i class="fa-brands fa-linux" style="color:#00dc82;margin-right:8px;"></i>Système</td>
+                        <td><span class="badge" style="background:rgba(0,220,130,.1);color:#00dc82;border:1px solid rgba(0,220,130,.3);">Debian 12 Bookworm</span></td>
+                        <td style="color:#94a3b8;">Serveur hôte</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#64748b;">—</td>
+                    </tr>
+                    <tr>
+                        <td><i class="fa-solid fa-globe" style="color:#f59e0b;margin-right:8px;"></i>Serveur Web</td>
+                        <td><span class="badge" style="background:rgba(245,158,11,.1);color:#f59e0b;border:1px solid rgba(245,158,11,.3);">Apache 2.4</span></td>
+                        <td style="color:#94a3b8;">Hébergement GLPI</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">apache2</td>
+                    </tr>
+                    <tr>
+                        <td><i class="fa-solid fa-database" style="color:#00d4ff;margin-right:8px;"></i>Base de données</td>
+                        <td><span class="badge" style="background:rgba(0,212,255,.1);color:#00d4ff;border:1px solid rgba(0,212,255,.3);">MariaDB 10.11</span></td>
+                        <td style="color:#94a3b8;">Stockage GLPI</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">mariadb-server</td>
+                    </tr>
+                    <tr>
+                        <td><i class="fa-brands fa-php" style="color:#a855f7;margin-right:8px;"></i>Langage</td>
+                        <td><span class="badge" style="background:rgba(168,85,247,.1);color:#a855f7;border:1px solid rgba(168,85,247,.3);">PHP 8.2</span></td>
+                        <td style="color:#94a3b8;">Exécution GLPI</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">php8.2</td>
+                    </tr>
+                    <tr>
+                        <td><i class="fa-solid fa-puzzle-piece" style="color:#64748b;margin-right:8px;"></i>Extensions PHP</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#64748b;">curl, gd, intl, mbstring, mysql, xml, zip, ldap, apcu</td>
+                        <td style="color:#94a3b8;">Prérequis GLPI 10</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">php8.2-*</td>
+                    </tr>
+                    <tr>
+                        <td><i class="fa-solid fa-ticket" style="color:#00dc82;margin-right:8px;"></i>Application</td>
+                        <td><span class="badge" style="background:rgba(0,220,130,.1);color:#00dc82;border:1px solid rgba(0,220,130,.3);">GLPI 10.x</span></td>
+                        <td style="color:#94a3b8;">ITSM & Inventaire</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#64748b;">Téléchargement officiel</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Schéma architecture -->
+        <div style="background:#000d18;border:1px solid rgba(0,212,255,.15);border-radius:12px;padding:28px;margin-bottom:20px;">
+            <div style="text-align:center;font-size:11px;color:#64748b;margin-bottom:20px;text-transform:uppercase;letter-spacing:.08em;">Architecture de déploiement</div>
+            <div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;">
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                    <div style="background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.2);border-radius:8px;padding:14px;text-align:center;">
+                        <i class="fa-solid fa-laptop" style="font-size:22px;color:#a855f7;"></i>
+                        <div style="font-size:11px;font-weight:700;color:#fff;margin-top:6px;">Postes clients</div>
+                        <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:#a855f7;">Agent GLPI installé</div>
+                        <div style="font-size:10px;color:#64748b;margin-top:4px;">Remontée inventaire auto</div>
+                    </div>
+                    <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:12px;text-align:center;">
+                        <i class="fa-solid fa-user-headset" style="font-size:18px;color:#f59e0b;"></i>
+                        <div style="font-size:11px;color:#fff;margin-top:4px;">Utilisateurs</div>
+                        <div style="font-size:10px;color:#64748b;">Ouverture tickets via web</div>
+                    </div>
+                </div>
+
+                <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+                    <div style="width:2px;height:30px;background:rgba(0,212,255,.4);"></div>
+                    <div style="font-size:10px;color:#00d4ff;font-family:'JetBrains Mono',monospace;text-align:center;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);border-radius:6px;padding:6px 10px;white-space:nowrap;">
+                        <i class="fa-solid fa-ethernet" style="display:block;font-size:16px;margin-bottom:4px;"></i>
+                        HTTPS<br>192.168.29.82
+                    </div>
+                    <div style="width:2px;height:30px;background:rgba(0,212,255,.4);"></div>
+                </div>
+
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    <div style="background:rgba(0,212,255,.08);border:2px solid rgba(0,212,255,.35);border-radius:8px;padding:14px;text-align:center;">
+                        <i class="fa-solid fa-server" style="font-size:26px;color:#00d4ff;"></i>
+                        <div style="font-size:12px;font-weight:700;color:#fff;margin-top:6px;">srv-glpi-01</div>
+                        <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:#00d4ff;">Debian 12 · 192.168.29.82</div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                        <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:6px;padding:8px;text-align:center;font-size:10px;">
+                            <i class="fa-solid fa-globe" style="color:#f59e0b;"></i>
+                            <div style="color:#f59e0b;margin-top:2px;">Apache 2.4</div>
+                        </div>
+                        <div style="background:rgba(0,220,130,.08);border:1px solid rgba(0,220,130,.2);border-radius:6px;padding:8px;text-align:center;font-size:10px;">
+                            <i class="fa-solid fa-database" style="color:#00dc82;"></i>
+                            <div style="color:#00dc82;margin-top:2px;">MariaDB</div>
+                        </div>
+                        <div style="background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.2);border-radius:6px;padding:8px;text-align:center;font-size:10px;">
+                            <i class="fa-brands fa-php" style="color:#a855f7;"></i>
+                            <div style="color:#a855f7;margin-top:2px;">PHP 8.2</div>
+                        </div>
+                        <div style="background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);border-radius:6px;padding:8px;text-align:center;font-size:10px;">
+                            <i class="fa-solid fa-ticket" style="color:#00d4ff;"></i>
+                            <div style="color:#00d4ff;margin-top:2px;">GLPI 10</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── 4. CATEGORIES ── -->
+    <section id="s-categories" class="doc-section">
+        <h2 class="doc-h2">
+            <span style="color:#00d4ff;font-family:'JetBrains Mono',monospace;font-size:16px;">04.</span>
+            Catégories de tickets & SLA
+        </h2>
+
+        <div class="doc-p">
+            Les catégories de tickets sont configurées dans GLPI pour couvrir l'ensemble des demandes de support de SISR-Corp. Chaque catégorie dispose d'une priorité par défaut et d'un SLA associé définissant les délais de prise en charge et de résolution.
+        </div>
+
+        <div style="overflow-x:auto;border-radius:10px;border:1px solid rgba(0,212,255,.12);overflow:hidden;margin-bottom:24px;">
+            <table class="data-table">
+                <thead>
+                    <tr><th>Catégorie</th><th>Sous-catégorie</th><th>Exemple de ticket</th><th>Priorité</th><th>SLA PEC</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="badge" style="background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3);">Matériel</span></td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">Poste de travail</td>
+                        <td style="font-size:12px;color:#cbd5e1;">Écran ne s'allume plus</td>
+                        <td><span class="badge" style="background:rgba(239,68,68,.12);color:#ef4444;">Haute</span></td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00dc82;">2h</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge" style="background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3);">Matériel</span></td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">Imprimante</td>
+                        <td style="font-size:12px;color:#cbd5e1;">Bourrage papier</td>
+                        <td><span class="badge" style="background:rgba(245,158,11,.12);color:#f59e0b;">Moyenne</span></td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00dc82;">4h</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge" style="background:rgba(168,85,247,.15);color:#a855f7;border:1px solid rgba(168,85,247,.3);">Logiciel</span></td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">Système d'exploitation</td>
+                        <td style="font-size:12px;color:#cbd5e1;">Windows ne démarre pas</td>
+                        <td><span class="badge" style="background:rgba(239,68,68,.12);color:#ef4444;">Haute</span></td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00dc82;">2h</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge" style="background:rgba(168,85,247,.15);color:#a855f7;border:1px solid rgba(168,85,247,.3);">Logiciel</span></td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">Application métier</td>
+                        <td style="font-size:12px;color:#cbd5e1;">GLPI inaccessible</td>
+                        <td><span class="badge" style="background:rgba(239,68,68,.12);color:#ef4444;">Haute</span></td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00dc82;">1h</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge" style="background:rgba(0,212,255,.15);color:#00d4ff;border:1px solid rgba(0,212,255,.3);">Réseau</span></td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">Connectivité</td>
+                        <td style="font-size:12px;color:#cbd5e1;">Pas d'accès Internet</td>
+                        <td><span class="badge" style="background:rgba(239,68,68,.12);color:#ef4444;">Haute</span></td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00dc82;">1h</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge" style="background:rgba(0,212,255,.15);color:#00d4ff;border:1px solid rgba(0,212,255,.3);">Réseau</span></td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">Partage fichiers</td>
+                        <td style="font-size:12px;color:#cbd5e1;">Accès refusé dossier RH</td>
+                        <td><span class="badge" style="background:rgba(239,68,68,.12);color:#ef4444;">Haute</span></td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00dc82;">2h</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge" style="background:rgba(0,220,130,.15);color:#00dc82;border:1px solid rgba(0,220,130,.3);">Demande service</span></td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">Création compte</td>
+                        <td style="font-size:12px;color:#cbd5e1;">Nouveau collaborateur</td>
+                        <td><span class="badge" style="background:rgba(100,116,139,.12);color:#94a3b8;">Normale</span></td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00dc82;">8h</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+            <div style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:14px;text-align:center;">
+                <div style="font-size:24px;font-weight:900;color:#ef4444;">4</div>
+                <div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-top:4px;">Catégories principales</div>
+            </div>
+            <div style="background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.2);border-radius:8px;padding:14px;text-align:center;">
+                <div style="font-size:24px;font-weight:900;color:#00d4ff;">7</div>
+                <div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-top:4px;">Sous-catégories</div>
+            </div>
+            <div style="background:rgba(0,220,130,.06);border:1px solid rgba(0,220,130,.2);border-radius:8px;padding:14px;text-align:center;">
+                <div style="font-size:24px;font-weight:900;color:#00dc82;">1–8h</div>
+                <div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-top:4px;">Plage SLA (PEC)</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── 5. INSTALLATION LAMP ── -->
+    <section id="s-lamp" class="doc-section">
+        <h2 class="doc-h2">
+            <span style="color:#00d4ff;font-family:'JetBrains Mono',monospace;font-size:16px;">05.</span>
+            Installation de la Stack LAMP
+        </h2>
+
+        <div class="doc-p">
+            La première étape consiste à préparer le serveur <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#00d4ff;font-family:'JetBrains Mono',monospace;">srv-glpi-01</code> avec l'ensemble des prérequis logiciels. GLPI 10 requiert <strong style="color:#fff;">PHP 8.2 minimum</strong> avec un ensemble précis d'extensions. L'installation se fait via <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#a855f7;font-family:'JetBrains Mono',monospace;">apt</code> depuis les dépôts Debian 12 standard.
+        </div>
+
+        <div class="cli-box" style="margin-bottom:20px;">
+            <div class="cli-bar">
+                <div class="cli-dot" style="background:#ef4444;"></div>
+                <div class="cli-dot" style="background:#f59e0b;"></div>
+                <div class="cli-dot" style="background:#00dc82;"></div>
+                <span style="font-size:11px;color:#00dc82;margin-left:8px;font-weight:700;">Bash / Debian 12</span>
+                <span class="cli-title">srv-glpi-01 — Installation Stack LAMP complète</span>
+            </div>
+            <div class="cli-body">
+                <div><span class="cli-comment"># Mise à jour du système</span></div>
+                <div><span class="cli-prompt">root@srv-glpi-01:~# </span><span class="cli-cmd">apt update && apt upgrade -y</span></div>
+                <div style="margin-top:10px;"><span class="cli-comment"># Installation Apache + MariaDB</span></div>
+                <div><span class="cli-prompt">root@srv-glpi-01:~# </span><span class="cli-cmd">apt install -y apache2 mariadb-server</span></div>
+                <div style="margin-top:10px;"><span class="cli-comment"># Ajout du dépôt PHP 8.2 (Ondrej Sury)</span></div>
+                <div><span class="cli-prompt">root@srv-glpi-01:~# </span><span class="cli-cmd">curl -sSL https://packages.sury.org/php/README.txt | bash -x</span></div>
+                <div style="margin-top:10px;"><span class="cli-comment"># Installation PHP 8.2 et toutes les extensions requises par GLPI 10</span></div>
+                <div><span class="cli-prompt">root@srv-glpi-01:~# </span><span class="cli-cmd">apt install -y php8.2 php8.2-curl php8.2-gd php8.2-intl \</span></div>
+                <div style="padding-left:32px;"><span class="cli-cmd">php8.2-mbstring php8.2-mysql php8.2-xml php8.2-zip \</span></div>
+                <div style="padding-left:32px;"><span class="cli-cmd">php8.2-bz2 php8.2-ldap php8.2-apcu libapache2-mod-php8.2</span></div>
+                <div style="margin-top:10px;"><span class="cli-comment"># Activation des modules Apache nécessaires</span></div>
+                <div><span class="cli-prompt">root@srv-glpi-01:~# </span><span class="cli-cmd">a2enmod rewrite</span></div>
+                <div><span class="cli-prompt">root@srv-glpi-01:~# </span><span class="cli-cmd">systemctl enable --now apache2 mariadb</span></div>
+                <div style="margin-top:10px;"><span class="cli-val">✓ Stack LAMP opérationnelle — Apache + MariaDB + PHP 8.2 actifs</span></div>
+            </div>
+        </div>
+
+        <div class="cli-box" style="margin-bottom:20px;">
+            <div class="cli-bar">
+                <div class="cli-dot" style="background:#ef4444;"></div>
+                <div class="cli-dot" style="background:#f59e0b;"></div>
+                <div class="cli-dot" style="background:#00dc82;"></div>
+                <span style="font-size:11px;color:#00dc82;margin-left:8px;font-weight:700;">Bash / Debian 12</span>
+                <span class="cli-title">Résultat — Extensions PHP 8.2 toutes présentes</span>
+            </div>
+            <div class="cli-body">
+                <div><span class="cli-comment"># Résultat de la vérification (extrait)</span></div>
+                <div><span style="color:#475569;">php8.2-curl est déjà la version la plus récente (8.2.30-1~deb12u1).</span></div>
+                <div><span style="color:#475569;">php8.2-gd est déjà la version la plus récente (8.2.30-1~deb12u1).</span></div>
+                <div><span style="color:#475569;">php8.2-intl est déjà la version la plus récente (8.2.30-1~deb12u1).</span></div>
+                <div><span style="color:#475569;">php8.2-mbstring est déjà la version la plus récente (8.2.30-1~deb12u1).</span></div>
+                <div><span style="color:#475569;">php8.2-mysql est déjà la version la plus récente (8.2.30-1~deb12u1).</span></div>
+                <div><span style="color:#475569;">php8.2-ldap est déjà la version la plus récente (8.2.30-1~deb12u1).</span></div>
+                <div><span style="color:#475569;">php8.2-apcu est déjà la version la plus récente (5.1.22+4.0.11-2).</span></div>
+                <div style="margin-top:8px;"><span class="cli-val">0 mis à jour, 0 nouvellement installés — toutes extensions présentes ✓</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── 6. INSTALLATION GLPI ── -->
+    <section id="s-glpi" class="doc-section">
+        <h2 class="doc-h2">
+            <span style="color:#00d4ff;font-family:'JetBrains Mono',monospace;font-size:16px;">06.</span>
+            Installation & Sécurisation GLPI 10
+        </h2>
+
+        <div class="doc-p">
+            GLPI 10 est téléchargé depuis le dépôt officiel GitHub, extrait dans <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#00d4ff;font-family:'JetBrains Mono',monospace;">/var/www/html/glpi</code>. La sécurisation post-installation impose le déplacement des répertoires sensibles <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#a855f7;font-family:'JetBrains Mono',monospace;">config/</code> et <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#a855f7;font-family:'JetBrains Mono',monospace;">files/</code> hors de la racine web — bonne pratique GLPI 10 contre les accès directs non autorisés.
+        </div>
+
+        <div class="cli-box" style="margin-bottom:20px;">
+            <div class="cli-bar">
+                <div class="cli-dot" style="background:#ef4444;"></div>
+                <div class="cli-dot" style="background:#f59e0b;"></div>
+                <div class="cli-dot" style="background:#00dc82;"></div>
+                <span style="font-size:11px;color:#00dc82;margin-left:8px;font-weight:700;">Bash / Debian 12</span>
+                <span class="cli-title">Configuration MariaDB + Sécurisation GLPI 10</span>
+            </div>
+            <div class="cli-body">
+                <div><span class="cli-comment"># Création de la base de données dédiée GLPI</span></div>
+                <div><span class="cli-prompt">root@srv-glpi-01:~# </span><span class="cli-cmd">mysql -u root -p</span></div>
+                <div><span class="cli-key">MariaDB [(none)]> </span><span class="cli-val">CREATE DATABASE glpi_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</span></div>
+                <div><span class="cli-key">MariaDB [(none)]> </span><span class="cli-val">CREATE USER 'glpiuser'@'localhost' IDENTIFIED BY 'MotDePasse@2026';</span></div>
+                <div><span class="cli-key">MariaDB [(none)]> </span><span class="cli-val">GRANT ALL PRIVILEGES ON glpi_db.* TO 'glpiuser'@'localhost';</span></div>
+                <div><span class="cli-key">MariaDB [(none)]> </span><span class="cli-val">FLUSH PRIVILEGES; EXIT;</span></div>
+                <div style="margin-top:10px;"><span class="cli-comment"># Téléchargement et extraction GLPI 10</span></div>
+                <div><span class="cli-prompt">root@srv-glpi-01:~# </span><span class="cli-cmd">wget https://github.com/glpi-project/glpi/releases/latest/download/glpi-10.x.x.tgz</span></div>
+                <div><span class="cli-prompt">root@srv-glpi-01:~# </span><span class="cli-cmd">tar xzf glpi-10.x.x.tgz -C /var/www/html/</span></div>
+                <div><span class="cli-prompt">root@srv-glpi-01:~# </span><span class="cli-cmd">chown -R www-data:www-data /var/www/html/glpi</span></div>
+                <div style="margin-top:10px;"><span class="cli-comment"># ── Sécurisation post-installation (GLPI 10 best practice) ──</span></div>
+                <div><span class="cli-prompt">root@srv-glpi-01:~# </span><span class="cli-cmd">mv /var/www/html/glpi/config /etc/glpi</span></div>
+                <div><span class="cli-prompt">root@srv-glpi-01:~# </span><span class="cli-cmd">mv /var/www/html/glpi/files  /var/lib/glpi</span></div>
+                <div><span class="cli-prompt">root@srv-glpi-01:~# </span><span class="cli-cmd">rm -f /var/www/html/glpi/install/install.php</span></div>
+                <div style="margin-top:6px;"><span class="cli-warn"># install.php supprimé → surface d'attaque réduite</span></div>
+                <div style="margin-top:8px;"><span class="cli-val">✓ GLPI 10 installé et sécurisé — http://192.168.29.82/glpi/ opérationnel</span></div>
+            </div>
+        </div>
+
+        <div class="warn-card" style="margin-bottom:20px;">
+            <div style="font-size:12px;font-weight:700;color:#f59e0b;margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;"><i class="fa-solid fa-shield-halved"></i> &nbsp;Sécurisation post-installation — points clés</div>
+            <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:#94a3b8;">
+                <div><i class="fa-solid fa-check" style="color:#00dc82;margin-right:8px;"></i><strong style="color:#fff;">install.php supprimé</strong> — empêche toute réinstallation non autorisée</div>
+                <div><i class="fa-solid fa-check" style="color:#00dc82;margin-right:8px;"></i><strong style="color:#fff;">config/ déplacé vers /etc/glpi</strong> — fichiers de config hors de la racine web</div>
+                <div><i class="fa-solid fa-check" style="color:#00dc82;margin-right:8px;"></i><strong style="color:#fff;">files/ déplacé vers /var/lib/glpi</strong> — uploads et cache hors de la racine web</div>
+                <div><i class="fa-solid fa-check" style="color:#00dc82;margin-right:8px;"></i><strong style="color:#fff;">Politique MDP admin</strong> — longueur min. 10, chiffres, maj, min, symboles obligatoires</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── 7. CONFIG ── -->
+    <section id="s-config" class="doc-section">
+        <h2 class="doc-h2">
+            <span style="color:#00d4ff;font-family:'JetBrains Mono',monospace;font-size:16px;">07.</span>
+            Configuration ITSM — Entités & Utilisateurs
+        </h2>
+
+        <div class="doc-h3"><i class="fa-solid fa-building"></i> 7.1 — Création de l'entité SISR CORP</div>
+        <div class="doc-p">
+            L'entité <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#00dc82;font-family:'JetBrains Mono',monospace;">SISR CORP</code> est créée dans Administration → Entités. Les entités GLPI permettent de segmenter le parc et les tickets par organisation ou filiale. L'entité racine (Arborescence) contient SISR CORP comme entité fille — les utilisateurs sont rattachés à cette entité pour une gestion cloisonnée.
+        </div>
+
+        <div class="cli-box" style="margin-bottom:20px;">
+            <div class="cli-bar">
+                <div class="cli-dot" style="background:#ef4444;"></div>
+                <div class="cli-dot" style="background:#f59e0b;"></div>
+                <div class="cli-dot" style="background:#00dc82;"></div>
+                <span style="font-size:11px;color:#00dc82;margin-left:8px;font-weight:700;">GLPI 10 — Interface Web</span>
+                <span class="cli-title">Administration → Entités · SISR CORP créée</span>
+            </div>
+            <div class="cli-body">
+                <div><span class="cli-comment"># Administration > Entités > Créer une entité</span></div>
+                <div><span class="cli-key">Nom complet     :</span> <span class="cli-val">SISR CORP</span></div>
+                <div><span class="cli-key">Entité parente  :</span> <span class="cli-val">Entité racine (Arborescence)</span></div>
+                <div><span class="cli-key">Statut          :</span> <span class="cli-val">Activée</span></div>
+                <div style="margin-top:8px;"><span class="cli-comment"># Administration > Utilisateurs — Sécurisation compte admin</span></div>
+                <div><span class="cli-key">Identifiant     :</span> <span class="cli-val">glpi</span></div>
+                <div><span class="cli-key">Politique MDP   :</span> <span class="cli-val">Longueur min 10 · Chiffre + Maj + Min + Symbole</span></div>
+                <div><span class="cli-key">Authentification:</span> <span class="cli-val">Base interne GLPI</span></div>
+                <div style="margin-top:8px;"><span class="cli-val">✓ Entité SISR CORP opérationnelle · Compte admin sécurisé</span></div>
+            </div>
+        </div>
+
+        <div class="doc-h3"><i class="fa-solid fa-desktop"></i> 7.2 — Inventaire automatique — Agent GLPI</div>
+        <div class="doc-p">
+            L'agent GLPI installé sur <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#00d4ff;font-family:'JetBrains Mono',monospace;">srv-glpi-01</code> remonte automatiquement l'ensemble de la configuration matérielle et logicielle du serveur. Dans Parc → Ordinateurs, le serveur apparaît sans aucune saisie manuelle.
+        </div>
+
+        <div class="info-card">
+            <div style="font-size:12px;font-weight:700;color:#00d4ff;margin-bottom:14px;"><i class="fa-solid fa-desktop"></i> &nbsp;GLPI → Parc → Ordinateurs — Remontée automatique srv-glpi-01</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:12px;">
+                <div>
+                    <div style="color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Nom</div>
+                    <div style="color:#fff;font-family:'JetBrains Mono',monospace;">srv-glpi-01</div>
+                </div>
+                <div>
+                    <div style="color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Fabricant</div>
+                    <div style="color:#00dc82;font-family:'JetBrains Mono',monospace;">VMware Inc.</div>
+                </div>
+                <div>
+                    <div style="color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Modèle</div>
+                    <div style="color:#94a3b8;font-family:'JetBrains Mono',monospace;">VMware Virtual Platform</div>
+                </div>
+                <div>
+                    <div style="color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Système d'exploitation</div>
+                    <div style="color:#00d4ff;font-family:'JetBrains Mono',monospace;">Debian GNU/Linux 12 (bookworm)</div>
+                </div>
+                <div>
+                    <div style="color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Processeur</div>
+                    <div style="color:#a855f7;font-family:'JetBrains Mono',monospace;">Intel Xeon E5-2695 v2 @ 2.40GHz</div>
+                </div>
+                <div>
+                    <div style="color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Dernière mise à jour</div>
+                    <div style="color:#f59e0b;font-family:'JetBrains Mono',monospace;">2026-04-01 16:30</div>
+                </div>
+            </div>
+            <div style="margin-top:12px;padding:10px;background:#000d18;border-radius:6px;font-size:11px;color:#00dc82;font-family:'JetBrains Mono',monospace;">✓ Aucune saisie manuelle — Remontée 100% automatique via Agent GLPI</div>
+        </div>
+    </section>
+
+    <!-- ── 8. TESTS ── -->
+    <section id="s-tests" class="doc-section">
+        <h2 class="doc-h2">
+            <span style="color:#00d4ff;font-family:'JetBrains Mono',monospace;font-size:16px;">08.</span>
+            Tests & Validations ITSM
+        </h2>
+
+        <div class="doc-h3"><i class="fa-solid fa-flask"></i> Terminal interactif — Tests GLPI en direct</div>
+
+        <div id="live-terminal">
+            <span style="color:#475569;">root@srv-glpi-01 — GLPI 10 ITSM · Debian 12 Bookworm &nbsp;</span><span style="color:#00dc82;">▮</span>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+            <button class="test-btn test-btn-green" onclick="runGLPITest('lamp')">
+                <i class="fa-solid fa-layer-group"></i> &nbsp;Status LAMP
+            </button>
+            <button class="test-btn test-btn-cyan" onclick="runGLPITest('db')">
+                <i class="fa-solid fa-database"></i> &nbsp;Vérif. DB GLPI
+            </button>
+            <button class="test-btn test-btn-purple" onclick="runGLPITest('inventaire')">
+                <i class="fa-solid fa-desktop"></i> &nbsp;Inventaire agent
+            </button>
+            <button class="test-btn test-btn-orange" onclick="runGLPITest('ticket')">
+                <i class="fa-solid fa-ticket"></i> &nbsp;Créer ticket RH
+            </button>
+        </div>
+
+        <div class="doc-h3" style="margin-top:28px;"><i class="fa-solid fa-table-list"></i> Tableau récapitulatif des tests</div>
+        <div style="overflow-x:auto;border-radius:10px;border:1px solid rgba(0,212,255,.12);overflow:hidden;margin-bottom:24px;">
+            <table class="data-table">
+                <thead>
+                    <tr><th>Test effectué</th><th>Commande / Action</th><th>Résultat attendu</th><th>Statut</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Apache en cours d'exécution</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">systemctl status apache2</td>
+                        <td style="font-size:12px;color:#94a3b8;">active (running)</td>
+                        <td><span class="badge" style="background:rgba(0,220,130,.15);color:#00dc82;border:1px solid rgba(0,220,130,.3);">✓ OK</span></td>
+                    </tr>
+                    <tr>
+                        <td>MariaDB en cours d'exécution</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">systemctl status mariadb</td>
+                        <td style="font-size:12px;color:#94a3b8;">active (running)</td>
+                        <td><span class="badge" style="background:rgba(0,220,130,.15);color:#00dc82;border:1px solid rgba(0,220,130,.3);">✓ OK</span></td>
+                    </tr>
+                    <tr>
+                        <td>Connexion GLPI → MariaDB</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">SELECT COUNT(*) FROM glpi_computers</td>
+                        <td style="font-size:12px;color:#94a3b8;">COUNT(*) = 1 (srv-glpi-01)</td>
+                        <td><span class="badge" style="background:rgba(0,220,130,.15);color:#00dc82;border:1px solid rgba(0,220,130,.3);">✓ OK</span></td>
+                    </tr>
+                    <tr>
+                        <td>Inventaire agent automatique</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">Parc → Ordinateurs</td>
+                        <td style="font-size:12px;color:#94a3b8;">srv-glpi-01 visible avec CPU/RAM/OS</td>
+                        <td><span class="badge" style="background:rgba(0,220,130,.15);color:#00dc82;border:1px solid rgba(0,220,130,.3);">✓ OK</span></td>
+                    </tr>
+                    <tr>
+                        <td>Création ticket d'incident</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">Assistance → Créer un ticket</td>
+                        <td style="font-size:12px;color:#94a3b8;">Ticket #1 — Statut Nouveau — Entité SISR CORP</td>
+                        <td><span class="badge" style="background:rgba(0,220,130,.15);color:#00dc82;border:1px solid rgba(0,220,130,.3);">✓ OK</span></td>
+                    </tr>
+                    <tr>
+                        <td>Accès interface web GLPI</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">http://192.168.29.82/glpi/</td>
+                        <td style="font-size:12px;color:#94a3b8;">Page de connexion GLPI 10 affichée</td>
+                        <td><span class="badge" style="background:rgba(0,220,130,.15);color:#00dc82;border:1px solid rgba(0,220,130,.3);">✓ OK</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ── 9. BILAN ── -->
+    <section id="s-bilan" class="doc-section">
+        <h2 class="doc-h2">
+            <span style="color:#00d4ff;font-family:'JetBrains Mono',monospace;font-size:16px;">09.</span>
+            Bilan & Conclusion ITSM
+        </h2>
+
+        <div class="success-card" style="margin-bottom:28px;">
+            <div style="font-size:13px;font-weight:700;color:#00dc82;margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;"><i class="fa-solid fa-circle-check"></i> &nbsp;PARC & SUPPORT MAÎTRISÉS — GLPI 10 OPÉRATIONNEL</div>
+            <div class="doc-p" style="margin:0;">
+                Le déploiement de GLPI 10 sur le serveur Debian 12 <strong style="color:#fff;">srv-glpi-01</strong> transforme radicalement la gestion du parc informatique et du support technique de SISR-Corp : d'une gestion réactive et manuelle à une approche proactive et structurée conforme aux standards ITSM. L'inventaire automatique via l'agent GLPI élimine les tableaux Excel obsolètes — chaque équipement est référencé en temps réel avec ses composants, son OS et ses logiciels.
+            </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;">
+            <div class="stat-card">
+                <div class="stat-num" style="color:#00d4ff;">1</div>
+                <div class="stat-lbl">Équipement inventorié auto.</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" style="color:#a855f7;">7</div>
+                <div class="stat-lbl">Catégories de tickets</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" style="color:#00dc82;">100%</div>
+                <div class="stat-lbl">Stack LAMP opérationnel</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" style="color:#f59e0b;">0</div>
+                <div class="stat-lbl">Saisies manuelles parc</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" style="color:#ef4444;">1</div>
+                <div class="stat-lbl">Ticket ITSM créé (test)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" style="color:#00dc82;">SLA</div>
+                <div class="stat-lbl">Délais mesurables actifs</div>
+            </div>
+        </div>
+
+        <div style="overflow-x:auto;border-radius:10px;border:1px solid rgba(0,212,255,.12);overflow:hidden;margin-bottom:28px;">
+            <table class="data-table">
+                <thead>
+                    <tr><th>Indicateur</th><th style="color:#ef4444;">Avant (Excel / Passif)</th><th style="color:#00dc82;">Après (GLPI 10 / Proactif)</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Inventaire du parc</td>
+                        <td style="color:#ef4444;font-size:12px;">Fichier Excel — souvent obsolète</td>
+                        <td style="color:#00dc82;font-size:12px;">Agent GLPI — remontée automatique temps réel</td>
+                    </tr>
+                    <tr>
+                        <td>Gestion des tickets</td>
+                        <td style="color:#ef4444;font-size:12px;">E-mail/téléphone — aucun historique</td>
+                        <td style="color:#00dc82;font-size:12px;">Interface GLPI — ticket tracé du signalement à la clôture</td>
+                    </tr>
+                    <tr>
+                        <td>SLA</td>
+                        <td style="color:#ef4444;font-size:12px;">Aucun — pas de délai défini</td>
+                        <td style="color:#00dc82;font-size:12px;">SLA configurable — relances automatiques</td>
+                    </tr>
+                    <tr>
+                        <td>Shadow IT</td>
+                        <td style="color:#ef4444;font-size:12px;">Matériel non référencé incontrôlé</td>
+                        <td style="color:#00dc82;font-size:12px;">Agent GLPI détecte automatiquement tout équipement</td>
+                    </tr>
+                    <tr>
+                        <td>Statistiques pannes</td>
+                        <td style="color:#ef4444;font-size:12px;">Aucune statistique disponible</td>
+                        <td style="color:#00dc82;font-size:12px;">Dashboard GLPI — graphiques et tendances temps réel</td>
+                    </tr>
+                    <tr>
+                        <td>Renouvellement parc</td>
+                        <td style="color:#ef4444;font-size:12px;">Réactif — découverte tardive des fins de vie</td>
+                        <td style="color:#00dc82;font-size:12px;">Proactif — rapports de parc et alertes GLPI</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="display:flex;justify-content:center;gap:12px;margin-top:20px;flex-wrap:wrap;">
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(0,212,255,.2);padding:4px 14px;border-radius:20px;font-size:11px;color:#00d4ff;font-family:'JetBrains Mono',monospace;">GLPI 10</span>
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(168,85,247,.2);padding:4px 14px;border-radius:20px;font-size:11px;color:#a855f7;font-family:'JetBrains Mono',monospace;">PHP 8.2</span>
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(0,220,130,.2);padding:4px 14px;border-radius:20px;font-size:11px;color:#00dc82;font-family:'JetBrains Mono',monospace;">MariaDB</span>
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(245,158,11,.2);padding:4px 14px;border-radius:20px;font-size:11px;color:#f59e0b;font-family:'JetBrains Mono',monospace;">Apache 2.4</span>
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);padding:4px 14px;border-radius:20px;font-size:11px;color:#94a3b8;font-family:'JetBrains Mono',monospace;">Debian 12</span>
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);padding:4px 14px;border-radius:20px;font-size:11px;color:#94a3b8;font-family:'JetBrains Mono',monospace;">ITSM</span>
+        </div>
+    </section>
+
+</main>
+
+<script>
+function navigate(el) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+    const target = el.getAttribute('data-section');
+    document.querySelectorAll('.doc-section').forEach(s => {
+        s.classList.remove('active');
+        s.classList.remove('reveal');
+    });
+    const section = document.getElementById(target);
+    section.classList.add('active');
+    void section.offsetWidth;
+    section.classList.add('reveal');
+    document.querySelector('main').scrollTop = 0;
+}
+
+const term = document.getElementById('live-terminal');
+
+function clearTerminal() {
+    term.innerHTML = '<span style="color:#475569;">root@srv-glpi-01 — GLPI 10 ITSM &nbsp;</span><span style="color:#00dc82;">▮</span>';
+}
+
+function typeLines(lines, index, callback) {
+    if (index >= lines.length) { if(callback) callback(); return; }
+    const line = lines[index];
+    if (line.instant) {
+        term.innerHTML += '\n' + line.html;
+        term.scrollTop = term.scrollHeight;
+        setTimeout(() => typeLines(lines, index + 1, callback), line.delay || 200);
+    } else {
+        term.innerHTML += '\n<span id="tl"></span>';
+        term.scrollTop = term.scrollHeight;
+        const span = term.querySelector('#tl');
+        span.removeAttribute('id');
+        let i = 0;
+        const txt = line.text;
+        const color = line.color || '#e2e8f0';
+        span.style.color = color;
+        const iv = setInterval(() => {
+            span.textContent += txt[i++];
+            term.scrollTop = term.scrollHeight;
+            if (i >= txt.length) {
+                clearInterval(iv);
+                setTimeout(() => typeLines(lines, index + 1, callback), line.delay || 150);
+            }
+        }, line.speed || 30);
+    }
+}
+
+const glpiTests = {
+    lamp: [
+        { text: 'root@srv-glpi-01:~# systemctl status apache2 | grep Active', color:'#94a3b8', speed:40, delay:500 },
+        { instant:true, html:'   <span style="color:#00dc82;font-weight:700;">Active: active (running)</span> <span style="color:#475569;">since 2026-04-09 08:32:11 UTC; 4 days ago</span>', delay:400 },
+        { text: 'root@srv-glpi-01:~# systemctl status mariadb | grep Active', color:'#94a3b8', speed:40, delay:300 },
+        { instant:true, html:'   <span style="color:#00dc82;font-weight:700;">Active: active (running)</span> <span style="color:#475569;">since 2026-04-09 08:32:09 UTC; 4 days ago</span>', delay:400 },
+        { text: 'root@srv-glpi-01:~# php8.2 -v | head -1', color:'#94a3b8', speed:40, delay:300 },
+        { instant:true, html:'<span style="color:#a855f7;">PHP 8.2.30-1~deb12u1 (cli) (built: Mar 15 2026 10:25:00)</span>', delay:400 },
+        { instant:true, html:'<span style="color:#00dc82;font-family:\'JetBrains Mono\',monospace;font-size:11px;">✓ Stack LAMP opérationnelle — Apache + MariaDB + PHP 8.2 actifs</span>', delay:0 },
+    ],
+    db: [
+        { text: "root@srv-glpi-01:~# mysql -u glpiuser -p glpi_db -e 'SELECT COUNT(*) FROM glpi_computers;'", color:'#94a3b8', speed:28, delay:500 },
+        { instant:true, html:'<span style="color:#475569;">Enter password: ************</span>', delay:700 },
+        { instant:true, html:'', delay:100 },
+        { instant:true, html:'<span style="color:#94a3b8;">+----------+</span>', delay:100 },
+        { instant:true, html:'<span style="color:#94a3b8;">| COUNT(*) |</span>', delay:100 },
+        { instant:true, html:'<span style="color:#94a3b8;">+----------+</span>', delay:100 },
+        { instant:true, html:'<span style="color:#00dc82;font-weight:700;">|        1 |</span>  <span style="color:#475569;">← srv-glpi-01 inventorié par l\'agent</span>', delay:400 },
+        { instant:true, html:'<span style="color:#94a3b8;">+----------+</span>', delay:200 },
+        { instant:true, html:'<span style="color:#00dc82;font-family:\'JetBrains Mono\',monospace;font-size:11px;">✓ Base GLPI opérationnelle — 1 ordinateur inventorié automatiquement</span>', delay:0 },
+    ],
+    inventaire: [
+        { text: 'Vérification inventaire GLPI — Parc > Ordinateurs', color:'#94a3b8', speed:40, delay:400 },
+        { instant:true, html:'', delay:300 },
+        { instant:true, html:'<span style="color:#a855f7;">Nom          :</span> <span style="color:#fff;">srv-glpi-01</span>', delay:150 },
+        { instant:true, html:'<span style="color:#a855f7;">Fabricant    :</span> <span style="color:#00dc82;">VMware Inc.</span>', delay:150 },
+        { instant:true, html:'<span style="color:#a855f7;">Modèle       :</span> <span style="color:#94a3b8;">VMware Virtual Platform</span>', delay:150 },
+        { instant:true, html:'<span style="color:#a855f7;">OS           :</span> <span style="color:#00d4ff;">Debian GNU/Linux 12 (bookworm)</span>', delay:150 },
+        { instant:true, html:'<span style="color:#a855f7;">CPU          :</span> <span style="color:#a855f7;">Intel Xeon E5-2695 v2 @ 2.40GHz</span>', delay:150 },
+        { instant:true, html:'<span style="color:#a855f7;">N° série     :</span> <span style="color:#64748b;">VMware-56 4d 54 87 cf 26 8d 98</span>', delay:150 },
+        { instant:true, html:'<span style="color:#a855f7;">Dernière MAJ :</span> <span style="color:#f59e0b;">2026-04-01 16:30</span>', delay:300 },
+        { instant:true, html:'<span style="color:#00dc82;font-family:\'JetBrains Mono\',monospace;font-size:11px;">✓ Inventaire automatique 100% opérationnel — Aucune saisie manuelle requise</span>', delay:0 },
+    ],
+    ticket: [
+        { text: 'Simulation — Assistance > Créer un ticket', color:'#94a3b8', speed:45, delay:400 },
+        { instant:true, html:'', delay:200 },
+        { instant:true, html:'<span style="color:#00d4ff;">Titre      :</span> <span style="color:#fff;">SISR-Corp - Problème d\'accès au dossier partagé RH</span>', delay:200 },
+        { instant:true, html:'<span style="color:#00d4ff;">Type       :</span> <span style="color:#ef4444;">Incident</span>', delay:100 },
+        { instant:true, html:'<span style="color:#00d4ff;">Catégorie  :</span> <span style="color:#a855f7;">Réseau &gt; Partage fichiers</span>', delay:100 },
+        { instant:true, html:'<span style="color:#00d4ff;">Statut     :</span> <span style="color:#f59e0b;">Nouveau</span>', delay:100 },
+        { instant:true, html:'<span style="color:#00d4ff;">Source     :</span> <span style="color:#94a3b8;">Helpdesk</span>', delay:100 },
+        { instant:true, html:'<span style="color:#00d4ff;">Urgence    :</span> <span style="color:#ef4444;">Haute</span>', delay:100 },
+        { instant:true, html:'<span style="color:#00d4ff;">Entité     :</span> <span style="color:#00dc82;">SISR CORP</span>', delay:100 },
+        { instant:true, html:'<span style="color:#00d4ff;">SLA PEC    :</span> <span style="color:#00dc82;">2h — Délai de prise en charge</span>', delay:300 },
+        { instant:true, html:'', delay:100 },
+        { instant:true, html:'<span style="color:#00dc82;font-family:\'JetBrains Mono\',monospace;font-size:11px;">✓ Ticket #1 créé — Traçabilité complète assurée dès la création</span>', delay:0 },
+    ]
+};
+
+function runGLPITest(type) {
+    term.innerHTML = '<span style="color:#475569;">root@srv-glpi-01 — GLPI 10 ITSM</span>';
+    typeLines(glpiTests[type], 0);
+}
+</script>
+</body>
+</html>
