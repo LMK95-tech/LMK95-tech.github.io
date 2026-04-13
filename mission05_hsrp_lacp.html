@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission 05 — Haute Disponibilité HSRP/LACP | BTS SIO SISR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script>tailwind.config={theme:{extend:{colors:{cy_dark:'#05111c',cy_card:'#0a1f30',cy_cyan:'#00d4ff',cy_green:'#00dc82',cy_purple:'#a855f7',cy_red:'#ef4444'},fontFamily:{sans:['Outfit','sans-serif'],mono:['JetBrains Mono','monospace']}}}}</script>
+    <style>
+        *{box-sizing:border-box}body{background-color:#05111c;color:#e2e8f0;font-family:'Outfit',sans-serif}
+        #sidebar{width:272px;min-width:272px;background:#0a1f30;border-right:1px solid rgba(0,212,255,.12);display:flex;flex-direction:column;height:100vh;position:sticky;top:0;overflow-y:auto}
+        .nav-group{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:#00d4ff;font-weight:700;padding:0 16px;margin:20px 0 6px}
+        .nav-item{display:flex;align-items:center;gap:8px;padding:8px 16px;font-size:12px;font-weight:500;color:#94a3b8;cursor:pointer;border-left:2px solid transparent;transition:all .2s}
+        .nav-item:hover{background:rgba(255,255,255,.04);color:#fff}.nav-item.active{border-left-color:#00d4ff;background:rgba(0,212,255,.06);color:#00d4ff}
+        .doc-section{display:none}.doc-section.active{display:block}
+        .doc-h2{font-size:24px;font-weight:700;color:#fff;margin-bottom:28px;padding-bottom:14px;border-bottom:1px solid rgba(148,163,184,.2);display:flex;align-items:center;gap:10px}
+        .doc-h3{font-size:16px;font-weight:700;color:#00d4ff;margin:24px 0 10px;display:flex;align-items:center;gap:8px}
+        .doc-p{font-size:14px;color:#94a3b8;line-height:1.8;margin-bottom:14px;text-align:justify}
+        .num{color:rgba(148,163,184,.35);margin-right:6px}
+        .cli-box{background:#000d18;border:1px solid rgba(0,212,255,.2);border-radius:8px;overflow:hidden;font-family:'JetBrains Mono',monospace}
+        .cli-bar{background:#0d2035;padding:8px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(0,212,255,.1)}
+        .cli-dot{width:10px;height:10px;border-radius:50%}.cli-title{font-size:11px;color:#64748b;margin-left:auto}
+        .cli-body{padding:16px;font-size:12px;line-height:1.8;overflow-x:auto}
+        .cli-prompt{color:#00d4ff}.cli-cmd{color:#e2e8f0}.cli-comment{color:#3d5a6e}.cli-key{color:#a855f7}.cli-val{color:#00dc82}.cli-warn{color:#f59e0b}
+        .info-card{background:#0a1f30;border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:20px}
+        .danger-card{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:20px}
+        .success-card{background:rgba(0,220,130,.07);border:1px solid rgba(0,220,130,.25);border-radius:10px;padding:20px}
+        .data-table{width:100%;border-collapse:collapse;font-size:13px}
+        .data-table th{background:#0d2035;color:#94a3b8;font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:10px 16px;text-align:left}
+        .data-table td{padding:10px 16px;border-bottom:1px solid rgba(148,163,184,.08);color:#cbd5e1}
+        .data-table tr:hover td{background:rgba(0,212,255,.03)}
+        .badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 10px;border-radius:4px;font-family:'JetBrains Mono',monospace}
+        #live-terminal{background:#000d18;border:1px solid rgba(0,220,130,.25);border-radius:8px;padding:16px;font-family:'JetBrains Mono',monospace;font-size:12px;height:220px;overflow-y:auto}
+        .test-btn{padding:8px 20px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;border:1px solid}
+        .test-btn-green{background:rgba(0,220,130,.1);border-color:rgba(0,220,130,.4);color:#00dc82}.test-btn-green:hover{background:rgba(0,220,130,.2)}
+        .test-btn-cyan{background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.4);color:#00d4ff}.test-btn-cyan:hover{background:rgba(0,212,255,.2)}
+        .test-btn-orange{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.4);color:#f59e0b}.test-btn-orange:hover{background:rgba(245,158,11,.2)}
+        .test-btn-red{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.4);color:#ef4444}.test-btn-red:hover{background:rgba(239,68,68,.2)}
+        .stat-card{background:#0a1f30;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:20px;text-align:center}
+        .stat-num{font-size:32px;font-weight:900}.stat-lbl{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.07em;margin-top:4px}
+        ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(0,212,255,.3);border-radius:4px}
+        .reveal{animation:fadeUp .6s ease both}@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+    </style>
+</head>
+<body class="flex" style="height:100vh;overflow:hidden;">
+
+<aside id="sidebar">
+    <div style="padding:20px 16px;border-bottom:1px solid rgba(0,212,255,.1);">
+        <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:38px;height:38px;background:#00dc82;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#05111c;font-size:18px;box-shadow:0 0 18px rgba(0,220,130,.4);">
+                <i class="fa-solid fa-rotate"></i>
+            </div>
+            <div><div style="font-size:13px;font-weight:700;color:#fff;">BTS SIO — SISR</div><div style="font-size:10px;color:#64748b;">Épreuve E5 · SESSION 2026</div></div>
+        </div>
+    </div>
+    <div style="padding:14px 16px;border-bottom:1px solid rgba(0,212,255,.07);">
+        <div style="background:rgba(0,220,130,.1);border:1px solid rgba(0,220,130,.3);border-radius:8px;padding:10px 14px;">
+            <div style="font-size:10px;color:#00dc82;font-weight:700;letter-spacing:.1em;text-transform:uppercase;">Mission 05</div>
+            <div style="font-size:13px;font-weight:700;color:#fff;margin-top:2px;">Haute Disponibilité</div>
+            <div style="font-size:10px;color:#64748b;margin-top:2px;">Capgemini · HSRP · LACP · Rapid-PVST+</div>
+        </div>
+    </div>
+    <nav style="flex:1;padding:8px 0;">
+        <div class="nav-group">Documentation</div>
+        <div class="nav-item active" data-section="s1" onclick="navigate(this)"><i class="fa-solid fa-magnifying-glass" style="font-size:11px;width:14px;"></i>Analyse SPOF</div>
+        <div class="nav-item" data-section="s2" onclick="navigate(this)"><i class="fa-solid fa-diagram-project" style="font-size:11px;width:14px;"></i>Topologie HA</div>
+        <div class="nav-item" data-section="s3" onclick="navigate(this)"><i class="fa-solid fa-link" style="font-size:11px;width:14px;"></i>EtherChannel LACP</div>
+        <div class="nav-item" data-section="s4" onclick="navigate(this)"><i class="fa-solid fa-rotate" style="font-size:11px;width:14px;"></i>HSRP VIP</div>
+        <div class="nav-item" data-section="s5" onclick="navigate(this)"><i class="fa-solid fa-tree" style="font-size:11px;width:14px;"></i>Rapid-PVST+</div>
+        <div class="nav-item" data-section="s6" onclick="navigate(this)"><i class="fa-solid fa-circle-check" style="font-size:11px;width:14px;"></i>Validation & Failover</div>
+        <div class="nav-item" data-section="s7" onclick="navigate(this)"><i class="fa-solid fa-flag-checkered" style="font-size:11px;width:14px;"></i>Conclusion & Bilan</div>
+        <div class="nav-group" style="margin-top:16px;">Référence rapide</div>
+        <div style="margin:8px 12px;background:#000d18;border:1px solid rgba(0,220,130,.2);border-radius:6px;padding:10px 12px;font-family:'JetBrains Mono',monospace;">
+            <div style="font-size:9px;color:#475569;margin-bottom:4px;text-transform:uppercase;">VIP HSRP</div>
+            <div style="font-size:11px;color:#00dc82;font-weight:700;">192.168.1.1</div>
+            <div style="font-size:9px;color:#475569;margin-top:6px;margin-bottom:4px;text-transform:uppercase;">Core1 (Actif)</div>
+            <div style="font-size:11px;color:#00d4ff;">192.168.1.2 · Priorité 110</div>
+            <div style="font-size:9px;color:#475569;margin-top:6px;margin-bottom:4px;text-transform:uppercase;">Core2 (Standby)</div>
+            <div style="font-size:11px;color:#a855f7;">192.168.1.3 · Priorité 100</div>
+            <div style="font-size:9px;color:#475569;margin-top:6px;margin-bottom:4px;text-transform:uppercase;">EtherChannel</div>
+            <div style="font-size:11px;color:#f59e0b;">Po1 — LACP (Fa0/1 + Fa0/2)</div>
+        </div>
+    </nav>
+    <div style="padding:12px 16px;border-top:1px solid rgba(0,212,255,.07);font-size:10px;color:#475569;">
+        <div style="display:flex;align-items:center;gap:6px;"><div style="width:6px;height:6px;background:#00dc82;border-radius:50%;box-shadow:0 0 6px #00dc82;"></div>HSRP Actif · LACP Po1 UP</div>
+        <div style="margin-top:4px;color:#334155;">Infrastructures Réseaux Critiques</div>
+    </div>
+</aside>
+
+<main style="flex:1;overflow-y:auto;padding:40px 48px;max-width:900px;">
+
+    <!-- S1 -->
+    <section id="s1" class="doc-section active reveal">
+        <div class="doc-h2"><i class="fa-solid fa-triangle-exclamation" style="color:#00dc82;font-size:20px;"></i><span><span class="num">01</span>Analyse SPOF — Architecture vulnérable</span></div>
+        <p class="doc-p">L'infrastructure réseau de Capgemini fonctionnait selon une architecture linéaire à <strong style="color:#ef4444;">point unique de défaillance (SPOF)</strong> : un seul routeur assurait la passerelle par défaut, et un lien physique unique reliait chaque switch. Tout environnement de production critique ne peut tolérer une telle architecture.</p>
+        <div class="danger-card" style="margin-bottom:20px;">
+            <div style="font-size:12px;font-weight:700;color:#ef4444;margin-bottom:12px;text-transform:uppercase;letter-spacing:.08em;"><i class="fa-solid fa-circle-xmark"></i> &nbsp;3 SPOF critiques identifiés</div>
+            <div style="display:grid;grid-template-columns:1fr;gap:10px;">
+                <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:6px;padding:10px 14px;display:flex;align-items:flex-start;gap:12px;">
+                    <i class="fa-solid fa-router" style="color:#ef4444;margin-top:2px;"></i>
+                    <div><div style="font-size:12px;font-weight:700;color:#ef4444;">Panne de la passerelle unique</div><div style="font-size:11px;color:#94a3b8;margin-top:2px;">Toute défaillance du routeur central = coupure totale d'accès au réseau</div></div>
+                </div>
+                <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:6px;padding:10px 14px;display:flex;align-items:flex-start;gap:12px;">
+                    <i class="fa-solid fa-cable-car" style="color:#ef4444;margin-top:2px;"></i>
+                    <div><div style="font-size:12px;font-weight:700;color:#ef4444;">Rupture de lien inter-commutateurs</div><div style="font-size:11px;color:#94a3b8;margin-top:2px;">Déconnexion d'un câble = moitié du réseau isolée physiquement</div></div>
+                </div>
+                <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:6px;padding:10px 14px;display:flex;align-items:flex-start;gap:12px;">
+                    <i class="fa-solid fa-clock" style="color:#ef4444;margin-top:2px;"></i>
+                    <div><div style="font-size:12px;font-weight:700;color:#ef4444;">Temps de rétablissement non maîtrisé</div><div style="font-size:11px;color:#94a3b8;margin-top:2px;">Sans basculement automatique, reprise = intervention humaine — downtime plusieurs heures</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="success-card">
+            <div style="font-size:12px;font-weight:700;color:#00dc82;margin-bottom:10px;text-transform:uppercase;letter-spacing:.08em;"><i class="fa-solid fa-circle-check"></i> &nbsp;Solution : 3 mécanismes complémentaires</div>
+            <div style="display:flex;flex-direction:column;gap:7px;">
+                <div style="font-size:13px;color:#94a3b8;"><i class="fa-solid fa-rotate" style="color:#00dc82;margin-right:8px;font-size:10px;"></i><strong style="color:#fff;">HSRP</strong> — VIP 192.168.1.1 partagée entre 2 routeurs. Basculement < 10 secondes.</div>
+                <div style="font-size:13px;color:#94a3b8;"><i class="fa-solid fa-link" style="color:#00d4ff;margin-right:8px;font-size:10px;"></i><strong style="color:#fff;">EtherChannel LACP</strong> — 2 liens physiques agrégés en Po1. Rupture d'un lien = imperceptible.</div>
+                <div style="font-size:13px;color:#94a3b8;"><i class="fa-solid fa-tree" style="color:#a855f7;margin-right:8px;font-size:10px;"></i><strong style="color:#fff;">Rapid-PVST+</strong> — STP convergence < 1 seconde. Boucles de broadcast bloquées.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- S2 TOPOLOGIE -->
+    <section id="s2" class="doc-section">
+        <div class="doc-h2"><i class="fa-solid fa-diagram-project" style="color:#00dc82;font-size:20px;"></i><span><span class="num">02</span>Topologie Haute Disponibilité</span></div>
+        <div class="doc-h3"><i class="fa-solid fa-table-list" style="color:#00d4ff;"></i>2.1 — Matériel déployé</div>
+        <div style="background:#000d18;border:1px solid rgba(0,212,255,.15);border-radius:8px;overflow:hidden;margin-bottom:20px;">
+            <table class="data-table">
+                <thead><tr><th>Équipement</th><th>Modèle</th><th>Rôle</th><th>IP Interface</th></tr></thead>
+                <tbody>
+                    <tr><td><i class="fa-solid fa-router" style="color:#00dc82;margin-right:8px;"></i>Router0 (Core1)</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">Cisco 2901</code></td><td style="font-size:12px;color:#94a3b8;">HSRP Actif (priorité 110)</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00dc82;">192.168.1.2</code></td></tr>
+                    <tr><td><i class="fa-solid fa-router" style="color:#a855f7;margin-right:8px;"></i>Router1 (Core2)</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">Cisco 2901</code></td><td style="font-size:12px;color:#94a3b8;">HSRP Standby (priorité 100)</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#a855f7;">192.168.1.3</code></td></tr>
+                    <tr><td><i class="fa-solid fa-sitemap" style="color:#00d4ff;margin-right:8px;"></i>Switch0</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">Catalyst 2960-24TT</code></td><td style="font-size:12px;color:#94a3b8;">Accès — EtherChannel LACP</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#64748b;">—</code></td></tr>
+                    <tr><td><i class="fa-solid fa-sitemap" style="color:#00d4ff;margin-right:8px;"></i>Switch1</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">Catalyst 2960-24TT</code></td><td style="font-size:12px;color:#94a3b8;">Accès — EtherChannel LACP</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#64748b;">—</code></td></tr>
+                    <tr><td><i class="fa-solid fa-desktop" style="color:#f59e0b;margin-right:8px;"></i>PC0</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">PC-PT</code></td><td style="font-size:12px;color:#94a3b8;">Client — passerelle VIP HSRP</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#f59e0b;">192.168.1.10 / GW: 192.168.1.1</code></td></tr>
+                    <tr><td><i class="fa-solid fa-desktop" style="color:#f59e0b;margin-right:8px;"></i>PC1</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">PC-PT</code></td><td style="font-size:12px;color:#94a3b8;">Client — passerelle VIP HSRP</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#f59e0b;">192.168.1.11 / GW: 192.168.1.1</code></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- S3 LACP -->
+    <section id="s3" class="doc-section">
+        <div class="doc-h2"><i class="fa-solid fa-link" style="color:#00dc82;font-size:20px;"></i><span><span class="num">03</span>EtherChannel LACP — Agrégation de liens</span></div>
+        <p class="doc-p">L'agrégation de liens <strong style="color:#fff;">EtherChannel via LACP (IEEE 802.3ad)</strong> est configurée sur les interfaces <code style="background:#000d18;padding:2px 6px;border-radius:4px;color:#00d4ff;font-family:'JetBrains Mono',monospace;">FastEthernet0/1</code> et <code style="background:#000d18;padding:2px 6px;border-radius:4px;color:#00d4ff;font-family:'JetBrains Mono',monospace;">FastEthernet0/2</code> des deux switchs. Ces deux liens physiques sont regroupés en un port-channel logique <code style="background:#000d18;padding:2px 6px;border-radius:4px;color:#f59e0b;font-family:'JetBrains Mono',monospace;">Port-channel1 (Po1)</code> configuré en mode trunk.</p>
+
+        <div class="cli-box" style="margin-bottom:20px;">
+            <div class="cli-bar"><div class="cli-dot" style="background:#ef4444;"></div><div class="cli-dot" style="background:#f59e0b;"></div><div class="cli-dot" style="background:#00dc82;"></div><span style="font-size:11px;color:#00dc82;margin-left:8px;font-weight:700;">Cisco IOS</span><span class="cli-title">Switch0 & Switch1 — EtherChannel LACP</span></div>
+            <div class="cli-body">
+                <div><span class="cli-prompt">Switch></span><span class="cli-cmd">enable</span></div>
+                <div><span class="cli-prompt">Switch#</span><span class="cli-cmd">configure terminal</span></div>
+                <div><span class="cli-prompt">Switch(config)#</span><span class="cli-cmd">interface range FastEthernet0/1 - 2</span></div>
+                <div><span class="cli-prompt">Switch(config-if-range)#</span><span class="cli-key"> channel-group 1 mode active</span></div>
+                <div><span class="cli-prompt">Switch(config-if-range)#</span><span class="cli-cmd">exit</span></div>
+                <div><span class="cli-prompt">Switch(config)#</span><span class="cli-cmd">interface Port-channel1</span></div>
+                <div><span class="cli-prompt">Switch(config-if)#</span><span class="cli-key"> switchport mode trunk</span></div>
+                <div><span class="cli-prompt">Switch(config-if)#</span><span class="cli-cmd">exit</span></div>
+                <div style="margin-top:8px;"><span class="cli-warn">%LINEPROTO-5-UPDOWN: Interface FastEthernet0/1, changed state to up</span></div>
+                <div><span class="cli-warn">%LINEPROTO-5-UPDOWN: Interface FastEthernet0/2, changed state to up</span></div>
+                <div><span class="cli-val">%LINK-5-CHANGED: Interface Port-channel1, changed state to up</span></div>
+                <div style="margin-top:8px;"><span class="cli-val">✓ Port-channel1 UP — agrégation LACP opérationnelle (2 liens physiques)</span></div>
+            </div>
+        </div>
+
+        <div class="cli-box" style="margin-bottom:20px;">
+            <div class="cli-bar"><div class="cli-dot" style="background:#ef4444;"></div><div class="cli-dot" style="background:#f59e0b;"></div><div class="cli-dot" style="background:#00dc82;"></div><span style="font-size:11px;color:#00dc82;margin-left:8px;font-weight:700;">Cisco IOS</span><span class="cli-title">show etherchannel summary</span></div>
+            <div class="cli-body">
+                <div><span class="cli-prompt">Switch0#</span><span class="cli-cmd">show etherchannel summary</span></div>
+                <div style="margin-top:8px;"><span class="cli-comment">Flags:  D - down   P - bundled in port-channel   U - in use</span></div>
+                <div><span class="cli-comment">        H - Hot-standby (LACP only)   S - suspended</span></div>
+                <div style="margin-top:8px;"><span style="color:#475569;">Number of channel-groups in use: 1</span></div>
+                <div style="margin-top:6px;"><span style="color:#94a3b8;">Group  Port-channel  Protocol   Ports</span></div>
+                <div><span style="color:#475569;">------+-------------+-----------+----------------</span></div>
+                <div><span style="color:#64748b;">1      </span><span class="cli-val">Po1(SU)      </span><span style="color:#00d4ff;"> LACP       </span><span class="cli-val">Fa0/1(P)  Fa0/2(P)</span></div>
+                <div style="margin-top:8px;"><span class="cli-comment"># SU = Layer2, in use · P = bundled in port-channel</span></div>
+                <div><span class="cli-val">✓ EtherChannel LACP opérationnel — 2 liens agrégés en Po1</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- S4 HSRP -->
+    <section id="s4" class="doc-section">
+        <div class="doc-h2"><i class="fa-solid fa-rotate" style="color:#00dc82;font-size:20px;"></i><span><span class="num">04</span>HSRP — Passerelle virtuelle redondante</span></div>
+        <p class="doc-p">Le protocole <strong style="color:#fff;">HSRP (Hot Standby Router Protocol)</strong> est configuré sur le groupe 1 avec la VIP <code style="background:#000d18;padding:2px 6px;border-radius:4px;color:#00dc82;font-family:'JetBrains Mono',monospace;">192.168.1.1</code>. Core1 (R1) est configuré avec une <strong style="color:#f59e0b;">priorité 110</strong> et l'option <code style="background:#000d18;padding:2px 6px;border-radius:4px;color:#00d4ff;font-family:'JetBrains Mono',monospace;">preempt</code> activée — il reprend automatiquement le rôle Active après rétablissement.</p>
+
+        <div class="cli-box" style="margin-bottom:16px;">
+            <div class="cli-bar"><div class="cli-dot" style="background:#ef4444;"></div><div class="cli-dot" style="background:#f59e0b;"></div><div class="cli-dot" style="background:#00dc82;"></div><span style="font-size:11px;color:#00dc82;margin-left:8px;font-weight:700;">Cisco IOS</span><span class="cli-title">Router0 (Core1) — HSRP Actif — Priorité 110</span></div>
+            <div class="cli-body">
+                <div><span class="cli-prompt">Router></span><span class="cli-cmd">enable</span>  <span class="cli-prompt">Router#</span><span class="cli-cmd">configure terminal</span></div>
+                <div><span class="cli-prompt">Router(config)#</span><span class="cli-cmd">hostname R1</span></div>
+                <div><span class="cli-prompt">R1(config)#</span><span class="cli-cmd">interface GigabitEthernet0/0</span></div>
+                <div><span class="cli-prompt">R1(config-if)#</span><span class="cli-key"> ip address 192.168.1.2 255.255.255.0</span></div>
+                <div><span class="cli-prompt">R1(config-if)#</span><span class="cli-key"> standby 1 ip 192.168.1.1</span>    <span class="cli-comment">← VIP partagée</span></div>
+                <div><span class="cli-prompt">R1(config-if)#</span><span class="cli-key"> standby 1 priority 110</span>       <span class="cli-comment">← Priorité haute (Actif)</span></div>
+                <div><span class="cli-prompt">R1(config-if)#</span><span class="cli-key"> standby 1 preempt</span>            <span class="cli-comment">← Reprend le rôle Actif auto</span></div>
+                <div><span class="cli-prompt">R1(config-if)#</span><span class="cli-cmd"> no shutdown</span></div>
+                <div style="margin-top:8px;"><span class="cli-val">%HSRP-6-STATECHANGE: GigabitEthernet0/0 Grp 1 state Standby -> Active</span></div>
+            </div>
+        </div>
+
+        <div class="cli-box" style="margin-bottom:20px;">
+            <div class="cli-bar"><div class="cli-dot" style="background:#ef4444;"></div><div class="cli-dot" style="background:#f59e0b;"></div><div class="cli-dot" style="background:#00dc82;"></div><span style="font-size:11px;color:#a855f7;margin-left:8px;font-weight:700;">Cisco IOS</span><span class="cli-title">Router1 (Core2) — HSRP Standby — Priorité 100</span></div>
+            <div class="cli-body">
+                <div><span class="cli-prompt">R2(config-if)#</span><span class="cli-key"> ip address 192.168.1.3 255.255.255.0</span></div>
+                <div><span class="cli-prompt">R2(config-if)#</span><span class="cli-key"> standby 1 ip 192.168.1.1</span>    <span class="cli-comment">← Même VIP</span></div>
+                <div><span class="cli-prompt">R2(config-if)#</span><span class="cli-key"> standby 1 priority 100</span>       <span class="cli-comment">← Priorité basse (Standby)</span></div>
+                <div><span class="cli-prompt">R2(config-if)#</span><span class="cli-cmd"> no shutdown</span></div>
+                <div style="margin-top:8px;"><span class="cli-val">%HSRP-6-STATECHANGE: GigabitEthernet0/0 Grp 1 state Speak -> Standby</span></div>
+            </div>
+        </div>
+
+        <div style="background:#000d18;border:1px solid rgba(0,212,255,.15);border-radius:8px;overflow:hidden;margin-bottom:20px;">
+            <table class="data-table">
+                <thead><tr><th>Rôle</th><th>Routeur</th><th>IP Interface</th><th>VIP HSRP</th><th>Priorité</th><th>Préemption</th><th>État</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><span class="badge" style="background:rgba(0,220,130,.15);color:#00dc82;border:1px solid rgba(0,220,130,.3);">Actif</span></td>
+                        <td style="color:#00dc82;font-weight:700;">R1 (Core1)</td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">192.168.1.2</code></td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00dc82;">192.168.1.1</code></td>
+                        <td><span class="badge" style="background:rgba(0,220,130,.1);color:#00dc82;">110</span></td>
+                        <td><span class="badge" style="background:rgba(0,220,130,.1);color:#00dc82;">Oui</span></td>
+                        <td><span class="badge" style="background:rgba(0,220,130,.15);color:#00dc82;border:1px solid rgba(0,220,130,.3);">Active</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge" style="background:rgba(168,85,247,.15);color:#a855f7;border:1px solid rgba(168,85,247,.3);">Standby</span></td>
+                        <td style="color:#a855f7;font-weight:700;">R2 (Core2)</td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">192.168.1.3</code></td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00dc82;">192.168.1.1</code></td>
+                        <td><span class="badge" style="background:rgba(168,85,247,.1);color:#a855f7;">100</span></td>
+                        <td><span class="badge" style="background:rgba(100,116,139,.1);color:#64748b;">Non</span></td>
+                        <td><span class="badge" style="background:rgba(168,85,247,.15);color:#a855f7;border:1px solid rgba(168,85,247,.3);">Standby</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- S5 RAPID-PVST -->
+    <section id="s5" class="doc-section">
+        <div class="doc-h2"><i class="fa-solid fa-tree" style="color:#00dc82;font-size:20px;"></i><span><span class="num">05</span>Rapid-PVST+ — Optimisation Spanning Tree</span></div>
+        <p class="doc-p">Le mode <strong style="color:#fff;">Rapid-PVST+</strong> (Rapid Per-VLAN Spanning Tree Plus) est activé sur les deux switchs. Contrairement au STP classique (convergence 30-50s), Rapid-PVST+ converge en <strong style="color:#00dc82;">moins d'une seconde</strong> grâce aux mécanismes Proposal/Agreement. Le port alternatif reste en état <code style="background:#000d18;padding:2px 6px;border-radius:4px;color:#ef4444;font-family:'JetBrains Mono',monospace;">Blocking</code> et bascule immédiatement en <code style="background:#000d18;padding:2px 6px;border-radius:4px;color:#00dc82;font-family:'JetBrains Mono',monospace;">Forwarding</code> si le lien principal tombe.</p>
+
+        <div class="cli-box" style="margin-bottom:20px;">
+            <div class="cli-bar"><div class="cli-dot" style="background:#ef4444;"></div><div class="cli-dot" style="background:#f59e0b;"></div><div class="cli-dot" style="background:#00dc82;"></div><span style="font-size:11px;color:#00dc82;margin-left:8px;font-weight:700;">Cisco IOS</span><span class="cli-title">Switch — Activation Rapid-PVST+</span></div>
+            <div class="cli-body">
+                <div><span class="cli-prompt">Switch(config)#</span><span class="cli-key">spanning-tree mode rapid-pvst</span></div>
+                <div><span class="cli-prompt">Switch(config)#</span><span class="cli-key">spanning-tree vlan 1 priority 4096</span></div>
+                <div style="margin-top:8px;"><span class="cli-comment"># Vérification STP</span></div>
+                <div><span class="cli-prompt">Switch#</span><span class="cli-cmd">show spanning-tree vlan 1</span></div>
+                <div style="margin-top:6px;"><span style="color:#94a3b8;">VLAN0001</span></div>
+                <div><span style="color:#475569;">  Spanning tree enabled protocol </span><span class="cli-val">rstp</span></div>
+                <div><span style="color:#475569;">  Root ID    Priority    4097</span></div>
+                <div><span style="color:#475569;">             Address     00E0.F7xx.xxxx</span></div>
+                <div><span style="color:#475569;">  Bridge ID  Priority    4097 (priority 4096 sys-id-ext 1)</span></div>
+                <div><span style="color:#475569;">  Interface    Role  Sts  Cost   Prio.Nbr Type</span></div>
+                <div><span style="color:#475569;">  Fa0/3       Desg  </span><span class="cli-val">FWD</span><span style="color:#475569;">  19   128.3  P2p</span></div>
+                <div><span style="color:#475569;">  Po1         Desg  </span><span class="cli-val">FWD</span><span style="color:#475569;">  9    128.X  P2p</span></div>
+                <div style="margin-top:8px;"><span class="cli-val">✓ Rapid-PVST+ actif — convergence < 1 seconde</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- S6 VALIDATION -->
+    <section id="s6" class="doc-section">
+        <div class="doc-h2"><i class="fa-solid fa-circle-check" style="color:#00dc82;font-size:20px;"></i><span><span class="num">06</span>Validation & Tests de failover</span></div>
+
+        <div class="doc-h3"><i class="fa-solid fa-terminal" style="color:#00d4ff;"></i>Terminal interactif — Tests HA en direct</div>
+        <div style="margin-bottom:24px;">
+            <div id="live-terminal"><span style="color:#475569;">Cisco IOS — Environnement Capgemini HA</span></div>
+            <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+                <button class="test-btn test-btn-green" onclick="runTest('ping')"><i class="fa-solid fa-wifi"></i> &nbsp;Ping PC0 → PC1</button>
+                <button class="test-btn test-btn-cyan" onclick="runTest('hsrp')"><i class="fa-solid fa-rotate"></i> &nbsp;show standby brief</button>
+                <button class="test-btn test-btn-orange" onclick="runTest('etherchan')"><i class="fa-solid fa-link"></i> &nbsp;show etherchannel</button>
+                <button class="test-btn test-btn-red" onclick="runTest('failover')"><i class="fa-solid fa-bolt"></i> &nbsp;Simulation Failover</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- S7 CONCLUSION -->
+    <section id="s7" class="doc-section">
+        <div class="doc-h2"><i class="fa-solid fa-flag-checkered" style="color:#00dc82;font-size:20px;"></i><span><span class="num">07</span>Conclusion & Bilan HA</span></div>
+        <div class="success-card" style="margin-bottom:28px;">
+            <div style="font-size:12px;font-weight:700;color:#00dc82;margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em;"><i class="fa-solid fa-circle-check"></i> &nbsp;Haute Disponibilité Réussie — Convergence Validée</div>
+            <p style="font-size:14px;color:#94a3b8;line-height:1.8;margin:0;">La mise en œuvre conjointe du protocole HSRP, de l'agrégation LACP et du Rapid-PVST+ sur l'infrastructure Capgemini <strong style="color:#fff;">élimine entièrement les points de défaillance uniques (SPOF)</strong>. La VIP 192.168.1.1 est maintenue en permanence, le port-channel Po1 garantit la résilience des liens, et le Rapid-PVST+ converge en moins d'une seconde.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;">
+            <div class="stat-card"><div class="stat-num" style="color:#00dc82;">≈0</div><div class="stat-lbl">RTO (Recovery Time)</div></div>
+            <div class="stat-card"><div class="stat-num" style="color:#00d4ff;">&lt;10s</div><div class="stat-lbl">Basculement HSRP</div></div>
+            <div class="stat-card"><div class="stat-num" style="color:#f59e0b;">&lt;1s</div><div class="stat-lbl">Convergence STP</div></div>
+        </div>
+        <div style="background:#000d18;border:1px solid rgba(0,212,255,.15);border-radius:8px;overflow:hidden;margin-bottom:28px;">
+            <table class="data-table">
+                <thead><tr><th>Indicateur</th><th style="color:#ef4444;">Avant (SPOF)</th><th style="color:#00dc82;">Après (HA)</th></tr></thead>
+                <tbody>
+                    <tr><td>Passerelle par défaut</td><td style="color:#ef4444;font-size:12px;">IP physique unique — panne = coupure totale</td><td style="color:#00dc82;font-size:12px;">VIP 192.168.1.1 maintenue par HSRP</td></tr>
+                    <tr><td>Liens inter-switchs</td><td style="color:#ef4444;font-size:12px;">Lien unique — coupure = isolation totale</td><td style="color:#00dc82;font-size:12px;">EtherChannel Po1 (LACP) — 2 liens agrégés</td></tr>
+                    <tr><td>Temps de convergence</td><td style="color:#ef4444;font-size:12px;">Indéfini — intervention humaine requise</td><td style="color:#00dc82;font-size:12px;">&lt; 10 secondes (HSRP + Rapid-PVST+)</td></tr>
+                    <tr><td>Continuité de service</td><td style="color:#ef4444;font-size:12px;">SPOF — moindre panne = arrêt production</td><td style="color:#00dc82;font-size:12px;">RTO ≈ 0 — basculement transparent</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;">
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(0,220,130,.3);padding:4px 14px;border-radius:20px;font-size:11px;color:#00dc82;font-family:'JetBrains Mono',monospace;">HSRP</span>
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(0,212,255,.3);padding:4px 14px;border-radius:20px;font-size:11px;color:#00d4ff;font-family:'JetBrains Mono',monospace;">LACP 802.3ad</span>
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(168,85,247,.3);padding:4px 14px;border-radius:20px;font-size:11px;color:#a855f7;font-family:'JetBrains Mono',monospace;">Rapid-PVST+</span>
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(245,158,11,.3);padding:4px 14px;border-radius:20px;font-size:11px;color:#f59e0b;font-family:'JetBrains Mono',monospace;">Cisco IOS</span>
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.15);padding:4px 14px;border-radius:20px;font-size:11px;color:#94a3b8;font-family:'JetBrains Mono',monospace;">Packet Tracer</span>
+        </div>
+    </section>
+</main>
+
+<script>
+function navigate(el){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');const t=el.getAttribute('data-section');document.querySelectorAll('.doc-section').forEach(s=>{s.classList.remove('active');s.classList.remove('reveal')});const sec=document.getElementById(t);sec.classList.add('active');void sec.offsetWidth;sec.classList.add('reveal');document.querySelector('main').scrollTop=0}
+const term=document.getElementById('live-terminal');
+function typeLines(lines,i,cb){if(i>=lines.length){if(cb)cb();return}const l=lines[i];if(l.instant){term.innerHTML+='\n'+l.html;term.scrollTop=term.scrollHeight;setTimeout(()=>typeLines(lines,i+1,cb),l.delay||200)}else{term.innerHTML+='\n<span id="tl"></span>';term.scrollTop=term.scrollHeight;const sp=term.querySelector('#tl');sp.removeAttribute('id');let j=0;sp.style.color=l.color||'#e2e8f0';const iv=setInterval(()=>{sp.textContent+=l.text[j++];term.scrollTop=term.scrollHeight;if(j>=l.text.length){clearInterval(iv);setTimeout(()=>typeLines(lines,i+1,cb),l.delay||150)}},l.speed||30)}}
+const tests={
+ping:[
+    {text:'C:\\>ping 192.168.1.11',color:'#94a3b8',speed:55,delay:500},
+    {instant:true,html:'<span style="color:#475569;">Pinging 192.168.1.11 with 32 bytes of data:</span>',delay:600},
+    {instant:true,html:'<span style="color:#00dc82;">Reply from 192.168.1.11: bytes=32 time<1ms TTL=128</span>',delay:300},
+    {instant:true,html:'<span style="color:#00dc82;">Reply from 192.168.1.11: bytes=32 time<1ms TTL=128</span>',delay:300},
+    {instant:true,html:'<span style="color:#00dc82;">Reply from 192.168.1.11: bytes=32 time<1ms TTL=128</span>',delay:300},
+    {instant:true,html:'<span style="color:#00dc82;">Reply from 192.168.1.11: bytes=32 time<1ms TTL=128</span>',delay:400},
+    {instant:true,html:'',delay:100},
+    {instant:true,html:'<span style="color:#00dc82;font-weight:700;">Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)</span>',delay:300},
+    {instant:true,html:'<span style="color:#00dc82;font-size:11px;">✓ LAN opérationnel via EtherChannel Po1 + HSRP VIP 192.168.1.1</span>',delay:0},
+],
+hsrp:[
+    {text:'R1#show standby brief',color:'#94a3b8',speed:55,delay:400},
+    {instant:true,html:'',delay:200},
+    {instant:true,html:'<span style="color:#475569;">P indicates configured to preempt.</span>',delay:200},
+    {instant:true,html:'',delay:100},
+    {instant:true,html:'<span style="color:#94a3b8;">Interface  Grp  Pri  P  State    Active         Standby        Virtual IP</span>',delay:200},
+    {instant:true,html:'<span style="color:#00dc82;">Gi0/0       1   110  P  Active   local          192.168.1.3    192.168.1.1</span>',delay:300},
+    {instant:true,html:'',delay:100},
+    {text:'R2#show standby brief',color:'#94a3b8',speed:55,delay:300},
+    {instant:true,html:'<span style="color:#94a3b8;">Interface  Grp  Pri  P  State    Active         Standby        Virtual IP</span>',delay:200},
+    {instant:true,html:'<span style="color:#a855f7;">Gi0/0       1   100     Standby  192.168.1.2    local          192.168.1.1</span>',delay:300},
+    {instant:true,html:'<span style="color:#00dc82;font-size:11px;">✓ HSRP groupe 1 — R1 Actif (110) · R2 Standby (100) · VIP 192.168.1.1</span>',delay:0},
+],
+etherchan:[
+    {text:'Switch0#show etherchannel summary',color:'#94a3b8',speed:45,delay:400},
+    {instant:true,html:'',delay:200},
+    {instant:true,html:'<span style="color:#475569;">Number of channel-groups in use: 1</span>',delay:200},
+    {instant:true,html:'',delay:100},
+    {instant:true,html:'<span style="color:#94a3b8;">Group  Port-channel  Protocol   Ports</span>',delay:100},
+    {instant:true,html:'<span style="color:#475569;">------+-------------+-----------+------------------</span>',delay:100},
+    {instant:true,html:'<span style="color:#64748b;">1      </span><span style="color:#00dc82;">Po1(SU)      </span><span style="color:#00d4ff;"> LACP       </span><span style="color:#00dc82;">Fa0/1(P)  Fa0/2(P)</span>',delay:400},
+    {instant:true,html:'<span style="color:#00dc82;font-size:11px;">✓ Po1 SU (in use) · Fa0/1 + Fa0/2 bundled — agrégation LACP OK</span>',delay:0},
+],
+failover:[
+    {text:'R1(config-if)#shutdown',color:'#ef4444',speed:55,delay:400},
+    {instant:true,html:'<span style="color:#ef4444;">%HSRP-6-STATECHANGE: GigabitEthernet0/0 Grp 1 state Active -> Init</span>',delay:500},
+    {instant:true,html:'<span style="color:#f59e0b;">--- Détection par Core2 ---</span>',delay:800},
+    {instant:true,html:'<span style="color:#00d4ff;">%HSRP-6-STATECHANGE: GigabitEthernet0/0 Grp 1 state Standby -> Active</span>',delay:400},
+    {instant:true,html:'<span style="color:#475569;">Core2 devient routeur ACTIF — VIP 192.168.1.1 maintenue</span>',delay:600},
+    {instant:true,html:'',delay:300},
+    {text:'R1(config-if)#no shutdown',color:'#00dc82',speed:45,delay:400},
+    {instant:true,html:'<span style="color:#00dc82;">%HSRP-6-STATECHANGE: GigabitEthernet0/0 Grp 1 state Standby -> Active</span>',delay:300},
+    {instant:true,html:'<span style="color:#475569;">Core1 reprend le rôle Active grâce au preempt (priorité 110 > 100)</span>',delay:400},
+    {instant:true,html:'<span style="color:#00dc82;font-size:11px;">✓ Failover < 10s — Basculement transparent — RTO ≈ 0</span>',delay:0},
+]};
+function runTest(t){term.innerHTML='<span style="color:#475569;">Cisco IOS — Capgemini HA Infrastructure</span>';typeLines(tests[t],0)}
+</script>
+</body>
+</html>
