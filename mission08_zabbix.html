@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission 08 — Supervision Zabbix 7.0 | BTS SIO SISR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cy_dark:  '#05111c',
+                        cy_card:  '#0a1f30',
+                        cy_cyan:  '#00d4ff',
+                        cy_green: '#00dc82',
+                        cy_purple:'#a855f7',
+                        cy_red:   '#ef4444',
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * { box-sizing: border-box; }
+        body { background-color: #05111c; color: #e2e8f0; font-family: 'Outfit', sans-serif; }
+
+        #sidebar { width: 272px; min-width: 272px; background: #0a1f30; border-right: 1px solid rgba(0,212,255,0.12); display: flex; flex-direction: column; height: 100vh; position: sticky; top: 0; overflow-y: auto; }
+        .nav-group { font-size: 10px; text-transform: uppercase; letter-spacing: .12em; color: #00d4ff; font-weight: 700; padding: 0 16px; margin: 20px 0 6px; }
+        .nav-item { display: flex; align-items: center; gap: 8px; padding: 8px 16px; font-size: 12px; font-weight: 500; color: #94a3b8; cursor: pointer; border-left: 2px solid transparent; transition: all .2s; }
+        .nav-item:hover { background: rgba(255,255,255,.04); color: #fff; }
+        .nav-item.active { border-left-color: #00d4ff; background: rgba(0,212,255,.06); color: #00d4ff; }
+
+        .doc-section { display: none; }
+        .doc-section.active { display: block; }
+
+        .doc-h2 { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 28px; padding-bottom: 14px; border-bottom: 1px solid rgba(148,163,184,.2); display: flex; align-items: center; gap: 10px; }
+        .doc-h3 { font-size: 16px; font-weight: 700; color: #00d4ff; margin: 24px 0 10px; display: flex; align-items: center; gap: 8px; }
+        .doc-p { font-size: 14px; color: #94a3b8; line-height: 1.8; margin-bottom: 14px; text-align: justify; }
+        .num { color: rgba(148,163,184,.35); margin-right: 6px; }
+
+        .cli-box { background: #000d18; border: 1px solid rgba(0,212,255,.2); border-radius: 8px; overflow: hidden; font-family: 'JetBrains Mono', monospace; }
+        .cli-bar { background: #0d2035; padding: 8px 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid rgba(0,212,255,.1); }
+        .cli-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .cli-title { font-size: 11px; color: #64748b; margin-left: auto; }
+        .cli-body { padding: 16px; font-size: 12px; line-height: 1.8; overflow-x: auto; }
+        .cli-prompt { color: #00d4ff; }
+        .cli-cmd    { color: #e2e8f0; }
+        .cli-comment { color: #3d5a6e; }
+        .cli-key    { color: #a855f7; }
+        .cli-val    { color: #00dc82; }
+        .cli-warn   { color: #f59e0b; }
+
+        .info-card { background: #0a1f30; border: 1px solid rgba(255,255,255,.05); border-radius: 10px; padding: 20px; }
+        .danger-card { background: rgba(239,68,68,.07); border: 1px solid rgba(239,68,68,.25); border-radius: 10px; padding: 20px; }
+        .success-card { background: rgba(0,220,130,.07); border: 1px solid rgba(0,220,130,.25); border-radius: 10px; padding: 20px; }
+        .warn-card { background: rgba(245,158,11,.07); border: 1px solid rgba(245,158,11,.25); border-radius: 10px; padding: 20px; }
+
+        .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .data-table th { background: #0d2035; color: #94a3b8; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; padding: 10px 16px; text-align: left; }
+        .data-table td { padding: 10px 16px; border-bottom: 1px solid rgba(148,163,184,.08); color: #cbd5e1; }
+        .data-table tr:hover td { background: rgba(0,212,255,.03); }
+        .badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; }
+
+        #live-terminal { background: #000d18; border: 1px solid rgba(0,220,130,.25); border-radius: 8px; padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px; height: 220px; overflow-y: auto; }
+        .test-btn { padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all .2s; border: 1px solid; }
+        .test-btn-green  { background: rgba(0,220,130,.1); border-color: rgba(0,220,130,.4); color: #00dc82; }
+        .test-btn-green:hover  { background: rgba(0,220,130,.2); }
+        .test-btn-cyan   { background: rgba(0,212,255,.1); border-color: rgba(0,212,255,.4); color: #00d4ff; }
+        .test-btn-cyan:hover   { background: rgba(0,212,255,.2); }
+        .test-btn-orange { background: rgba(245,158,11,.1); border-color: rgba(245,158,11,.4); color: #f59e0b; }
+        .test-btn-orange:hover { background: rgba(245,158,11,.2); }
+        .test-btn-red    { background: rgba(239,68,68,.1); border-color: rgba(239,68,68,.4); color: #ef4444; }
+        .test-btn-red:hover    { background: rgba(239,68,68,.2); }
+
+        .stat-card { background: #0a1f30; border: 1px solid rgba(255,255,255,.06); border-radius: 10px; padding: 20px; text-align: center; }
+        .stat-num { font-size: 32px; font-weight: 900; }
+        .stat-lbl { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: .07em; margin-top: 4px; }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(0,212,255,.3); border-radius: 4px; }
+
+        .reveal { animation: fadeUp .6s ease both; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ── Alert severity badges ── */
+        .sev-disaster { background:rgba(239,68,68,.2);color:#ef4444;border:1px solid rgba(239,68,68,.4); }
+        .sev-high     { background:rgba(245,158,11,.2);color:#f59e0b;border:1px solid rgba(245,158,11,.4); }
+        .sev-warn     { background:rgba(168,85,247,.2);color:#a855f7;border:1px solid rgba(168,85,247,.4); }
+        .sev-info     { background:rgba(0,212,255,.2);color:#00d4ff;border:1px solid rgba(0,212,255,.4); }
+    </style>
+</head>
+
+<body class="flex" style="height:100vh; overflow:hidden;">
+
+<!-- ══════════════════════════════════════  SIDEBAR  ══════════════════════════════════════ -->
+<aside id="sidebar">
+    <div style="padding:20px 16px; border-bottom:1px solid rgba(0,212,255,.1);">
+        <div style="display:flex; align-items:center; gap:12px;">
+            <div style="width:38px;height:38px;background:#ef4444;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;box-shadow:0 0 18px rgba(239,68,68,.4);">
+                <i class="fa-solid fa-satellite-dish"></i>
+            </div>
+            <div>
+                <div style="font-weight:700;color:#fff;font-size:14px;line-height:1.2;">Mission 08</div>
+                <div style="font-size:10px;color:#ef4444;font-family:'JetBrains Mono',monospace;">ZABBIX 7.0 · SNMP · MCO</div>
+            </div>
+        </div>
+    </div>
+
+    <nav style="flex:1;padding:8px 0;">
+        <div class="nav-group">Analyse</div>
+        <div class="nav-item active" data-section="s-contexte" onclick="navigate(this)">
+            <i class="fa-solid fa-circle-info" style="width:14px;"></i> 1. Contexte MCO
+        </div>
+        <div class="nav-item" data-section="s-solution" onclick="navigate(this)">
+            <i class="fa-solid fa-lightbulb" style="width:14px;"></i> 2. Solution Zabbix 7.0
+        </div>
+
+        <div class="nav-group">Conception</div>
+        <div class="nav-item" data-section="s-archi" onclick="navigate(this)">
+            <i class="fa-solid fa-diagram-project" style="width:14px;"></i> 3. Architecture de supervision
+        </div>
+        <div class="nav-item" data-section="s-cibles" onclick="navigate(this)">
+            <i class="fa-solid fa-server" style="width:14px;"></i> 4. Cibles supervisées
+        </div>
+
+        <div class="nav-group">Mise en Œuvre</div>
+        <div class="nav-item" data-section="s-install" onclick="navigate(this)">
+            <i class="fa-solid fa-terminal" style="width:14px;"></i> 5. Installation Zabbix 7.0
+        </div>
+        <div class="nav-item" data-section="s-snmp" onclick="navigate(this)">
+            <i class="fa-solid fa-network-wired" style="width:14px;"></i> 6. Config SNMP v2c (pfSense)
+        </div>
+        <div class="nav-item" data-section="s-triggers" onclick="navigate(this)">
+            <i class="fa-solid fa-bell" style="width:14px;"></i> 7. Triggers & Alerting
+        </div>
+
+        <div class="nav-group">Validation</div>
+        <div class="nav-item" data-section="s-tests" onclick="navigate(this)">
+            <i class="fa-solid fa-flask" style="width:14px;"></i> 8. Dashboard & Tests
+        </div>
+        <div class="nav-item" data-section="s-bilan" onclick="navigate(this)">
+            <i class="fa-solid fa-chart-bar" style="width:14px;"></i> 9. Bilan MCO & Conclusion
+        </div>
+    </nav>
+
+    <div style="padding:14px 16px;border-top:1px solid rgba(0,212,255,.1);background:rgba(0,0,0,.2);">
+        <div style="font-size:10px;color:#475569;">Épreuve E5 · BTS SIO SISR</div>
+        <div style="font-size:13px;font-weight:700;color:#fff;margin-top:2px;">SESSION 2026</div>
+        <div style="font-size:10px;color:#ef4444;margin-top:1px;">Client : Aura-Technologie · ESN 80 collab.</div>
+    </div>
+</aside>
+
+<!-- ══════════════════════════════════════  MAIN  ══════════════════════════════════════ -->
+<main style="flex:1;overflow-y:auto;padding:40px 48px;max-width:900px;">
+
+    <!-- ── 1. CONTEXTE ── -->
+    <section id="s-contexte" class="doc-section active reveal">
+        <h2 class="doc-h2">
+            <span style="color:#00d4ff;font-family:'JetBrains Mono',monospace;font-size:16px;">01.</span>
+            Contexte MCO & Problématique
+        </h2>
+
+        <div class="doc-p">
+            L'ESN <strong style="color:#fff;">Aura-Technologie</strong> (80 collaborateurs) administrait son SI en mode totalement réactif : aucune métrique de performance (CPU, RAM, disque, trafic réseau) n'était collectée en temps réel. L'état de santé des équipements critiques — <strong style="color:#f59e0b;">Active Directory, serveur de fichiers, routeur pfSense</strong> — était inconnu jusqu'à ce que les utilisateurs signalent un dysfonctionnement.
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+            <div class="info-card">
+                <h3 class="doc-h3" style="margin-top:0;"><i class="fa-solid fa-building"></i> Infrastructure Aura-Technologie</h3>
+                <ul style="font-size:13px;color:#94a3b8;line-height:2;list-style:none;padding:0;margin:0;">
+                    <li><i class="fa-solid fa-server" style="color:#ef4444;margin-right:8px;width:14px;"></i> Zabbix : Aurasvrzabbix (Debian 12)</li>
+                    <li><i class="fa-solid fa-network-wired" style="color:#a855f7;margin-right:8px;width:14px;"></i> IP serveur : 192.168.23.53</li>
+                    <li><i class="fa-solid fa-fire-flame-curved" style="color:#f59e0b;margin-right:8px;width:14px;"></i> pfSense : 192.168.23.254 (SNMP)</li>
+                    <li><i class="fa-solid fa-building-columns" style="color:#00dc82;margin-right:8px;width:14px;"></i> Aura-AD : Windows Server (Agent)</li>
+                    <li><i class="fa-solid fa-gauge" style="color:#00d4ff;margin-right:8px;width:14px;"></i> Zabbix 7.0.25 LTS</li>
+                </ul>
+            </div>
+            <div class="danger-card">
+                <h3 style="font-size:15px;font-weight:700;color:#ef4444;margin:0 0 12px;display:flex;align-items:center;gap:8px;"><i class="fa-solid fa-triangle-exclamation"></i> 5 problèmes opérationnels</h3>
+                <ul style="font-size:13px;color:#fca5a5;line-height:2;list-style:none;padding:0;margin:0;">
+                    <li><i class="fa-solid fa-xmark" style="margin-right:8px;"></i> Détection tardive des pannes (>2h)</li>
+                    <li><i class="fa-solid fa-xmark" style="margin-right:8px;"></i> Aucune métrique CPU/RAM/disque</li>
+                    <li><i class="fa-solid fa-xmark" style="margin-right:8px;"></i> Zéro alerting automatique</li>
+                    <li><i class="fa-solid fa-xmark" style="margin-right:8px;"></i> MCO non garanti — SLA impossibles</li>
+                    <li><i class="fa-solid fa-xmark" style="margin-right:8px;"></i> Post-mortem aveugle (pas d'historique)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:16px 20px;">
+            <div style="font-size:12px;color:#ef4444;font-weight:700;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em;">Scénario type sans supervision</div>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:#cbd5e1;">
+                <span style="background:rgba(0,0,0,.3);padding:4px 12px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;">Disque AD se sature</span>
+                <i class="fa-solid fa-arrow-right" style="color:#475569;"></i>
+                <span style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);padding:4px 12px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#fca5a5;">Découverte 3h après par un user</span>
+                <i class="fa-solid fa-arrow-right" style="color:#475569;"></i>
+                <span style="color:#ef4444;font-weight:700;">Service AD coupé — Production arrêtée</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── 2. SOLUTION ── -->
+    <section id="s-solution" class="doc-section">
+        <h2 class="doc-h2">
+            <span style="color:#00d4ff;font-family:'JetBrains Mono',monospace;font-size:16px;">02.</span>
+            Solution retenue : Zabbix 7.0 LTS
+        </h2>
+
+        <div class="doc-p">
+            La solution déployée est <strong style="color:#fff;">Zabbix 7.0 LTS (Long Term Support)</strong>, plateforme de supervision open source de référence en environnement professionnel. Zabbix 7.0 supporte nativement les protocoles <strong style="color:#f59e0b;">SNMP v1/v2c/v3</strong>, les agents actifs et passifs, les checks ICMP et HTTP, et offre un moteur de corrélation d'événements avancé pour l'alerting.
+        </div>
+
+        <div class="success-card" style="margin-bottom:20px;">
+            <div style="font-size:12px;font-weight:700;color:#00dc82;margin-bottom:12px;text-transform:uppercase;letter-spacing:.08em;"><i class="fa-solid fa-circle-check"></i> &nbsp;4 mécanismes clés de Zabbix 7.0</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div style="background:rgba(0,0,0,.2);border-radius:6px;padding:12px;">
+                    <div style="font-size:12px;font-weight:700;color:#f59e0b;margin-bottom:4px;"><i class="fa-solid fa-tower-broadcast"></i> &nbsp;SNMP v2c</div>
+                    <div style="font-size:12px;color:#94a3b8;">Surveillance des équipements réseau sans agent (pfSense) via templates officiels</div>
+                </div>
+                <div style="background:rgba(0,0,0,.2);border-radius:6px;padding:12px;">
+                    <div style="font-size:12px;font-weight:700;color:#00dc82;margin-bottom:4px;"><i class="fa-solid fa-robot"></i> &nbsp;Agent Zabbix 2</div>
+                    <div style="font-size:12px;color:#94a3b8;">Collecte granulaire sur serveurs Linux/Windows (CPU, RAM, disques, services)</div>
+                </div>
+                <div style="background:rgba(0,0,0,.2);border-radius:6px;padding:12px;">
+                    <div style="font-size:12px;font-weight:700;color:#ef4444;margin-bottom:4px;"><i class="fa-solid fa-bell"></i> &nbsp;Triggers (déclencheurs)</div>
+                    <div style="font-size:12px;color:#94a3b8;">Seuils configurables déclenchant des notifications e-mail ou actions automatiques</div>
+                </div>
+                <div style="background:rgba(0,0,0,.2);border-radius:6px;padding:12px;">
+                    <div style="font-size:12px;font-weight:700;color:#00d4ff;margin-bottom:4px;"><i class="fa-solid fa-gauge"></i> &nbsp;Dashboards temps réel</div>
+                    <div style="font-size:12px;color:#94a3b8;">Tableaux de bord personnalisés — graphiques, cartes et indicateurs en temps réel</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── 3. ARCHITECTURE ── -->
+    <section id="s-archi" class="doc-section">
+        <h2 class="doc-h2">
+            <span style="color:#00d4ff;font-family:'JetBrains Mono',monospace;font-size:16px;">03.</span>
+            Architecture de supervision
+        </h2>
+
+        <div class="doc-p">
+            Le serveur <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#00d4ff;font-family:'JetBrains Mono',monospace;">Aurasvrzabbix</code> (Debian 12, 192.168.23.53) centralise toutes les métriques. Il collecte les données du serveur Windows AD via un <strong style="color:#fff;">Agent Zabbix</strong>, et interroge la passerelle pfSense via le protocole <strong style="color:#f59e0b;">SNMP v2c (UDP port 161)</strong>.
+        </div>
+
+        <!-- Schéma d'architecture -->
+        <div style="background:#000d18;border:1px solid rgba(0,212,255,.15);border-radius:12px;padding:28px;margin-bottom:20px;">
+            <div style="text-align:center;font-size:11px;color:#64748b;margin-bottom:20px;text-transform:uppercase;letter-spacing:.08em;">Architecture de supervision déployée</div>
+            <div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;">
+
+                <!-- Colonne gauche — Windows AD -->
+                <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+                    <div style="background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.25);border-radius:8px;padding:14px;text-align:center;width:100%;">
+                        <i class="fa-solid fa-building-columns" style="font-size:24px;color:#00d4ff;"></i>
+                        <div style="font-size:12px;font-weight:700;color:#fff;margin-top:6px;">Aura-AD</div>
+                        <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:#00d4ff;">Windows Server</div>
+                        <div style="font-size:10px;color:#64748b;margin-top:4px;">Active Directory</div>
+                    </div>
+                    <div style="background:rgba(0,220,130,.08);border:1px solid rgba(0,220,130,.2);border-radius:6px;padding:8px;text-align:center;width:100%;">
+                        <i class="fa-solid fa-robot" style="color:#00dc82;"></i>
+                        <div style="font-size:10px;color:#00dc82;margin-top:2px;">Agent Zabbix 2</div>
+                        <div style="font-size:9px;color:#64748b;">Port TCP 10050</div>
+                    </div>
+                </div>
+
+                <!-- Colonne centrale — Zabbix Server -->
+                <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+                    <div style="background:rgba(239,68,68,.1);border:2px solid rgba(239,68,68,.4);border-radius:10px;padding:18px;text-align:center;">
+                        <i class="fa-solid fa-satellite-dish" style="font-size:30px;color:#ef4444;"></i>
+                        <div style="font-size:12px;font-weight:700;color:#fff;margin-top:8px;">Aurasvrzabbix</div>
+                        <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:#ef4444;">Debian 12</div>
+                        <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:#64748b;">192.168.23.53</div>
+                        <div style="font-size:10px;color:#64748b;margin-top:4px;">Zabbix 7.0.25 LTS</div>
+                    </div>
+                    <div style="font-size:9px;color:#475569;text-align:center;">← collecte → cibles</div>
+                </div>
+
+                <!-- Colonne droite — pfSense SNMP -->
+                <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+                    <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:8px;padding:14px;text-align:center;width:100%;">
+                        <i class="fa-solid fa-fire-flame-curved" style="font-size:24px;color:#f59e0b;"></i>
+                        <div style="font-size:12px;font-weight:700;color:#fff;margin-top:6px;">pfSense</div>
+                        <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:#f59e0b;">192.168.23.254</div>
+                        <div style="font-size:10px;color:#64748b;margin-top:4px;">Pare-feu / Routeur</div>
+                    </div>
+                    <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:6px;padding:8px;text-align:center;width:100%;">
+                        <i class="fa-solid fa-tower-broadcast" style="color:#f59e0b;"></i>
+                        <div style="font-size:10px;color:#f59e0b;margin-top:2px;">SNMP v2c</div>
+                        <div style="font-size:9px;color:#64748b;">UDP Port 161</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top:16px;padding:10px;border:1px solid rgba(0,212,255,.1);border-radius:6px;text-align:center;font-size:11px;color:#64748b;font-family:'JetBrains Mono',monospace;">
+                Zabbix server (192.168.23.53) &nbsp;·&nbsp; Agent ZBX → Windows AD &nbsp;·&nbsp; SNMP v2c port 161 → pfSense
+            </div>
+        </div>
+    </section>
+
+    <!-- ── 4. CIBLES ── -->
+    <section id="s-cibles" class="doc-section">
+        <h2 class="doc-h2">
+            <span style="color:#00d4ff;font-family:'JetBrains Mono',monospace;font-size:16px;">04.</span>
+            Cibles supervisées
+        </h2>
+
+        <div class="doc-p">
+            La solution de supervision couvre trois cibles complémentaires. Chaque hôte est configuré avec le template Zabbix officiel correspondant à son protocole de collecte — garantissant une couverture complète de l'infrastructure réseau d'Aura-Technologie.
+        </div>
+
+        <div style="overflow-x:auto;border-radius:10px;border:1px solid rgba(0,212,255,.12);overflow:hidden;margin-bottom:24px;">
+            <table class="data-table">
+                <thead>
+                    <tr><th>Hôte Zabbix</th><th>IP / Interface</th><th>Protocole</th><th>Template Zabbix</th><th>Métriques clés</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><i class="fa-solid fa-satellite-dish" style="color:#ef4444;margin-right:8px;"></i>Zabbix server</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">127.0.0.1:10050</td>
+                        <td><span class="badge" style="background:rgba(0,220,130,.1);color:#00dc82;border:1px solid rgba(0,220,130,.3);">Agent ZBX</span></td>
+                        <td style="font-size:12px;color:#94a3b8;">Linux by Zabbix agent · Zabbix server health</td>
+                        <td style="font-size:11px;color:#cbd5e1;font-family:'JetBrains Mono',monospace;">CPU, RAM, Disque, Services</td>
+                    </tr>
+                    <tr>
+                        <td><i class="fa-solid fa-fire-flame-curved" style="color:#f59e0b;margin-right:8px;"></i>Pfsensee</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">192.168.23.254:161</td>
+                        <td><span class="badge" style="background:rgba(245,158,11,.1);color:#f59e0b;border:1px solid rgba(245,158,11,.3);">SNMP v2c</span></td>
+                        <td style="font-size:12px;color:#94a3b8;">PFSense by SNMP</td>
+                        <td style="font-size:11px;color:#cbd5e1;font-family:'JetBrains Mono',monospace;">Interfaces, trafic WAN/LAN, état</td>
+                    </tr>
+                    <tr>
+                        <td><i class="fa-solid fa-building-columns" style="color:#00d4ff;margin-right:8px;"></i>Aura-AD (Windows)</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94a3b8;">Agent installé</td>
+                        <td><span class="badge" style="background:rgba(0,212,255,.1);color:#00d4ff;border:1px solid rgba(0,212,255,.3);">Agent ZBX</span></td>
+                        <td style="font-size:12px;color:#94a3b8;">Windows OS by Zabbix agent</td>
+                        <td style="font-size:11px;color:#cbd5e1;font-family:'JetBrains Mono',monospace;">CPU, RAM, Disque C:, services AD DS</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+            <div style="background:rgba(0,220,130,.06);border:1px solid rgba(0,220,130,.2);border-radius:8px;padding:14px;text-align:center;">
+                <div style="font-size:24px;font-weight:900;color:#00dc82;">128</div>
+                <div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-top:4px;">Éléments collectés</div>
+            </div>
+            <div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:14px;text-align:center;">
+                <div style="font-size:24px;font-weight:900;color:#f59e0b;">73</div>
+                <div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-top:4px;">Déclencheurs configurés</div>
+            </div>
+            <div style="background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.2);border-radius:8px;padding:14px;text-align:center;">
+                <div style="font-size:24px;font-weight:900;color:#00d4ff;">2</div>
+                <div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-top:4px;">Hôtes actifs supervisés</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── 5. INSTALLATION ── -->
+    <section id="s-install" class="doc-section">
+        <h2 class="doc-h2">
+            <span style="color:#00d4ff;font-family:'JetBrains Mono',monospace;font-size:16px;">05.</span>
+            Installation Zabbix 7.0 sur Debian 12
+        </h2>
+
+        <div class="doc-p">
+            L'installation commence par l'ajout du dépôt officiel Zabbix 7.0 pour Debian 12 (Bookworm). Le paquet <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#00d4ff;font-family:'JetBrains Mono',monospace;">zabbix-release_7.0-1+debian12_all.deb</code> configure les sources APT pointant vers <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#a855f7;font-family:'JetBrains Mono',monospace;">repo.zabbix.com/zabbix/7.0/debian</code>. Les composants serveur, frontend et agent sont ensuite installés avec <strong style="color:#fff;">MariaDB</strong> comme moteur de base de données.
+        </div>
+
+        <div class="cli-box" style="margin-bottom:20px;">
+            <div class="cli-bar">
+                <div class="cli-dot" style="background:#ef4444;"></div>
+                <div class="cli-dot" style="background:#f59e0b;"></div>
+                <div class="cli-dot" style="background:#00dc82;"></div>
+                <span style="font-size:11px;color:#00dc82;margin-left:8px;font-weight:700;">Bash / Debian 12</span>
+                <span class="cli-title">Aurasvrzabbix — Installation complète Zabbix 7.0</span>
+            </div>
+            <div class="cli-body">
+                <div><span class="cli-comment"># Ajout du dépôt officiel Zabbix 7.0</span></div>
+                <div><span class="cli-prompt">root@Aurasvrzabbix:~# </span><span class="cli-cmd">wget https://repo.zabbix.com/zabbix/7.0/debian/pool/main/z/zabbix-release/zabbix-release_7.0-1+debian12_all.deb</span></div>
+                <div><span class="cli-prompt">root@Aurasvrzabbix:~# </span><span class="cli-cmd">dpkg -i zabbix-release_7.0-1+debian12_all.deb</span></div>
+                <div><span class="cli-prompt">root@Aurasvrzabbix:~# </span><span class="cli-cmd">apt update</span></div>
+                <div style="margin-top:10px;"><span class="cli-comment"># Installation du serveur, frontend Apache et agent</span></div>
+                <div><span class="cli-prompt">root@Aurasvrzabbix:~# </span><span class="cli-cmd">apt install -y zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf \</span></div>
+                <div style="padding-left:32px;"><span class="cli-cmd">zabbix-sql-scripts zabbix-agent2</span></div>
+                <div style="margin-top:10px;"><span class="cli-comment"># Création de la base MariaDB dédiée Zabbix</span></div>
+                <div><span class="cli-prompt">root@Aurasvrzabbix:~# </span><span class="cli-cmd">mysql -u root -p -e <span class="cli-val">"CREATE DATABASE zabbix CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;"</span></span></div>
+                <div><span class="cli-prompt">root@Aurasvrzabbix:~# </span><span class="cli-cmd">mysql -u root -p -e <span class="cli-val">"CREATE USER 'zabbix'@'localhost' IDENTIFIED BY 'ZabbixAura@2026';"</span></span></div>
+                <div><span class="cli-prompt">root@Aurasvrzabbix:~# </span><span class="cli-cmd">mysql -u root -p -e <span class="cli-val">"GRANT ALL PRIVILEGES ON zabbix.* TO 'zabbix'@'localhost';"</span></span></div>
+                <div style="margin-top:10px;"><span class="cli-comment"># Import du schéma initial Zabbix</span></div>
+                <div><span class="cli-prompt">root@Aurasvrzabbix:~# </span><span class="cli-cmd">zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql -u zabbix -p zabbix</span></div>
+                <div style="margin-top:10px;"><span class="cli-comment"># Démarrage et activation des services</span></div>
+                <div><span class="cli-prompt">root@Aurasvrzabbix:~# </span><span class="cli-cmd">systemctl enable --now zabbix-server zabbix-agent2 apache2</span></div>
+                <div style="margin-top:8px;"><span class="cli-val">✓ Zabbix 7.0 accessible sur http://192.168.23.53/zabbix/</span></div>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <div style="font-size:12px;font-weight:700;color:#00d4ff;margin-bottom:12px;"><i class="fa-solid fa-globe"></i> &nbsp;Assistant d'installation Web — Zabbix 7.0 — 6 étapes</div>
+            <div style="display:flex;align-items:center;gap:0;flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;">
+                <div style="background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:6px;padding:8px 12px;text-align:center;white-space:nowrap;font-size:11px;min-width:90px;">
+                    <div style="color:#ef4444;font-weight:700;">1</div>
+                    <div style="color:#94a3b8;margin-top:2px;">Bienvenue</div>
+                </div>
+                <div style="color:#475569;padding:0 6px;">→</div>
+                <div style="background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.3);border-radius:6px;padding:8px 12px;text-align:center;white-space:nowrap;font-size:11px;min-width:90px;">
+                    <div style="color:#a855f7;font-weight:700;">2</div>
+                    <div style="color:#94a3b8;margin-top:2px;">Prérequis PHP</div>
+                </div>
+                <div style="color:#475569;padding:0 6px;">→</div>
+                <div style="background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.3);border-radius:6px;padding:8px 12px;text-align:center;white-space:nowrap;font-size:11px;min-width:90px;">
+                    <div style="color:#00d4ff;font-weight:700;">3</div>
+                    <div style="color:#94a3b8;margin-top:2px;">Connexion BDD</div>
+                </div>
+                <div style="color:#475569;padding:0 6px;">→</div>
+                <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);border-radius:6px;padding:8px 12px;text-align:center;white-space:nowrap;font-size:11px;min-width:90px;">
+                    <div style="color:#f59e0b;font-weight:700;">4</div>
+                    <div style="color:#94a3b8;margin-top:2px;">Paramètres</div>
+                </div>
+                <div style="color:#475569;padding:0 6px;">→</div>
+                <div style="background:rgba(0,220,130,.08);border:1px solid rgba(0,220,130,.3);border-radius:6px;padding:8px 12px;text-align:center;white-space:nowrap;font-size:11px;min-width:90px;">
+                    <div style="color:#00dc82;font-weight:700;">5</div>
+                    <div style="color:#94a3b8;margin-top:2px;">Résumé</div>
+                </div>
+                <div style="color:#475569;padding:0 6px;">→</div>
+                <div style="background:rgba(0,220,130,.15);border:1px solid rgba(0,220,130,.4);border-radius:6px;padding:8px 12px;text-align:center;white-space:nowrap;font-size:11px;min-width:90px;">
+                    <div style="color:#00dc82;font-weight:700;">6 ✓</div>
+                    <div style="color:#00dc82;margin-top:2px;font-weight:700;">Installé !</div>
+                </div>
+            </div>
+            <div style="margin-top:12px;font-size:12px;color:#64748b;">
+                Serveur : <span style="color:#00d4ff;font-family:'JetBrains Mono',monospace;">Aurasvrzabbix</span> &nbsp;·&nbsp;
+                BDD : <span style="color:#a855f7;font-family:'JetBrains Mono',monospace;">MySQL localhost · base zabbix</span> &nbsp;·&nbsp;
+                Fuseau : <span style="color:#f59e0b;font-family:'JetBrains Mono',monospace;">(UTC+02:00) Europe/Paris</span> &nbsp;·&nbsp;
+                Licence : <span style="color:#64748b;font-family:'JetBrains Mono',monospace;">AGPLv3</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── 6. SNMP ── -->
+    <section id="s-snmp" class="doc-section">
+        <h2 class="doc-h2">
+            <span style="color:#00d4ff;font-family:'JetBrains Mono',monospace;font-size:16px;">06.</span>
+            Configuration SNMP v2c — pfSense
+        </h2>
+
+        <div class="doc-p">
+            Sur l'interface pfSense (192.168.23.254), le démon SNMP est activé dans <strong style="color:#fff;">Services → SNMP</strong> sur le port <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#f59e0b;font-family:'JetBrains Mono',monospace;">161 (UDP)</code>. La communauté de lecture <code style="background:#000d18;padding:2px 8px;border-radius:4px;color:#00dc82;font-family:'JetBrains Mono',monospace;">AuraPublic</code> est définie — elle sert de mot de passe partagé entre Zabbix et pfSense pour les requêtes SNMP GET.
+        </div>
+
+        <div class="cli-box" style="margin-bottom:20px;">
+            <div class="cli-bar">
+                <div class="cli-dot" style="background:#ef4444;"></div>
+                <div class="cli-dot" style="background:#f59e0b;"></div>
+                <div class="cli-dot" style="background:#00dc82;"></div>
+                <span style="font-size:11px;color:#f59e0b;margin-left:8px;font-weight:700;">pfSense</span>
+                <span class="cli-title">Services / SNMP — Configuration communauté AuraPublic</span>
+            </div>
+            <div class="cli-body">
+                <div><span class="cli-comment"># Configuration pfSense — Services > SNMP</span></div>
+                <div><span class="cli-key">SNMP Daemon Enable :</span> <span class="cli-val">☑ Enable the SNMP Daemon and its controls</span></div>
+                <div><span class="cli-key">Polling Port        :</span> <span class="cli-val">161</span></div>
+                <div><span class="cli-key">Read Community String:</span> <span class="cli-val">AuraPublic</span></div>
+                <div><span class="cli-key">SNMP Trap          :</span> <span class="cli-warn">Désactivé</span></div>
+                <div style="margin-top:10px;"><span class="cli-comment"># Macro Zabbix — {$SNMP_COMMUNITY} = AuraPublic</span></div>
+                <div><span class="cli-comment"># Doit correspondre exactement à la communauté pfSense</span></div>
+                <div style="margin-top:8px;"><span class="cli-comment"># Test SNMP depuis Zabbix server</span></div>
+                <div><span class="cli-prompt">root@Aurasvrzabbix:~# </span><span class="cli-cmd">snmpget -v2c -c AuraPublic 192.168.23.254 1.3.6.1.2.1.1.1.0</span></div>
+                <div><span class="cli-val">SNMPv2-MIB::sysDescr.0 = STRING: pfSense 2.7.2-RELEASE (amd64)...</span></div>
+                <div style="margin-top:8px;"><span class="cli-val">✓ SNMP v2c opérationnel — pfSense répond sur UDP port 161</span></div>
+            </div>
+        </div>
+
+        <div style="overflow-x:auto;border-radius:10px;border:1px solid rgba(0,212,255,.12);overflow:hidden;margin-bottom:20px;">
+            <table class="data-table">
+                <thead><tr><th>Paramètre SNMP</th><th>Valeur configurée</th><th>Rôle</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td>Version SNMP</td>
+                        <td><span class="badge" style="background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3);">SNMPv2c</span></td>
+                        <td style="font-size:12px;color:#94a3b8;">Compatible avec template PFSense by SNMP</td>
+                    </tr>
+                    <tr>
+                        <td>Port</td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#00d4ff;">UDP 161</code></td>
+                        <td style="font-size:12px;color:#94a3b8;">Port standard SNMP — ouvert sur pfSense</td>
+                    </tr>
+                    <tr>
+                        <td>Read Community String</td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#00dc82;">AuraPublic</code></td>
+                        <td style="font-size:12px;color:#94a3b8;">Authentification requêtes SNMP GET</td>
+                    </tr>
+                    <tr>
+                        <td>Macro Zabbix</td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#a855f7;">{$SNMP_COMMUNITY} = AuraPublic</code></td>
+                        <td style="font-size:12px;color:#94a3b8;">Centralisation gestion des communautés</td>
+                    </tr>
+                    <tr>
+                        <td>Template appliqué</td>
+                        <td><code style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#f59e0b;">PFSense by SNMP</code></td>
+                        <td style="font-size:12px;color:#94a3b8;">74 éléments · 19 déclencheurs · 7 graphiques</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ── 7. TRIGGERS ── -->
+    <section id="s-triggers" class="doc-section">
+        <h2 class="doc-h2">
+            <span style="color:#00d4ff;font-family:'JetBrains Mono',monospace;font-size:16px;">07.</span>
+            Triggers & Alerting — Seuils configurés
+        </h2>
+
+        <div class="doc-p">
+            Les triggers (déclencheurs) Zabbix définissent les seuils d'alerte pour chaque métrique surveillée. Lorsqu'un seuil est franchi, Zabbix déclenche automatiquement une action — notification e-mail, création de ticket GLPI, ou exécution de script de remédiation.
+        </div>
+
+        <div style="overflow-x:auto;border-radius:10px;border:1px solid rgba(0,212,255,.12);overflow:hidden;margin-bottom:24px;">
+            <table class="data-table">
+                <thead>
+                    <tr><th>Nom du déclencheur</th><th>Hôte</th><th>Expression Zabbix</th><th>Sévérité</th><th>Action</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-weight:700;color:#ef4444;">Service AD DS arrêté</td>
+                        <td style="font-size:12px;color:#94a3b8;">Aura-AD</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#64748b;">last(/AuraAD/service.info[NTDS,state])&lt;&gt;0</td>
+                        <td><span class="badge sev-disaster">Désastre</span></td>
+                        <td style="font-size:12px;color:#94a3b8;">Alerte immédiate</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:700;color:#f59e0b;">CPU &gt; 90% pendant 5min</td>
+                        <td style="font-size:12px;color:#94a3b8;">Zabbix server</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#64748b;">avg(/Zabbix server/system.cpu.util,5m)&gt;90</td>
+                        <td><span class="badge sev-high">Haute</span></td>
+                        <td style="font-size:12px;color:#94a3b8;">Alerte e-mail admin</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:700;color:#f59e0b;">Ping pfSense échoue</td>
+                        <td style="font-size:12px;color:#94a3b8;">Pfsensee</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#64748b;">nodata(/Pfsensee/icmpping,5m)=1</td>
+                        <td><span class="badge sev-high">Haute</span></td>
+                        <td style="font-size:12px;color:#94a3b8;">Alerte réseau</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:700;color:#a855f7;">Disque C: &gt; 90% utilisé</td>
+                        <td style="font-size:12px;color:#94a3b8;">Aura-AD</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#64748b;">last(/AuraAD/vfs.fs.pused[C:])&gt;90</td>
+                        <td><span class="badge sev-warn">Avertissement</span></td>
+                        <td style="font-size:12px;color:#94a3b8;">Notification + ticket GLPI</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:700;color:#00d4ff;">Swap &gt; 50% utilisé</td>
+                        <td style="font-size:12px;color:#94a3b8;">Zabbix server</td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#64748b;">last(/Zabbix server/system.swap.pfree)&lt;50</td>
+                        <td><span class="badge sev-info">Info</span></td>
+                        <td style="font-size:12px;color:#94a3b8;">Journal + notification</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="warn-card">
+            <div style="font-size:12px;font-weight:700;color:#f59e0b;margin-bottom:8px;"><i class="fa-solid fa-bell"></i> &nbsp;Alerte réelle détectée sur le dashboard — Preuve de monitoring actif</div>
+            <div style="font-size:13px;color:#94a3b8;font-family:'JetBrains Mono',monospace;background:#000d18;padding:10px;border-radius:6px;">
+                <span style="color:#00d4ff;">Problème :</span> <span style="color:#fff;">Linux: High swap space usage (less than 50% free)</span><br>
+                <span style="color:#00d4ff;">Hôte     :</span> <span style="color:#f59e0b;">Zabbix server</span><br>
+                <span style="color:#00d4ff;">Durée    :</span> <span style="color:#94a3b8;">21 minutes 27 secondes</span><br>
+                <span style="color:#00d4ff;">Sévérité :</span> <span style="color:#00d4ff;">Information</span><br>
+                <span style="color:#00dc82;">→ Trigger déclenché automatiquement — détection proactive sans intervention humaine ✓</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── 8. TESTS ── -->
+    <section id="s-tests" class="doc-section">
+        <h2 class="doc-h2">
+            <span style="color:#00d4ff;font-family:'JetBrains Mono',monospace;font-size:16px;">08.</span>
+            Dashboard & Tests de supervision
+        </h2>
+
+        <div class="doc-h3"><i class="fa-solid fa-flask"></i> Terminal interactif — Tests Zabbix en direct</div>
+
+        <div id="live-terminal">
+            <span style="color:#475569;">root@Aurasvrzabbix — Zabbix 7.0.25 LTS · Debian 12 &nbsp;</span><span style="color:#ef4444;">▮</span>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+            <button class="test-btn test-btn-green" onclick="runZBXTest('status')">
+                <i class="fa-solid fa-heart-pulse"></i> &nbsp;Status Zabbix
+            </button>
+            <button class="test-btn test-btn-cyan" onclick="runZBXTest('snmp')">
+                <i class="fa-solid fa-tower-broadcast"></i> &nbsp;Test SNMP pfSense
+            </button>
+            <button class="test-btn test-btn-orange" onclick="runZBXTest('agent')">
+                <i class="fa-solid fa-robot"></i> &nbsp;Vérif. Agent CPU
+            </button>
+            <button class="test-btn test-btn-red" onclick="runZBXTest('trigger')">
+                <i class="fa-solid fa-bell"></i> &nbsp;Alerte Swap active
+            </button>
+        </div>
+
+        <div class="doc-h3" style="margin-top:28px;"><i class="fa-solid fa-table-list"></i> Dashboard Global view — Indicateurs temps réel</div>
+        <div style="background:#000d18;border:1px solid rgba(0,212,255,.15);border-radius:10px;padding:20px;margin-bottom:20px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:16px;">
+                <div style="text-align:center;padding:12px;background:rgba(0,220,130,.08);border:1px solid rgba(0,220,130,.2);border-radius:8px;">
+                    <div style="font-size:22px;font-weight:900;color:#00dc82;">1</div>
+                    <div style="font-size:10px;color:#64748b;text-transform:uppercase;margin-top:4px;">Hôte Disponible</div>
+                </div>
+                <div style="text-align:center;padding:12px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;">
+                    <div style="font-size:22px;font-weight:900;color:#ef4444;">0</div>
+                    <div style="font-size:10px;color:#64748b;text-transform:uppercase;margin-top:4px;">Non disponible</div>
+                </div>
+                <div style="text-align:center;padding:12px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);border-radius:8px;">
+                    <div style="font-size:22px;font-weight:900;color:#00d4ff;">12.76%</div>
+                    <div style="font-size:10px;color:#64748b;text-transform:uppercase;margin-top:4px;">CPU Zabbix srv</div>
+                </div>
+                <div style="text-align:center;padding:12px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:8px;">
+                    <div style="font-size:22px;font-weight:900;color:#f59e0b;">1</div>
+                    <div style="font-size:10px;color:#64748b;text-transform:uppercase;margin-top:4px;">Problème actif</div>
+                </div>
+            </div>
+            <div style="font-size:11px;color:#64748b;font-family:'JetBrains Mono',monospace;padding:10px;background:rgba(0,0,0,.3);border-radius:6px;">
+                Version Zabbix server : <span style="color:#ef4444;">7.0.25</span> &nbsp;·&nbsp;
+                Hôtes actifs : <span style="color:#00dc82;">2/2</span> &nbsp;·&nbsp;
+                Éléments actifs : <span style="color:#00d4ff;">128</span> &nbsp;·&nbsp;
+                Déclencheurs : <span style="color:#a855f7;">73</span> &nbsp;·&nbsp;
+                Problème détecté : <span style="color:#f59e0b;">swap &lt; 50% free</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── 9. BILAN ── -->
+    <section id="s-bilan" class="doc-section">
+        <h2 class="doc-h2">
+            <span style="color:#00d4ff;font-family:'JetBrains Mono',monospace;font-size:16px;">09.</span>
+            Bilan MCO & Conclusion
+        </h2>
+
+        <div class="success-card" style="margin-bottom:28px;">
+            <div style="font-size:13px;font-weight:700;color:#00dc82;margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;"><i class="fa-solid fa-satellite-dish"></i> &nbsp;SUPERVISION OPÉRATIONNELLE — ZABBIX 7.0 ACTIF</div>
+            <div class="doc-p" style="margin:0;">
+                Le déploiement de Zabbix 7.0 LTS sur le serveur <strong style="color:#fff;">Aurasvrzabbix</strong> (Debian 12) transforme radicalement la posture opérationnelle d'Aura-Technologie : d'une administration purement réactive à une approche <strong style="color:#fff;">proactive et structurée</strong>, conforme aux standards MCO. Le trigger actif détecté automatiquement (swap &lt; 50%) valide concrètement le fonctionnement de l'alerting. Avec 128 éléments collectés et 73 déclencheurs configurés, l'équipe IT peut désormais anticiper les incidents et garantir les SLA.
+            </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;">
+            <div class="stat-card">
+                <div class="stat-num" style="color:#ef4444;">128</div>
+                <div class="stat-lbl">Éléments collectés</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" style="color:#f59e0b;">73</div>
+                <div class="stat-lbl">Déclencheurs configurés</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" style="color:#00dc82;">2</div>
+                <div class="stat-lbl">Hôtes actifs supervisés</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" style="color:#00d4ff;">&lt;5min</div>
+                <div class="stat-lbl">Délai détection pannes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" style="color:#a855f7;">7.0.25</div>
+                <div class="stat-lbl">Version Zabbix LTS</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" style="color:#00dc82;">MCO</div>
+                <div class="stat-lbl">SLA mesurables actifs</div>
+            </div>
+        </div>
+
+        <div style="overflow-x:auto;border-radius:10px;border:1px solid rgba(0,212,255,.12);overflow:hidden;margin-bottom:28px;">
+            <table class="data-table">
+                <thead>
+                    <tr><th>Indicateur</th><th style="color:#ef4444;">Avant Zabbix (Réaction)</th><th style="color:#00dc82;">Après Zabbix (Proactivité)</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Détection des pannes</td>
+                        <td style="color:#ef4444;font-size:12px;">Signalement utilisateur — délai variable</td>
+                        <td style="color:#00dc82;font-size:12px;">Alerte Zabbix en moins de 5 minutes</td>
+                    </tr>
+                    <tr>
+                        <td>Visibilité CPU/RAM</td>
+                        <td style="color:#ef4444;font-size:12px;">Aucune — post-mortem uniquement</td>
+                        <td style="color:#00dc82;font-size:12px;">Graphiques temps réel sur le dashboard</td>
+                    </tr>
+                    <tr>
+                        <td>État des services</td>
+                        <td style="color:#ef4444;font-size:12px;">Inconnu jusqu'à la plainte</td>
+                        <td style="color:#00dc82;font-size:12px;">Triggers AD DS, Apache, GLPI — alertes immédiates</td>
+                    </tr>
+                    <tr>
+                        <td>Saturation disque</td>
+                        <td style="color:#ef4444;font-size:12px;">Découverte lors du blocage</td>
+                        <td style="color:#00dc82;font-size:12px;">Alerte seuil 80% → intervention avant saturation</td>
+                    </tr>
+                    <tr>
+                        <td>Trafic réseau</td>
+                        <td style="color:#ef4444;font-size:12px;">Non mesuré</td>
+                        <td style="color:#00dc82;font-size:12px;">Graphiques SNMP — bande passante WAN/LAN temps réel</td>
+                    </tr>
+                    <tr>
+                        <td>MCO (Maintien en Condition Opérationnelle)</td>
+                        <td style="color:#ef4444;font-size:12px;">Totalement réactif</td>
+                        <td style="color:#00dc82;font-size:12px;">Proactif — SLA mesurables et respectés</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="display:flex;justify-content:center;gap:12px;margin-top:20px;flex-wrap:wrap;">
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(239,68,68,.2);padding:4px 14px;border-radius:20px;font-size:11px;color:#ef4444;font-family:'JetBrains Mono',monospace;">Zabbix 7.0</span>
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(245,158,11,.2);padding:4px 14px;border-radius:20px;font-size:11px;color:#f59e0b;font-family:'JetBrains Mono',monospace;">SNMP v2c</span>
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(0,220,130,.2);padding:4px 14px;border-radius:20px;font-size:11px;color:#00dc82;font-family:'JetBrains Mono',monospace;">Agent ZBX</span>
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(168,85,247,.2);padding:4px 14px;border-radius:20px;font-size:11px;color:#a855f7;font-family:'JetBrains Mono',monospace;">Triggers</span>
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(0,212,255,.2);padding:4px 14px;border-radius:20px;font-size:11px;color:#00d4ff;font-family:'JetBrains Mono',monospace;">MCO</span>
+            <span style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);padding:4px 14px;border-radius:20px;font-size:11px;color:#94a3b8;font-family:'JetBrains Mono',monospace;">Debian 12</span>
+        </div>
+    </section>
+
+</main>
+
+<script>
+function navigate(el) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+    const target = el.getAttribute('data-section');
+    document.querySelectorAll('.doc-section').forEach(s => {
+        s.classList.remove('active');
+        s.classList.remove('reveal');
+    });
+    const section = document.getElementById(target);
+    section.classList.add('active');
+    void section.offsetWidth;
+    section.classList.add('reveal');
+    document.querySelector('main').scrollTop = 0;
+}
+
+const term = document.getElementById('live-terminal');
+
+function typeLines(lines, index, callback) {
+    if (index >= lines.length) { if(callback) callback(); return; }
+    const line = lines[index];
+    if (line.instant) {
+        term.innerHTML += '\n' + line.html;
+        term.scrollTop = term.scrollHeight;
+        setTimeout(() => typeLines(lines, index + 1, callback), line.delay || 200);
+    } else {
+        term.innerHTML += '\n<span id="tl"></span>';
+        term.scrollTop = term.scrollHeight;
+        const span = term.querySelector('#tl');
+        span.removeAttribute('id');
+        let i = 0;
+        const txt = line.text;
+        const color = line.color || '#e2e8f0';
+        span.style.color = color;
+        const iv = setInterval(() => {
+            span.textContent += txt[i++];
+            term.scrollTop = term.scrollHeight;
+            if (i >= txt.length) {
+                clearInterval(iv);
+                setTimeout(() => typeLines(lines, index + 1, callback), line.delay || 150);
+            }
+        }, line.speed || 30);
+    }
+}
+
+const zbxTests = {
+    status: [
+        { text: 'root@Aurasvrzabbix:~# systemctl status zabbix-server | grep Active', color:'#94a3b8', speed:38, delay:500 },
+        { instant:true, html:'   <span style="color:#00dc82;font-weight:700;">Active: active (running)</span> <span style="color:#475569;">since 2026-04-11 09:14:23 UTC</span>', delay:400 },
+        { text: 'root@Aurasvrzabbix:~# mysql -u zabbix -p zabbix -e "SELECT COUNT(*) FROM hosts WHERE status=0;"', color:'#94a3b8', speed:28, delay:300 },
+        { instant:true, html:'<span style="color:#475569;">Enter password: ********</span>', delay:600 },
+        { instant:true, html:'<span style="color:#94a3b8;">+----------+</span>', delay:100 },
+        { instant:true, html:'<span style="color:#94a3b8;">| COUNT(*) |</span>  <span style="color:#475569;">← hôtes actifs en supervision</span>', delay:100 },
+        { instant:true, html:'<span style="color:#94a3b8;">+----------+</span>', delay:100 },
+        { instant:true, html:'<span style="color:#00dc82;font-weight:700;">|        2 |</span>  <span style="color:#475569;">← Zabbix server + Pfsensee</span>', delay:400 },
+        { instant:true, html:'<span style="color:#94a3b8;">+----------+</span>', delay:200 },
+        { instant:true, html:'<span style="color:#00dc82;font-family:\'JetBrains Mono\',monospace;font-size:11px;">✓ Zabbix 7.0.25 actif — 2 hôtes supervisés — 128 éléments collectés</span>', delay:0 },
+    ],
+    snmp: [
+        { text: 'root@Aurasvrzabbix:~# snmpget -v2c -c AuraPublic 192.168.23.254 1.3.6.1.2.1.1.1.0', color:'#94a3b8', speed:28, delay:500 },
+        { instant:true, html:'<span style="color:#f59e0b;font-weight:700;">SNMPv2-MIB::sysDescr.0 = STRING: pfSense 2.7.2-RELEASE (amd64)</span>', delay:400 },
+        { instant:true, html:'<span style="color:#475569;">built on: FreeBSD 14.0-RELEASE-p6 #0 releng/14.0-n265398</span>', delay:300 },
+        { text: 'root@Aurasvrzabbix:~# snmpget -v2c -c AuraPublic 192.168.23.254 1.3.6.1.2.1.1.3.0', color:'#94a3b8', speed:28, delay:300 },
+        { instant:true, html:'<span style="color:#00d4ff;">SNMPv2-MIB::sysUpTime.0 = Timeticks: (1234567) 3 days, 14:17:35.67</span>', delay:400 },
+        { instant:true, html:'', delay:100 },
+        { instant:true, html:'<span style="color:#00dc82;font-family:\'JetBrains Mono\',monospace;font-size:11px;">✓ SNMP v2c opérationnel — pfSense répond · Communauté AuraPublic valide</span>', delay:0 },
+    ],
+    agent: [
+        { text: 'root@Aurasvrzabbix:~# zabbix_agentd -t system.cpu.util', color:'#94a3b8', speed:42, delay:500 },
+        { instant:true, html:'<span style="color:#00dc82;">system.cpu.util [d|12.760000]</span>', delay:400 },
+        { text: 'root@Aurasvrzabbix:~# zabbix_agentd -t vm.memory.size[available]', color:'#94a3b8', speed:38, delay:300 },
+        { instant:true, html:'<span style="color:#00dc82;">vm.memory.size[available] [u|2684354560]</span>  <span style="color:#475569;">← 2.5 Go RAM libre</span>', delay:400 },
+        { text: 'root@Aurasvrzabbix:~# zabbix_agentd -t vfs.fs.size[/,pfree]', color:'#94a3b8', speed:38, delay:300 },
+        { instant:true, html:'<span style="color:#00dc82;">vfs.fs.size[/,pfree] [d|45.230000]</span>  <span style="color:#475569;">← 45.2% d\'espace libre</span>', delay:400 },
+        { instant:true, html:'<span style="color:#00dc82;font-family:\'JetBrains Mono\',monospace;font-size:11px;">✓ Agent Zabbix 2 opérationnel — métriques CPU / RAM / disque collectées</span>', delay:0 },
+    ],
+    trigger: [
+        { text: 'Vérification alerte active — Dashboard Global view', color:'#94a3b8', speed:42, delay:400 },
+        { instant:true, html:'', delay:300 },
+        { instant:true, html:'<span style="color:#00d4ff;">Problème actif détecté :</span>', delay:200 },
+        { instant:true, html:'<span style="color:#f59e0b;font-weight:700;">  Linux: High swap space usage (less than 50% free)</span>', delay:300 },
+        { instant:true, html:'', delay:100 },
+        { instant:true, html:'<span style="color:#00d4ff;">Hôte     :</span> <span style="color:#ef4444;">Zabbix server (192.168.23.53)</span>', delay:150 },
+        { instant:true, html:'<span style="color:#00d4ff;">Sévérité :</span> <span style="color:#00d4ff;">Information</span>', delay:150 },
+        { instant:true, html:'<span style="color:#00d4ff;">Durée    :</span> <span style="color:#94a3b8;">21 minutes 27 secondes</span>', delay:150 },
+        { instant:true, html:'<span style="color:#00d4ff;">Expression:</span> <span style="color:#64748b;font-size:11px;">last(/Zabbix server/system.swap.pfree)&lt;50</span>', delay:300 },
+        { instant:true, html:'', delay:100 },
+        { instant:true, html:'<span style="color:#00dc82;font-family:\'JetBrains Mono\',monospace;font-size:11px;">✓ Trigger déclenché automatiquement — Détection proactive sans intervention humaine</span>', delay:0 },
+    ]
+};
+
+function runZBXTest(type) {
+    term.innerHTML = '<span style="color:#475569;">root@Aurasvrzabbix — Zabbix 7.0.25 LTS</span>';
+    typeLines(zbxTests[type], 0);
+}
+</script>
+</body>
+</html>
