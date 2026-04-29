@@ -160,7 +160,7 @@
     .hc-row .val { color:var(--accent);font-weight:600; }
 
     /* ==============================
-       CERTIFICATIONS (section 2)
+       CERTIFICATIONS
     ============================== */
     #certifs { background:rgba(0,212,255,.015);border-top:1px solid rgba(0,212,255,.07);border-bottom:1px solid rgba(0,212,255,.07); }
     .certif-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:18px; }
@@ -170,13 +170,18 @@
     .certif-card h3 { font-size:.93rem;font-weight:700;margin-bottom:5px; }
     .certif-meta { font-family:var(--font-m);font-size:.68rem;color:var(--accent);margin-bottom:6px; }
     .certif-desc { font-size:.78rem;color:var(--text-dim);line-height:1.5; }
+    /* Certification "en préparation" */
+    .certif-card.pending { opacity:.72;border-style:dashed; }
+    .certif-card.pending .certif-ico { background:rgba(123,94,167,.1);border-color:rgba(123,94,167,.25); }
+    .certif-card.pending .certif-meta { color:#b09fd4; }
+    .pending-badge { display:inline-block;margin-top:8px;padding:3px 9px;border-radius:5px;font-family:var(--font-m);font-size:.6rem;background:rgba(123,94,167,.12);border:1px solid rgba(123,94,167,.3);color:#b09fd4; }
 
     /* ==============================
        MISSIONS E5 (iframe plein écran)
     ============================== */
     .missions-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:16px; }
     .mcard {
-      padding:22px 18px 18px;cursor:pointer;
+      padding:22px 18px 18px;cursor:default;
       transition:all .35s cubic-bezier(.4,0,.2,1);
       position:relative;overflow:hidden;display:flex;flex-direction:column;
     }
@@ -277,17 +282,13 @@
     .vt-purple .vtopic-title { color:#b09fd4; }
     .vt-orange .vtopic-title { color:#ff9a6b; }
     .vtopic-sub { font-family:var(--font-m);font-size:.7rem;color:var(--text-dim);letter-spacing:.07em; }
-    .vtopic-grid { display:grid;grid-template-columns:1fr 1fr;gap:24px 40px;margin-bottom:22px; }
+    /* Layout définitions textuelles en colonne unique (sans nuage de mots) */
+    .vtopic-defs { display:grid;grid-template-columns:1fr 1fr;gap:24px 40px; }
     .vtopic-def h4 { font-size:.82rem;font-weight:700;margin-bottom:8px;color:var(--text); }
     .vt-blue .vtopic-def h4 { color:rgba(0,212,255,.8); }
     .vt-purple .vtopic-def h4 { color:rgba(176,159,212,.8); }
     .vt-orange .vtopic-def h4 { color:rgba(255,154,107,.8); }
     .vtopic-def p { font-size:.8rem;color:var(--text-dim);line-height:1.7; }
-    .vtopic-kw { display:flex;flex-wrap:wrap;gap:7px;padding-top:18px;border-top:1px solid rgba(255,255,255,.05); }
-    .vkw { padding:4px 12px;border-radius:6px;font-family:var(--font-m);font-size:.65rem; }
-    .vt-blue .vkw { background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.2);color:var(--accent); }
-    .vt-purple .vkw { background:rgba(123,94,167,.1);border:1px solid rgba(123,94,167,.25);color:#b09fd4; }
-    .vt-orange .vkw { background:rgba(255,107,53,.07);border:1px solid rgba(255,107,53,.2);color:#ff9a6b; }
 
     /* Tableau sources */
     .sources-section { margin-top:0; }
@@ -349,7 +350,7 @@
       .mco-grid { grid-template-columns:1fr; }
       .certif-grid { grid-template-columns:1fr; }
       .docs-grid { grid-template-columns:1fr 1fr; }
-      .vtopic-grid { grid-template-columns:1fr; }
+      .vtopic-defs { grid-template-columns:1fr; }
       nav { padding:0 20px; }
     }
     @media (max-width:600px) {
@@ -418,7 +419,7 @@
   </div>
 </section>
 
-<!-- ========== CERTIFICATIONS ========== -->
+<!-- ========== CERTIFICATIONS (juste après le Hero) ========== -->
 <section id="certifs">
   <div class="wrap">
     <div class="sh rv">
@@ -428,24 +429,28 @@
       <p class="sh-desc">Compétences officiellement validées en cybersécurité, IoT et réseaux.</p>
     </div>
     <div class="certif-grid">
+      <!-- Certif 1 : Cybersecurity -->
       <a href="https://lmk95-tech.github.io/I2CSUpdate20260412-31-c2utse.pdf" target="_blank" class="glass certif-card rv">
         <div class="certif-ico">🛡️</div>
         <h3>Introduction to Cybersecurity</h3>
         <div class="certif-meta">Cisco Academy · Vérifié · Avril 2025</div>
         <p class="certif-desc">Fondamentaux de la cybersécurité, protection des systèmes et des données, menaces et contre-mesures modernes.</p>
       </a>
+      <!-- Certif 2 : IoT -->
       <a href="https://lmk95-tech.github.io/certif-iot.pdf" target="_blank" class="glass certif-card rv">
         <div class="certif-ico">🌐</div>
         <h3>Introduction to IoT</h3>
         <div class="certif-meta">Cisco Academy · Vérifié · Juin 2025</div>
         <p class="certif-desc">Architecture IoT, protocoles de communication, sécurisation des objets connectés et cas d'usage industriels.</p>
       </a>
-      <a href="https://lmk95-tech.github.io/certif-network.pdf" target="_blank" class="glass certif-card rv">
+      <!-- Certif 3 : En préparation -->
+      <div class="glass certif-card pending rv">
         <div class="certif-ico">🔵</div>
-        <h3>Networking Basics</h3>
-        <div class="certif-meta">Cisco Academy · Vérifié · 2025</div>
-        <p class="certif-desc">Architecture réseau, adressage IP (IPv4/IPv6), équipements d'interconnexion et modèle OSI/TCP-IP.</p>
-      </a>
+        <h3>Networking Essentials</h3>
+        <div class="certif-meta">Cisco Academy · En cours · 2026</div>
+        <p class="certif-desc">Architecture réseau avancée, adressage IP, équipements d'interconnexion et modèle OSI/TCP-IP — certification en préparation.</p>
+        <span class="pending-badge">⏳ En préparation</span>
+      </div>
     </div>
   </div>
 </section>
@@ -457,95 +462,103 @@
       <div class="sh-tag">// dossier technique</div>
       <h2 class="sh-title">Missions <span class="al">Épreuve E5</span></h2>
       <div class="sh-div"></div>
-      <p class="sh-desc">8 missions techniques SISR — visualisez en plein écran ou téléchargez le PDF directement.</p>
+      <p class="sh-desc">8 missions techniques SISR — cliquez sur une carte pour l'ouvrir en plein écran, ou téléchargez la version PDF.</p>
     </div>
     <div class="missions-grid">
 
-      <div class="glass mcard rv">
+      <!-- Mission 01 -->
+      <div class="glass mcard rv" onclick="openIframe('mission01','Mission 01 — DHCP & RIPv2','mission01.pdf')">
         <div class="mnum">Mission 01</div>
         <div class="mtitle">DHCP & Routage RIPv2</div>
         <p class="mdesc">Configuration d'un serveur DHCP et routage dynamique RIPv2 sur équipements Cisco IOS.</p>
         <div class="mtechs"><span class="tt">Cisco IOS</span><span class="tt">RIPv2</span><span class="tt">DHCP</span></div>
         <div class="mcard-btns">
-          <div class="mbtn-view" onclick="openIframe('M1_DHCP_RIPv2','Mission 01 — DHCP & RIPv2')">▶ Visualiser</div>
-          <a class="mbtn-dl" href="https://lmk95-tech.github.io/M1_DHCP_RIPv2.pdf" target="_blank">↓ PDF</a>
+          <div class="mbtn-view">▶ Visualiser</div>
+          <a class="mbtn-dl" href="https://lmk95-tech.github.io/mission01.pdf" target="_blank" onclick="event.stopPropagation()">↓ PDF</a>
         </div>
       </div>
 
-      <div class="glass mcard rv">
+      <!-- Mission 02 -->
+      <div class="glass mcard rv" onclick="openIframe('mission02','Mission 02 — Segmentation VLAN','mission02.pdf')">
         <div class="mnum">Mission 02</div>
         <div class="mtitle">Segmentation VLAN</div>
         <p class="mdesc">Architecture réseau segmentée par VLANs pour isoler les flux et renforcer la sécurité.</p>
         <div class="mtechs"><span class="tt">VLAN</span><span class="tt">802.1Q</span><span class="tt">Switching</span></div>
         <div class="mcard-btns">
-          <div class="mbtn-view" onclick="openIframe('M2_VLAN','Mission 02 — Segmentation VLAN')">▶ Visualiser</div>
-          <a class="mbtn-dl" href="https://lmk95-tech.github.io/M2_VLAN.pdf" target="_blank">↓ PDF</a>
+          <div class="mbtn-view">▶ Visualiser</div>
+          <a class="mbtn-dl" href="https://lmk95-tech.github.io/mission02.pdf" target="_blank" onclick="event.stopPropagation()">↓ PDF</a>
         </div>
       </div>
 
-      <div class="glass mcard rv">
+      <!-- Mission 03 -->
+      <div class="glass mcard rv" onclick="openIframe('mission03_ad_gpo','Mission 03 — Active Directory & GPO','mission03_ad_gpo.pdf')">
         <div class="mnum">Mission 03</div>
         <div class="mtitle">Active Directory & GPO</div>
         <p class="mdesc">Déploiement d'un domaine AD avec stratégies de groupe pour gestion centralisée.</p>
         <div class="mtechs"><span class="tt">AD DS</span><span class="tt">GPO</span><span class="tt">DNS</span></div>
         <div class="mcard-btns">
-          <div class="mbtn-view" onclick="openIframe('M3_ActiveDirectory','Mission 03 — Active Directory')">▶ Visualiser</div>
-          <a class="mbtn-dl" href="https://lmk95-tech.github.io/M3_ActiveDirectory.pdf" target="_blank">↓ PDF</a>
+          <div class="mbtn-view">▶ Visualiser</div>
+          <a class="mbtn-dl" href="https://lmk95-tech.github.io/mission03_ad_gpo.pdf" target="_blank" onclick="event.stopPropagation()">↓ PDF</a>
         </div>
       </div>
 
-      <div class="glass mcard rv">
+      <!-- Mission 04 -->
+      <div class="glass mcard rv" onclick="openIframe('mission04_nat_pfsense','Mission 04 — NAT/PAT pfSense','mission04_nat_pfsense.pdf')">
         <div class="mnum">Mission 04</div>
         <div class="mtitle">NAT/PAT sur pfSense</div>
         <p class="mdesc">Configuration du pare-feu pfSense avec règles NAT/PAT et filtrage périmétrique.</p>
         <div class="mtechs"><span class="tt">pfSense</span><span class="tt">NAT/PAT</span><span class="tt">Firewall</span></div>
         <div class="mcard-btns">
-          <div class="mbtn-view" onclick="openIframe('M4_pfSense','Mission 04 — NAT/PAT pfSense')">▶ Visualiser</div>
-          <a class="mbtn-dl" href="https://lmk95-tech.github.io/M4_pfSense.pdf" target="_blank">↓ PDF</a>
+          <div class="mbtn-view">▶ Visualiser</div>
+          <a class="mbtn-dl" href="https://lmk95-tech.github.io/mission04_nat_pfsense.pdf" target="_blank" onclick="event.stopPropagation()">↓ PDF</a>
         </div>
       </div>
 
-      <div class="glass mcard rv">
+      <!-- Mission 05 -->
+      <div class="glass mcard rv" onclick="openIframe('mission05_hsrp_lacp','Mission 05 — HSRP & LACP','mission05_hsrp_lacp.pdf')">
         <div class="mnum">Mission 05</div>
-        <div class="mtitle">HSRP & Redondance</div>
-        <p class="mdesc">Haute disponibilité des passerelles réseau via HSRP sur routeurs Cisco.</p>
-        <div class="mtechs"><span class="tt">HSRP</span><span class="tt">Haute dispo</span><span class="tt">Cisco</span></div>
+        <div class="mtitle">HSRP & Redondance LACP</div>
+        <p class="mdesc">Haute disponibilité des passerelles réseau via HSRP et agrégation de liens LACP sur Cisco.</p>
+        <div class="mtechs"><span class="tt">HSRP</span><span class="tt">LACP</span><span class="tt">Haute dispo</span></div>
         <div class="mcard-btns">
-          <div class="mbtn-view" onclick="openIframe('M5_HSRP','Mission 05 — HSRP & Redondance')">▶ Visualiser</div>
-          <a class="mbtn-dl" href="https://lmk95-tech.github.io/M5_HSRP.pdf" target="_blank">↓ PDF</a>
+          <div class="mbtn-view">▶ Visualiser</div>
+          <a class="mbtn-dl" href="https://lmk95-tech.github.io/mission05_hsrp_lacp.pdf" target="_blank" onclick="event.stopPropagation()">↓ PDF</a>
         </div>
       </div>
 
-      <div class="glass mcard rv">
+      <!-- Mission 06 -->
+      <div class="glass mcard rv" onclick="openIframe('mission06_ntfs_fsrm','Mission 06 — NTFS, ABE & FSRM','mission06_ntfs_fsrm.pdf')">
         <div class="mnum">Mission 06</div>
         <div class="mtitle">NTFS, ABE & FSRM</div>
         <p class="mdesc">Droits NTFS granulaires, ABE et FSRM pour la gestion avancée des ressources fichiers.</p>
         <div class="mtechs"><span class="tt">NTFS</span><span class="tt">FSRM</span><span class="tt">ABE</span></div>
         <div class="mcard-btns">
-          <div class="mbtn-view" onclick="openIframe('M6_NTFS_FSRM','Mission 06 — NTFS & FSRM')">▶ Visualiser</div>
-          <a class="mbtn-dl" href="https://lmk95-tech.github.io/M6_NTFS_FSRM.pdf" target="_blank">↓ PDF</a>
+          <div class="mbtn-view">▶ Visualiser</div>
+          <a class="mbtn-dl" href="https://lmk95-tech.github.io/mission06_ntfs_fsrm.pdf" target="_blank" onclick="event.stopPropagation()">↓ PDF</a>
         </div>
       </div>
 
-      <div class="glass mcard rv">
+      <!-- Mission 07 -->
+      <div class="glass mcard rv" onclick="openIframe('mission07_glpi','Mission 07 — GLPI 10 Helpdesk','mission07_glpi.pdf')">
         <div class="mnum">Mission 07</div>
         <div class="mtitle">GLPI 10 Helpdesk</div>
         <p class="mdesc">Solution ITSM GLPI 10 sur stack LAMP avec FusionInventory pour la gestion de parc.</p>
         <div class="mtechs"><span class="tt">GLPI 10</span><span class="tt">ITSM</span><span class="tt">LAMP</span></div>
         <div class="mcard-btns">
-          <div class="mbtn-view" onclick="openIframe('M7_GLPI','Mission 07 — GLPI 10 Helpdesk')">▶ Visualiser</div>
-          <a class="mbtn-dl" href="https://lmk95-tech.github.io/M7_GLPI.pdf" target="_blank">↓ PDF</a>
+          <div class="mbtn-view">▶ Visualiser</div>
+          <a class="mbtn-dl" href="https://lmk95-tech.github.io/mission07_glpi.pdf" target="_blank" onclick="event.stopPropagation()">↓ PDF</a>
         </div>
       </div>
 
-      <div class="glass mcard rv">
+      <!-- Mission 08 -->
+      <div class="glass mcard rv" onclick="openIframe('mission08_zabbix','Mission 08 — Supervision Zabbix 7','mission08_zabbix.pdf')">
         <div class="mnum">Mission 08</div>
         <div class="mtitle">Supervision Zabbix 7</div>
         <p class="mdesc">Déploiement et paramétrage de Zabbix 7 pour la supervision SNMP temps réel de l'infrastructure.</p>
         <div class="mtechs"><span class="tt">Zabbix 7</span><span class="tt">SNMP</span><span class="tt">MCO</span></div>
         <div class="mcard-btns">
-          <div class="mbtn-view" onclick="openIframe('M8_Zabbix','Mission 08 — Supervision Zabbix 7')">▶ Visualiser</div>
-          <a class="mbtn-dl" href="https://lmk95-tech.github.io/M8_Zabbix.pdf" target="_blank">↓ PDF</a>
+          <div class="mbtn-view">▶ Visualiser</div>
+          <a class="mbtn-dl" href="https://lmk95-tech.github.io/mission08_zabbix.pdf" target="_blank" onclick="event.stopPropagation()">↓ PDF</a>
         </div>
       </div>
 
@@ -627,8 +640,10 @@
       </div>
     </div>
 
-    <!-- Thème 1 : IA -->
+    <!-- Thèmes (sans nuages de mots-clés) -->
     <div class="veille-topics">
+
+      <!-- Thème 1 : IA -->
       <div class="glass vtopic vt-blue rv">
         <div class="vtopic-hd">
           <div class="vtopic-ico">🤖</div>
@@ -637,7 +652,7 @@
             <div class="vtopic-sub">UEBA · LLM · Threat Hunting · SOC Automatisé</div>
           </div>
         </div>
-        <div class="vtopic-grid">
+        <div class="vtopic-defs">
           <div class="vtopic-def">
             <h4>Qu'est-ce que l'IA en cybersécurité ?</h4>
             <p>L'intelligence artificielle appliquée à la cybersécurité désigne l'ensemble des algorithmes d'apprentissage automatique et de traitement du langage naturel utilisés pour détecter, analyser et répondre aux menaces informatiques. Contrairement aux règles statiques (pare-feu, antivirus signatures), l'IA est capable d'identifier des comportements anormaux sans signature préalable, ce qui lui permet de détecter des menaces inconnues (zero-day).</p>
@@ -655,9 +670,6 @@
             <p>Pour un technicien SISR, la maîtrise de ces outils devient essentielle : les plateformes XDR (Extended Detection and Response) intègrent désormais l'IA nativement. Savoir interpréter les alertes générées par l'IA, comprendre les faux positifs et paramétrer les seuils de détection sont des compétences directement attendues dans les offres d'emploi SOC N1/N2.</p>
           </div>
         </div>
-        <div class="vtopic-kw">
-          <span class="vkw">UEBA</span><span class="vkw">LLM Security</span><span class="vkw">XDR</span><span class="vkw">SIEM / SOC</span><span class="vkw">Threat Hunting</span><span class="vkw">Zero-Day</span><span class="vkw">Insider Threat</span><span class="vkw">Baseline comportementale</span>
-        </div>
       </div>
 
       <!-- Thème 2 : Zero Trust -->
@@ -669,7 +681,7 @@
             <div class="vtopic-sub">Cloud · SASE · IAM · Microsegmentation · SecNumCloud</div>
           </div>
         </div>
-        <div class="vtopic-grid">
+        <div class="vtopic-defs">
           <div class="vtopic-def">
             <h4>Le principe "Never Trust, Always Verify"</h4>
             <p>Le modèle Zero Trust (ZTA) repose sur un principe fondamental : aucune entité — utilisateur, machine, service — ne doit être considérée comme de confiance par défaut, qu'elle soit interne ou externe au réseau. Chaque accès doit être authentifié, autorisé et chiffré indépendamment de la localisation réseau. Ce modèle s'oppose au paradigme traditionnel du « château fort » (confiance implicite dès que l'on est dans le réseau).</p>
@@ -687,9 +699,6 @@
             <p>Le référentiel SecNumCloud de l'ANSSI qualifie les offres cloud souveraines conformes aux exigences de sécurité françaises et européennes. Dans un contexte Zero Trust, la localisation des données et la résidence des accès (uniquement par du personnel européen) deviennent des critères de confiance. Des acteurs comme OVHcloud ou Outscale visent cette qualification pour répondre aux marchés publics et secteurs sensibles.</p>
           </div>
         </div>
-        <div class="vtopic-kw">
-          <span class="vkw">Zero Trust</span><span class="vkw">SASE</span><span class="vkw">ZTNA</span><span class="vkw">SecNumCloud</span><span class="vkw">IAM / MFA</span><span class="vkw">CASB</span><span class="vkw">Microsegmentation</span><span class="vkw">Lateral Movement</span>
-        </div>
       </div>
 
       <!-- Thème 3 : Ransomware -->
@@ -701,7 +710,7 @@
             <div class="vtopic-sub">RaaS · EDR · Air-Gap · DORA · Réponse à incident</div>
           </div>
         </div>
-        <div class="vtopic-grid">
+        <div class="vtopic-defs">
           <div class="vtopic-def">
             <h4>Évolution vers la Triple Extorsion</h4>
             <p>La simple extorsion (chiffrement des données contre rançon) a laissé place à la double puis triple extorsion. La double extorsion ajoute la menace de publication des données volées (data leak). La triple extorsion ajoute une pression sur les partenaires, clients ou patients de la victime, démultipliant l'impact psychologique et financier. Des groupes comme LockBit, ALPHV ou Cl0p ont industrialisé ces méthodes.</p>
@@ -719,11 +728,9 @@
             <p>Le règlement DORA (Digital Operational Resilience Act), applicable depuis janvier 2025, impose aux entités financières européennes des exigences strictes de résilience opérationnelle face aux cyberattaques, dont les ransomwares. La directive NIS2 élargit ces obligations à un spectre plus large d'entités critiques. Pour un technicien SISR, comprendre ces cadres est essentiel pour les entreprises dans les secteurs régulés.</p>
           </div>
         </div>
-        <div class="vtopic-kw">
-          <span class="vkw">Triple Extorsion</span><span class="vkw">RaaS</span><span class="vkw">EDR / NDR</span><span class="vkw">Air-Gap Backup</span><span class="vkw">DORA</span><span class="vkw">NIS2</span><span class="vkw">LockBit</span><span class="vkw">Data Leak</span>
-        </div>
       </div>
-    </div>
+
+    </div><!-- /.veille-topics -->
 
     <!-- TABLEAU DES SOURCES -->
     <div class="glass sources-section rv" style="padding:32px 36px;">
@@ -734,7 +741,7 @@
             <tr>
               <th>Date</th>
               <th>Titre de la source</th>
-              <th>Thème</th>
+              <th>Sujet</th>
               <th>URL / Organisme</th>
               <th>Type</th>
             </tr>
@@ -828,7 +835,7 @@
   </div>
 </section>
 
-<!-- ========== E6 ========== -->
+<!-- ========== E6 & DOCUMENTS OFFICIELS ========== -->
 <section id="e6">
   <div class="wrap">
     <div class="sh rv">
@@ -848,22 +855,12 @@
         <div class="dinfo"><h3>Dossier Technique E6</h3><p>Infrastructure sécurisée & GLPI</p></div>
         <span class="darr">↗</span>
       </a>
-      <a href="https://lmk95-tech.github.io/I2CSUpdate20260412-31-c2utse.pdf" target="_blank" class="glass dcard rv">
-        <div class="dico">🛡️</div>
-        <div class="dinfo"><h3>Certification Cisco — Cybersec</h3><p>Introduction to Cybersecurity · Vérifié</p></div>
-        <span class="darr">↗</span>
-      </a>
-      <a href="https://lmk95-tech.github.io/certif-iot.pdf" target="_blank" class="glass dcard rv">
-        <div class="dico">🌐</div>
-        <div class="dinfo"><h3>Certification Cisco — IoT</h3><p>Introduction to IoT · Vérifié</p></div>
-        <span class="darr">↗</span>
-      </a>
       <a href="https://lmk95-tech.github.io/CV_MASHALA_LENNY.pdf" target="_blank" class="glass dcard rv">
         <div class="dico">👤</div>
         <div class="dinfo"><h3>Curriculum Vitæ</h3><p>CV — Mashala Nkole Lenny</p></div>
         <span class="darr">↗</span>
       </a>
-      <a href="https://lmk95-tech.github.io/attestation_de_presence_en_entreprise_-_e5 (2).pdf" target="_blank" class="glass dcard rv">
+      <a href="https://lmk95-tech.github.io/attestation_de_presence_en_entreprise_-_e5%20(2).pdf" target="_blank" class="glass dcard rv">
         <div class="dico">📄</div>
         <div class="dinfo"><h3>Attestation de Stage</h3><p>Présence en entreprise — E5</p></div>
         <span class="darr">↗</span>
@@ -892,7 +889,7 @@
   <div class="iframe-header">
     <div class="iframe-title" id="iframeTitle"></div>
     <div class="iframe-actions">
-      <a class="iframe-dl" id="iframeDlBtn" href="#" target="_blank">↓ Télécharger PDF</a>
+      <a class="iframe-dl" id="iframeDlBtn" href="#" target="_blank">↓ Version PDF</a>
       <button class="iframe-close" onclick="closeIframe()">✕</button>
     </div>
   </div>
@@ -902,14 +899,19 @@
 </div>
 
 <script>
-  /* ====== IFRAME MISSIONS ====== */
+  /* ====== IFRAME MISSIONS ======
+     - htmlFile : nom sans extension (ex: mission01)
+     - title    : titre affiché dans la barre
+     - pdfFile  : nom du PDF correspondant
+  */
   const BASE = 'https://lmk95-tech.github.io/';
 
-  function openIframe(file, title) {
-    const url = BASE + file + '.pdf';
+  function openIframe(htmlFile, title, pdfFile) {
+    const htmlUrl = BASE + htmlFile + '.html';
+    const pdfUrl  = BASE + (pdfFile || htmlFile + '.pdf');
     document.getElementById('iframeTitle').textContent = title;
-    document.getElementById('iframeEl').src = url;
-    document.getElementById('iframeDlBtn').href = url;
+    document.getElementById('iframeEl').src = htmlUrl;
+    document.getElementById('iframeDlBtn').href = pdfUrl;
     document.getElementById('iframeOverlay').classList.add('open');
     document.body.style.overflow = 'hidden';
   }
@@ -925,7 +927,7 @@
   /* ====== SCROLL REVEAL ====== */
   const rvEls = document.querySelectorAll('.rv');
   const obs = new IntersectionObserver(entries => {
-    entries.forEach((entry, i) => {
+    entries.forEach(entry => {
       if (entry.isIntersecting) {
         setTimeout(() => entry.target.classList.add('vis'), 0);
       }
