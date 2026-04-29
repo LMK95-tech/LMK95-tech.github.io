@@ -1,268 +1,352 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LMK.SISR — Portfolio E5/E6 | Mashala Nkole Lenny</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMK.SISR — Portfolio E5/E6 | Mashala Nkole Lenny</title>
+    
+    <!-- Scripts & Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --v:  #8b5cf6;
-      --vd: #6d28d9;
-      --vl: rgba(139,92,246,.12);
-      --vb: rgba(139,92,246,.25);
-      --dark:  #08080f;
-      --card:  #0f0f1a;
-      --edge:  #1c1c2e;
-      --muted: #6b7280;
-    }
-    html { scroll-behavior: smooth; }
-    body { font-family: 'Outfit', sans-serif; background: #fff; color: #0a0a0f; }
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #f1f1f1; }
-    ::-webkit-scrollbar-thumb { background: var(--v); border-radius: 3px; }
+    <style>
+        :root {
+            --accent: #8b5cf6;
+            --accent-glow: rgba(139, 92, 246, 0.4);
+            --bg-dark: #030308;
+            --card-bg: rgba(15, 15, 30, 0.6);
+            --edge: rgba(255, 255, 255, 0.05);
+        }
 
-    /* ── HEADER ── */
-    header {
-      position: sticky; top: 0; z-index: 200; height: 62px;
-      background: rgba(255,255,255,.96); backdrop-filter: blur(14px);
-      border-bottom: 1px solid #e9e9ed; display: flex; align-items: center; justify-content: space-between; padding: 0 2.5rem;
-    }
-    .logo { font-weight: 900; font-size: 1.2rem; color: #0a0a0f; }
-    .logo span { color: var(--v); }
-    .nav-links { display: flex; align-items: center; gap: .25rem; }
-    .nav-links a { font-size: .84rem; font-weight: 500; color: #374151; padding: .42rem .9rem; border-radius: 7px; text-decoration: none; transition: 0.2s; }
-    .nav-links a:hover { background: #f3f4f6; color: #0a0a0f; }
-    .nav-cta { background: #0a0a0f !important; color: #fff !important; font-weight: 600 !important; margin-left: .4rem; }
+        * { box-sizing: border-box; margin: 0; padding: 0; cursor: default; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg-dark); color: #e2e8f0; scroll-behavior: smooth; overflow-x: hidden; }
+        
+        .glass { background: var(--card-bg); backdrop-filter: blur(12px); border: 1px solid var(--edge); transition: all 0.3s ease; }
+        .glass:hover { border-color: var(--accent); box-shadow: 0 0 30px var(--accent-glow); transform: translateY(-4px); }
 
-    /* ── HERO ── */
-    .hero { max-width: 1080px; margin: 0 auto; padding: 5rem 2rem 4rem; }
-    .hero-name { font-size: clamp(3rem, 7vw, 5.2rem); font-weight: 900; line-height: 1.0; letter-spacing: -.05em; color: #0a0a0f; margin-bottom: 1.1rem; }
-    .hero-name span { color: var(--v); }
-    .hero-bio { font-size: 1rem; color: var(--muted); max-width: 550px; line-height: 1.7; margin-bottom: 2rem; }
-    .badge-row { display: flex; flex-wrap: wrap; gap: .55rem; margin-bottom: 2rem; }
-    .badge { display: inline-flex; align-items: center; gap: .35rem; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 7px; padding: .32rem .78rem; font-size: .8rem; font-weight: 500; }
-    .badge i { color: var(--v); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
 
-    /* ── CERTIFICATIONS ── */
-    .certs-wrap { background: #f9fafb; border-top: 1px solid #e5e7eb; border-bottom: 1px solid #e5e7eb; padding: 2.8rem 2rem; }
-    .certs-inner { max-width: 1080px; margin: 0 auto; }
-    .certs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
-    .cert-card { display: flex; align-items: center; gap: 1rem; background: #fff; border: 1.5px solid #e5e7eb; border-radius: 12px; padding: 1.1rem; transition: 0.2s; text-decoration: none; color: inherit; }
-    .cert-card:hover { border-color: var(--v); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-    .cert-ico { width: 46px; height: 46px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: #fff; }
-    .cert-ico.cisco { background: linear-gradient(135deg,#1ba0d7,#0f5f8a); }
-    .cert-ico.iot { background: linear-gradient(135deg,#00dc82,#008a52); }
+        header { position: sticky; top: 0; z-index: 100; backdrop-filter: blur(15px); border-bottom: 1px solid var(--edge); background: rgba(3, 3, 8, 0.7); }
 
-    /* ── SECTIONS COMMUNES ── */
-    .dark-section { background: var(--dark); padding: 4.5rem 2rem; }
-    .dark-inner { max-width: 1080px; margin: 0 auto; }
-    .dark-title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; color: #fff; letter-spacing: -.03em; margin-bottom: 1rem; }
-    .dark-sub { color: var(--muted); margin-bottom: 2.5rem; font-size: 0.95rem; }
+        .fade-in { animation: fadeIn 1s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* ── BENTO MISSIONS ── */
-    .bento { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
-    .bc { background: var(--card); border: 1px solid var(--edge); border-radius: 16px; padding: 1.5rem; cursor: pointer; transition: 0.3s; position: relative; text-decoration: none; display: block; overflow: hidden; }
-    .bc:hover { border-color: var(--v); transform: translateY(-4px); box-shadow: 0 15px 40px rgba(139,92,246,0.15); }
-    .bc-num { font-weight: 800; font-size: 0.8rem; color: var(--v); margin-bottom: 0.5rem; opacity: 0.8; }
-    .bc-title { font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; line-height: 1.3; }
-    .bc-tag { font-size: 0.65rem; font-weight: 600; color: var(--v); background: var(--vl); padding: 0.2rem 0.6rem; border-radius: 4px; display: inline-block; }
+        .modal-iframe { flex: 1; border: none; width: 100%; border-radius: 0 0 20px 20px; background: #fff; }
+        
+        .nav-link { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #94a3b8; text-decoration: none; transition: 0.2s; }
+        .nav-link:hover { color: var(--accent); }
 
-    /* ── MODALE ── */
-    .modal-wrap { display: none; position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,.85); backdrop-filter: blur(10px); align-items: center; justify-content: center; }
-    .modal-wrap.open { display: flex; }
-    .modal-box { width: 94vw; max-width: 1200px; height: 90vh; background: #0f0f1a; border: 1px solid #2a2a3e; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 40px 100px rgba(0,0,0,0.7); }
-    .modal-bar { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; background: #08080f; border-bottom: 1px solid #1a1a2c; }
-    .modal-ttl { color: #fff; font-weight: 700; font-size: 0.95rem; }
-    .modal-x { background: #1c1c2e; border: none; color: #9ca3af; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-    .modal-x:hover { background: #ef4444; color: #fff; }
-    .modal-iframe { flex: 1; border: none; width: 100%; background: #05111c; }
-
-    @media (max-width: 860px) { .bento { grid-template-columns: 1fr 1fr; } }
-    @media (max-width: 500px) { .bento { grid-template-columns: 1fr; } .nav-links a:not(.nav-cta) { display: none; } }
-  </style>
+        .tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; background: rgba(139, 92, 246, 0.1); color: var(--accent); padding: 2px 8px; border-radius: 4px; }
+    </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">LMK<span>.</span>SISR</div>
-  <nav class="nav-links">
-    <a href="#missions">E5</a>
-    <a href="#projets-e6">E6</a>
-    <a href="#veille">Veille</a>
-    <a href="CV_MASHALA_LENNY.pdf" target="_blank" class="nav-cta"><i class="fa fa-file-pdf mr-2"></i>CV</a>
-  </nav>
+<!-- ════════ HEADER ════════ -->
+<header class="py-4 px-6 md:px-12 flex items-center justify-between">
+    <div class="text-2xl font-black tracking-tighter">LMK<span class="text-purple-500">.</span>SISR</div>
+    <nav class="hidden md:flex gap-10">
+        <a href="#missions" class="nav-link">E5</a>
+        <a href="#e6" class="nav-link">E6</a>
+        <a href="#mco" class="nav-link">MCO</a>
+        <a href="#veille" class="nav-link">Veille</a>
+    </nav>
+    <div class="flex gap-4 items-center">
+        <a href="CV_MASHALA_LENNY.pdf" target="_blank" class="glass px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest no-underline text-white hover:bg-purple-600 transition-colors">
+            <i class="fa fa-file-pdf mr-2"></i>Mon CV
+        </a>
+    </div>
 </header>
 
-<section class="hero">
-  <h1 class="hero-name">MASHALA<br>NKOLE LENNY<span>.</span></h1>
-  <p class="hero-bio">Étudiant en 2ᵉ année de BTS SIO SISR à l'INSTA Paris. Spécialisé en administration systèmes, infrastructures réseaux et cybersécurité.</p>
-  <div class="badge-row">
-    <span class="badge"><i class="fa fa-school"></i> INSTA Paris</span>
-    <span class="badge"><i class="fa fa-graduation-cap"></i> BTS SIO SISR</span>
-    <span class="badge"><i class="fa fa-shield-halved"></i> Cybersécurité</span>
-  </div>
+<!-- ════════ HERO ════════ -->
+<section class="max-w-7xl mx-auto px-6 pt-24 pb-16 flex flex-col items-center text-center fade-in">
+    <div class="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] mb-8">
+        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+        Candidat BTS SIO SISR — Session 2026
+    </div>
+    <h1 class="text-7xl md:text-9xl font-black tracking-tighter mb-8 leading-none">
+        LENNY <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-indigo-500 to-purple-600">MASHALA.</span>
+    </h1>
+    <p class="text-gray-400 max-w-2xl text-lg leading-relaxed mb-12">
+        Administrateur Systèmes et Réseaux à l'INSTA Paris. <br>Expertise en <span class="text-white">Cybersécurité</span>, <span class="text-white">Infrastructures Hybrides</span> et <span class="text-white">Maintien en Condition Opérationnelle</span>.
+    </p>
+    <div class="flex flex-wrap justify-center gap-3">
+        <span class="glass px-5 py-3 rounded-2xl text-xs font-bold"><i class="fa fa-server mr-2 text-purple-500"></i>Debian / Windows Server</span>
+        <span class="glass px-5 py-3 rounded-2xl text-xs font-bold"><i class="fa fa-shield-halved mr-2 text-purple-500"></i>Sécurité pfSense</span>
+        <span class="glass px-5 py-3 rounded-2xl text-xs font-bold"><i class="fa fa-network-wired mr-2 text-purple-500"></i>Switching Cisco</span>
+    </div>
 </section>
 
 <!-- ════════ CERTIFICATIONS ════════ -->
-<div class="certs-wrap">
-  <div class="certs-inner">
-    <h2 style="font-size: .7rem; text-transform: uppercase; letter-spacing: 0.15em; color: #9ca3af; margin-bottom: 1.5rem;">Certifications Cisco Academy</h2>
-    <div class="certs-grid">
-      <a class="cert-card" href="I2CSUpdate20260412-31-c2utse.pdf" target="_blank">
-        <div class="cert-ico cisco"><i class="fa fa-shield-halved"></i></div>
-        <div>
-          <div style="font-weight: 700; font-size: .9rem;">Introduction to Cybersecurity</div>
-          <div style="font-size: .75rem; color: #6b7280;">Vérifié · Avril 2025</div>
+<section class="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-6">
+    <a href="I2CSUpdate20260412-31-c2utse.pdf" target="_blank" class="glass p-8 rounded-3xl flex items-center gap-8 no-underline text-white">
+        <div class="w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center text-2xl shadow-2xl">
+            <i class="fa fa-user-shield"></i>
         </div>
-      </a>
-      <a class="cert-card" href="certif-iot.pdf" target="_blank">
-        <div class="cert-ico iot"><i class="fa fa-microchip"></i></div>
         <div>
-          <div style="font-weight: 700; font-size: .9rem;">Introduction to IoT</div>
-          <div style="font-size: .75rem; color: #6b7280;">Vérifié · Juin 2025</div>
+            <h3 class="font-bold text-lg">Cybersecurity Introduction</h3>
+            <p class="text-xs text-gray-500 uppercase tracking-widest mt-1">Cisco Academy · Avril 2025</p>
         </div>
-      </a>
+    </a>
+    <a href="certif-iot.pdf" target="_blank" class="glass p-8 rounded-3xl flex items-center gap-8 no-underline text-white">
+        <div class="w-14 h-14 bg-emerald-600 rounded-2xl flex items-center justify-center text-2xl shadow-2xl">
+            <i class="fa fa-microchip"></i>
+        </div>
+        <div>
+            <h3 class="font-bold text-lg">Introduction to IoT</h3>
+            <p class="text-xs text-gray-500 uppercase tracking-widest mt-1">Cisco Academy · Juin 2025</p>
+        </div>
+    </a>
+</section>
+
+<!-- ════════ SECTION MCO ════════ -->
+<section id="mco" class="max-w-7xl mx-auto px-6 py-20">
+    <div class="mb-12">
+        <h2 class="text-4xl font-black tracking-tight mb-2">MCO & Exploitation</h2>
+        <p class="text-gray-500 text-sm">Garantir la disponibilité, la performance et l'intégrité du Système d'Information.</p>
     </div>
-  </div>
-</div>
+    <div class="grid md:grid-cols-3 gap-6">
+        <div class="glass p-10 rounded-[2.5rem]">
+            <div class="w-12 h-12 bg-purple-500/10 rounded-full flex items-center justify-center mb-6">
+                <i class="fa fa-chart-line text-purple-500"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-4">Supervision active</h3>
+            <p class="text-sm text-gray-400 leading-relaxed">Monitoring 24/7 via <strong>Zabbix</strong> et protocoles <strong>SNMP</strong> pour détecter les pannes matérielles, la charge CPU et la saturation réseau.</p>
+        </div>
+        <div class="glass p-10 rounded-[2.5rem]">
+            <div class="w-12 h-12 bg-blue-500/10 rounded-full flex items-center justify-center mb-6">
+                <i class="fa fa-life-ring text-blue-500"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-4">Support & ITSM</h3>
+            <p class="text-sm text-gray-400 leading-relaxed">Maîtrise du cycle de vie des incidents avec <strong>GLPI 10</strong>. Respect des SLA, documentation technique et inventaire automatisé du parc.</p>
+        </div>
+        <div class="glass p-10 rounded-[2.5rem]">
+            <div class="w-12 h-12 bg-orange-500/10 rounded-full flex items-center justify-center mb-6">
+                <i class="fa fa-database text-orange-500"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-4">Maintien Système</h3>
+            <p class="text-sm text-gray-400 leading-relaxed">Administration Windows Server avec <strong>FSRM</strong>, gestion des quotas de stockage et politiques de sauvegarde contre les menaces.</p>
+        </div>
+    </div>
+</section>
 
 <!-- ════════ MISSIONS E5 ════════ -->
-<section class="dark-section" id="missions">
-  <div class="dark-inner">
-    <h2 class="dark-title">Dossier Technique E5</h2>
-    <p class="dark-sub">Retrouvez l'ensemble des missions réalisées durant mon parcours SISR.</p>
-    <div class="bento">
-      <div class="bc" onclick="openModal('m1')">
-        <div class="bc-num">01</div>
-        <div class="bc-title">DHCP & Routage RIPv2</div>
-        <span class="bc-tag">Cisco IOS</span>
-      </div>
-      <div class="bc" onclick="openModal('m2')">
-        <div class="bc-num">02</div>
-        <div class="bc-title">Segmentation VLAN</div>
-        <span class="bc-tag">Switching</span>
-      </div>
-      <div class="bc" onclick="openModal('m3')">
-        <div class="bc-num">03</div>
-        <div class="bc-title">Active Directory & GPO</div>
-        <span class="bc-tag">Windows Server</span>
-      </div>
-      <div class="bc" onclick="openModal('m4')">
-        <div class="bc-num">04</div>
-        <div class="bc-title">NAT/PAT sur pfSense</div>
-        <span class="bc-tag">Firewalling</span>
-      </div>
-      <div class="bc" onclick="openModal('m5')">
-        <div class="bc-num">05</div>
-        <div class="bc-title">HSRP & Redondance</div>
-        <span class="bc-tag">Disponibilité</span>
-      </div>
-      <div class="bc" onclick="openModal('m6')">
-        <div class="bc-num">06</div>
-        <div class="bc-title">NTFS, ABE & FSRM</div>
-        <span class="bc-tag">Serveur de fichiers</span>
-      </div>
-      <div class="bc" onclick="openModal('m7')">
-        <div class="bc-num">07</div>
-        <div class="bc-title">GLPI 10 Helpdesk</div>
-        <span class="bc-tag">ITSM / LAMP</span>
-      </div>
-      <div class="bc" onclick="openModal('m8')">
-        <div class="bc-num">08</div>
-        <div class="bc-title">Supervision Zabbix 7</div>
-        <span class="bc-tag">MCO / SNMP</span>
-      </div>
+<section id="missions" class="max-w-7xl mx-auto px-6 py-12">
+    <h2 class="text-4xl font-black tracking-tight mb-12">Dossier Technique E5</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Missions Loop -->
+        <div class="glass p-8 rounded-3xl cursor-pointer group" onclick="openModal('m1')">
+            <div class="flex justify-between items-start mb-6">
+                <span class="text-purple-500 font-black text-xl">01</span>
+                <i class="fa fa-ethernet text-gray-700 group-hover:text-purple-500 transition-colors"></i>
+            </div>
+            <h4 class="font-bold text-lg mb-2">DHCP & Routage</h4>
+            <span class="tag">Cisco IOS</span>
+        </div>
+        <div class="glass p-8 rounded-3xl cursor-pointer group" onclick="openModal('m2')">
+            <div class="flex justify-between items-start mb-6">
+                <span class="text-purple-500 font-black text-xl">02</span>
+                <i class="fa fa-layer-group text-gray-700 group-hover:text-purple-500 transition-colors"></i>
+            </div>
+            <h4 class="font-bold text-lg mb-2">Segmentation VLAN</h4>
+            <span class="tag">Switching</span>
+        </div>
+        <div class="glass p-8 rounded-3xl cursor-pointer group" onclick="openModal('m3')">
+            <div class="flex justify-between items-start mb-6">
+                <span class="text-purple-500 font-black text-xl">03</span>
+                <i class="fa fa-users-gear text-gray-700 group-hover:text-purple-500 transition-colors"></i>
+            </div>
+            <h4 class="font-bold text-lg mb-2">Active Directory</h4>
+            <span class="tag">Windows Server</span>
+        </div>
+        <div class="glass p-8 rounded-3xl cursor-pointer group" onclick="openModal('m4')">
+            <div class="flex justify-between items-start mb-6">
+                <span class="text-purple-500 font-black text-xl">04</span>
+                <i class="fa fa-fire-flame-curved text-gray-700 group-hover:text-purple-500 transition-colors"></i>
+            </div>
+            <h4 class="font-bold text-lg mb-2">NAT/PAT pfSense</h4>
+            <span class="tag">Firewalling</span>
+        </div>
+        <div class="glass p-8 rounded-3xl cursor-pointer group" onclick="openModal('m5')">
+            <div class="flex justify-between items-start mb-6">
+                <span class="text-purple-500 font-black text-xl">05</span>
+                <i class="fa fa-rotate text-gray-700 group-hover:text-purple-500 transition-colors"></i>
+            </div>
+            <h4 class="font-bold text-lg mb-2">HSRP & LACP</h4>
+            <span class="tag">Haute Dispo.</span>
+        </div>
+        <div class="glass p-8 rounded-3xl cursor-pointer group" onclick="openModal('m6')">
+            <div class="flex justify-between items-start mb-6">
+                <span class="text-purple-500 font-black text-xl">06</span>
+                <i class="fa fa-folder-tree text-gray-700 group-hover:text-purple-500 transition-colors"></i>
+            </div>
+            <h4 class="font-bold text-lg mb-2">NTFS & FSRM</h4>
+            <span class="tag">Fichier</span>
+        </div>
+        <div class="glass p-8 rounded-3xl cursor-pointer group" onclick="openModal('m7')">
+            <div class="flex justify-between items-start mb-6">
+                <span class="text-purple-500 font-black text-xl">07</span>
+                <i class="fa fa-ticket text-gray-700 group-hover:text-purple-500 transition-colors"></i>
+            </div>
+            <h4 class="font-bold text-lg mb-2">GLPI 10 Helpdesk</h4>
+            <span class="tag">ITSM / LAMP</span>
+        </div>
+        <div class="glass p-8 rounded-3xl cursor-pointer group" onclick="openModal('m8')">
+            <div class="flex justify-between items-start mb-6">
+                <span class="text-purple-500 font-black text-xl">08</span>
+                <i class="fa fa-satellite-dish text-gray-700 group-hover:text-purple-500 transition-colors"></i>
+            </div>
+            <h4 class="font-bold text-lg mb-2">Supervision Zabbix</h4>
+            <span class="tag">Supervision</span>
+        </div>
     </div>
-  </div>
 </section>
 
 <!-- ════════ PROJETS E6 ════════ -->
-<section class="dark-section" id="projets-e6" style="padding-top:0">
-  <div class="dark-inner">
-    <h2 class="dark-title">Dossiers E6</h2>
-    <div class="grid md:grid-cols-2 gap-4">
-      <a href="e6-fiche.pdf" target="_blank" class="bc">
-        <i class="fa fa-file-invoice text-purple-500 mb-2"></i>
-        <div class="bc-title">Fiche de situation E6</div>
-        <div style="font-size: 0.75rem; color: #6b7280;">Présentation officielle SISR</div>
-      </a>
-      <a href="e6-situation2.pdf" target="_blank" class="bc">
-        <i class="fa fa-shield-halved text-purple-500 mb-2"></i>
-        <div class="bc-title">Dossier Technique E6</div>
-        <div style="font-size: 0.75rem; color: #6b7280;">Infrastructure sécurisée & GLPI</div>
-      </a>
+<section id="e6" class="max-w-7xl mx-auto px-6 py-20 border-t border-white/5">
+    <h2 class="text-4xl font-black tracking-tight mb-12 text-right">Parcours E6</h2>
+    <div class="grid md:grid-cols-2 gap-8">
+        <a href="e6-fiche.pdf" target="_blank" class="glass p-10 rounded-[3rem] flex flex-col justify-between no-underline text-white hover:border-purple-500/50 bg-gradient-to-br from-purple-500/5 to-transparent">
+            <div>
+                <div class="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center mb-6 text-purple-500"><i class="fa fa-file-invoice"></i></div>
+                <h3 class="text-2xl font-bold mb-4">Fiche de Réalisation Officielle</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">Synthèse de mon parcours professionnel et validation des compétences acquises en milieu professionnel.</p>
+            </div>
+            <div class="mt-10 flex items-center gap-3 text-xs font-black uppercase tracking-widest text-purple-400">Ouvrir le document <i class="fa fa-arrow-right"></i></div>
+        </a>
+        <a href="e6-situation2.pdf" target="_blank" class="glass p-10 rounded-[3rem] flex flex-col justify-between no-underline text-white hover:border-indigo-500/50 bg-gradient-to-br from-indigo-500/5 to-transparent">
+            <div>
+                <div class="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center mb-6 text-indigo-400"><i class="fa fa-diagram-project"></i></div>
+                <h3 class="text-2xl font-bold mb-4">Situation Pro n°2 : Ticketing</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">Mise en œuvre d'une infrastructure sécurisée incluant pfSense, Debian 12 et GLPI avec authentification MFA.</p>
+            </div>
+            <div class="mt-10 flex items-center gap-3 text-xs font-black uppercase tracking-widest text-indigo-400">Consulter l'architecture <i class="fa fa-arrow-right"></i></div>
+        </a>
     </div>
-  </div>
 </section>
 
-<!-- ════════ VEILLE ════════ -->
-<section class="dark-section" id="veille" style="background: #0c0c16">
-  <div class="dark-inner text-center">
-    <h2 class="dark-title">Veille Technologique</h2>
-    <p style="color: #9ca3af; margin-bottom: 2rem;">Suivi des tendances : Intelligence Artificielle, Cloud & Ransomwares.</p>
-    <a href="veille.pdf" target="_blank" class="inline-flex items-center gap-3 bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-10 rounded-2xl transition no-underline">
-      <i class="fa fa-book-open"></i> Consulter mon Dossier de Veille
-    </a>
-  </div>
+<!-- ════════ VEILLE TECHNOLOGIQUE ════════ -->
+<section id="veille" class="max-w-7xl mx-auto px-6 py-24 bg-gradient-to-b from-transparent to-purple-900/10 rounded-[4rem]">
+    <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
+        <div>
+            <h2 class="text-5xl font-black tracking-tighter mb-4">Veille Technologique</h2>
+            <p class="text-gray-400 max-w-xl text-sm italic">Analyse des tendances critiques de la cybersécurité et de l'IT en 2026.</p>
+        </div>
+        <a href="veille.pdf" target="_blank" class="glass px-8 py-4 rounded-2xl text-xs font-black uppercase tracking-widest no-underline text-white hover:bg-white/5 transition-all">
+            Dossier Complet (PDF) <i class="fa fa-file-export ml-2"></i>
+        </a>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-8 mb-16">
+        <!-- IA -->
+        <div class="glass p-10 rounded-[3rem] relative overflow-hidden group">
+            <div class="absolute -right-6 -top-6 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl group-hover:bg-purple-500/30 transition-all"></div>
+            <i class="fa fa-brain text-4xl text-purple-500 mb-8"></i>
+            <h3 class="text-2xl font-black mb-4">IA & Cyber-Défense</h3>
+            <p class="text-gray-400 text-sm leading-relaxed mb-6">Utilisation des modèles <strong>LLM</strong> pour le phishing automatisé et du <strong>UEBA</strong> pour l'analyse comportementale défensive.</p>
+            <div class="flex gap-2 flex-wrap">
+                <span class="tag">SOAR</span><span class="tag">WormGPT</span><span class="tag">Detection</span>
+            </div>
+        </div>
+
+        <!-- Cloud -->
+        <div class="glass p-10 rounded-[3rem] relative overflow-hidden group">
+            <div class="absolute -right-6 -top-6 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/30 transition-all"></div>
+            <i class="fa fa-cloud-shield text-4xl text-blue-500 mb-8"></i>
+            <h3 class="text-2xl font-black mb-4">Cloud & Zero Trust</h3>
+            <p class="text-gray-400 text-sm leading-relaxed mb-6">Sécurisation des infrastructures mixtes via le modèle <strong>Zero Trust</strong> et l'authentification <strong>MFA</strong> systématique.</p>
+            <div class="flex gap-2 flex-wrap">
+                <span class="tag">CSPM</span><span class="tag">IAM</span><span class="tag">Hybrid</span>
+            </div>
+        </div>
+
+        <!-- Ransomware -->
+        <div class="glass p-10 rounded-[3rem] relative overflow-hidden group">
+            <div class="absolute -right-6 -top-6 w-32 h-32 bg-red-500/10 rounded-full blur-3xl group-hover:bg-red-500/30 transition-all"></div>
+            <i class="fa fa-virus-slash text-4xl text-red-500 mb-8"></i>
+            <h3 class="text-2xl font-black mb-4">Ransomwares</h3>
+            <p class="text-gray-400 text-sm leading-relaxed mb-6">Évolution vers la <strong>Triple Extorsion</strong> : Chiffrement, Vol de données et chantage aux clients finaux.</p>
+            <div class="flex gap-2 flex-wrap">
+                <span class="tag">RaaS</span><span class="tag">Air Gap</span><span class="tag">Resilience</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Glossaire & Sources -->
+    <div class="grid md:grid-cols-2 gap-10">
+        <div class="glass p-8 rounded-3xl bg-white/5">
+            <h4 class="text-xs font-black uppercase tracking-[0.2em] mb-6 text-purple-400">Glossaire Technique</h4>
+            <div class="space-y-4">
+                <div class="flex justify-between border-b border-white/5 pb-2"><span class="font-bold text-sm">UEBA</span><span class="text-[10px] text-gray-500 italic">User Behavior Analytics</span></div>
+                <div class="flex justify-between border-b border-white/5 pb-2"><span class="font-bold text-sm">Zero Trust</span><span class="text-[10px] text-gray-500 italic">Ne jamais faire confiance, toujours vérifier</span></div>
+                <div class="flex justify-between border-b border-white/5 pb-2"><span class="font-bold text-sm">MFA</span><span class="text-[10px] text-gray-500 italic">Multi-Factor Authentication</span></div>
+            </div>
+        </div>
+        <div class="glass p-8 rounded-3xl bg-white/5">
+            <h4 class="text-xs font-black uppercase tracking-[0.2em] mb-6 text-indigo-400">Sources de Veille</h4>
+            <ul class="text-[11px] text-gray-500 space-y-3 list-none">
+                <li><i class="fa fa-rss mr-2 text-purple-500"></i> ANSSI — Alertes et bulletins officiels</li>
+                <li><i class="fa fa-rss mr-2 text-purple-500"></i> CERT-FR — Rapports d'incidents critiques</li>
+                <li><i class="fa fa-rss mr-2 text-purple-500"></i> Microsoft Security — Tendances Cyber 2026</li>
+            </ul>
+        </div>
+    </div>
 </section>
 
-<footer style="background:#08080f; padding: 4rem 2rem; text-align:center; color:#4b5563; font-size:0.85rem; border-top:1px solid #1c1c2e;">
-  <div class="mb-4">Mashala Nkole Lenny · BTS SIO SISR · 2026</div>
-  <div class="flex justify-center gap-6">
-    <a href="attestation_de_presence_en_entreprise_-_e5 (2).pdf" target="_blank" style="color:var(--v); text-decoration:none;">Attestations de Stage</a>
-    <a href="CV_MASHALA_LENNY.pdf" target="_blank" style="color:var(--v); text-decoration:none;">Mon CV</a>
-  </div>
+<!-- ════════ FOOTER ════════ -->
+<footer class="py-24 px-6 text-center border-t border-white/5">
+    <div class="text-3xl font-black mb-6">LMK<span class="text-purple-500">.</span>SISR</div>
+    <p class="text-gray-600 text-xs mb-10 uppercase tracking-[0.4em]">Mashala Nkole Lenny — Portfolio BTS SIO — 2026</p>
+    <div class="flex flex-wrap justify-center gap-10 items-center">
+        <a href="attestation_de_presence_en_entreprise_-_e5 (2).pdf" target="_blank" class="text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-white no-underline transition-colors">Attestations de stage</a>
+        <div class="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
+        <a href="https://github.com/LMK95-tech" target="_blank" class="text-2xl text-gray-700 hover:text-white transition-all"><i class="fa-brands fa-github"></i></a>
+    </div>
 </footer>
 
-<!-- MODALES (Générées pour les 8 missions) -->
-<div class="modal-wrap" id="modal-m1"><div class="modal-box"><div class="modal-bar"><div class="modal-ttl">M1 — DHCP & Routage</div><button class="modal-x" onclick="closeModal('m1')">×</button></div><iframe class="modal-iframe" id="if-m1"></iframe></div></div>
-<div class="modal-wrap" id="modal-m2"><div class="modal-box"><div class="modal-bar"><div class="modal-ttl">M2 — Segmentation VLAN</div><button class="modal-x" onclick="closeModal('m2')">×</button></div><iframe class="modal-iframe" id="if-m2"></iframe></div></div>
-<div class="modal-wrap" id="modal-m3"><div class="modal-box"><div class="modal-bar"><div class="modal-ttl">M3 — Active Directory & GPO</div><button class="modal-x" onclick="closeModal('m3')">×</button></div><iframe class="modal-iframe" id="if-m3"></iframe></div></div>
-<div class="modal-wrap" id="modal-m4"><div class="modal-box"><div class="modal-bar"><div class="modal-ttl">M4 — NAT/PAT pfSense</div><button class="modal-x" onclick="closeModal('m4')">×</button></div><iframe class="modal-iframe" id="if-m4"></iframe></div></div>
-<div class="modal-wrap" id="modal-m5"><div class="modal-box"><div class="modal-bar"><div class="modal-ttl">M5 — HSRP & Redondance</div><button class="modal-x" onclick="closeModal('m5')">×</button></div><iframe class="modal-iframe" id="if-m5"></iframe></div></div>
-<div class="modal-wrap" id="modal-m6"><div class="modal-box"><div class="modal-bar"><div class="modal-ttl">M6 — NTFS & FSRM</div><button class="modal-x" onclick="closeModal('m6')">×</button></div><iframe class="modal-iframe" id="if-m6"></iframe></div></div>
-<div class="modal-wrap" id="modal-m7"><div class="modal-box"><div class="modal-bar"><div class="modal-ttl">M7 — GLPI 10 Helpdesk</div><button class="modal-x" onclick="closeModal('m7')">×</button></div><iframe class="modal-iframe" id="if-m7"></iframe></div></div>
-<div class="modal-wrap" id="modal-m8"><div class="modal-box"><div class="modal-bar"><div class="modal-ttl">M8 — Supervision Zabbix 7</div><button class="modal-x" onclick="closeModal('m8')">×</button></div><iframe class="modal-iframe" id="if-m8"></iframe></div></div>
+<!-- ════════ MODALES ════════ -->
+<div id="modal-container" class="hidden fixed inset-0 z-[200] bg-black/95 backdrop-filter blur-xl flex items-center justify-center p-4">
+    <div class="w-full max-w-7xl h-[90vh] glass rounded-[2.5rem] flex flex-col overflow-hidden">
+        <div class="p-6 bg-black/50 flex justify-between items-center border-b border-white/10">
+            <div id="modal-title" class="text-sm font-black uppercase tracking-widest text-purple-400">Mission Detail</div>
+            <button onclick="closeModal()" class="w-10 h-10 rounded-xl bg-white/5 hover:bg-red-500 flex items-center justify-center transition-all text-white">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+        <iframe id="modal-iframe" class="modal-iframe" src=""></iframe>
+    </div>
+</div>
 
 <script>
-  const SRCS = {
-    m1: 'mission01.html',
-    m2: 'mission02.html',
-    m3: 'mission03_ad_gpo.html',
-    m4: 'mission04_nat_pfsense.html',
-    m5: 'mission05_hsrp_lacp.html',
-    m6: 'mission06_ntfs_fsrm.html',
-    m7: 'mission07_glpi.html',
-    m8: 'mission08_zabbix.html'
-  };
+    const SRCS = {
+        m1: 'mission01.html', m2: 'mission02.html', m3: 'mission03_ad_gpo.html',
+        m4: 'mission04_nat_pfsense.html', m5: 'mission05_hsrp_lacp.html',
+        m6: 'mission06_ntfs_fsrm.html', m7: 'mission07_glpi.html', m8: 'mission08_zabbix.html'
+    };
 
-  function openModal(id) {
-    const wrap = document.getElementById('modal-' + id);
-    const iframe = document.getElementById('if-' + id);
-    if (!iframe.src || iframe.src.endsWith('index.html')) {
-      iframe.src = SRCS[id];
+    const TITLES = {
+        m1: 'M01 — DHCP & Routage RIPv2', m2: 'M02 — Segmentation VLAN',
+        m3: 'M03 — Active Directory & GPO', m4: 'M04 — Sécurité pfSense',
+        m5: 'M05 — Redondance HSRP / LACP', m6: 'M06 — NTFS & FSRM',
+        m7: 'M07 — GLPI 10 Helpdesk', m8: 'M08 — Supervision Zabbix 7'
+    };
+
+    function openModal(id) {
+        document.getElementById('modal-container').classList.remove('hidden');
+        document.getElementById('modal-iframe').src = SRCS[id];
+        document.getElementById('modal-title').innerText = TITLES[id];
+        document.body.style.overflow = 'hidden';
     }
-    wrap.classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
 
-  function closeModal(id) {
-    document.getElementById('modal-' + id).classList.remove('open');
-    document.body.style.overflow = '';
-  }
+    function closeModal() {
+        document.getElementById('modal-container').classList.add('hidden');
+        document.getElementById('modal-iframe').src = '';
+        document.body.style.overflow = 'auto';
+    }
 
-  window.onclick = function(e) { 
-    if(e.target.classList.contains('modal-wrap')) {
-      closeModal(e.target.id.replace('modal-', ''));
-    } 
-  }
+    window.onclick = function(e) { if(e.target.id === 'modal-container') closeModal(); }
 </script>
 
 </body>
