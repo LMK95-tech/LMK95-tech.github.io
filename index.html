@@ -474,7 +474,7 @@
         <div class="mtechs"><span class="tt">Cisco IOS</span><span class="tt">RIPv2</span><span class="tt">DHCP</span></div>
         <div class="mcard-btns">
           <div class="mbtn-view">▶ Visualiser</div>
-          <a class="mbtn-dl" href="https://lmk95-tech.github.io/mission01.pdf" target="_blank" onclick="event.stopPropagation()">↓ PDF</a>
+          <a class="mbtn-dl" href="#" onclick="tryPdf(event,'https://lmk95-tech.github.io/mission01.pdf','https://lmk95-tech.github.io/mission01.html')">↓ PDF</a>
         </div>
       </div>
 
@@ -486,7 +486,7 @@
         <div class="mtechs"><span class="tt">VLAN</span><span class="tt">802.1Q</span><span class="tt">Switching</span></div>
         <div class="mcard-btns">
           <div class="mbtn-view">▶ Visualiser</div>
-          <a class="mbtn-dl" href="https://lmk95-tech.github.io/mission02.pdf" target="_blank" onclick="event.stopPropagation()">↓ PDF</a>
+          <a class="mbtn-dl" href="#" onclick="tryPdf(event,'https://lmk95-tech.github.io/mission02.pdf','https://lmk95-tech.github.io/mission02.html')">↓ PDF</a>
         </div>
       </div>
 
@@ -498,7 +498,7 @@
         <div class="mtechs"><span class="tt">AD DS</span><span class="tt">GPO</span><span class="tt">DNS</span></div>
         <div class="mcard-btns">
           <div class="mbtn-view">▶ Visualiser</div>
-          <a class="mbtn-dl" href="https://lmk95-tech.github.io/mission03_ad_gpo.pdf" target="_blank" onclick="event.stopPropagation()">↓ PDF</a>
+          <a class="mbtn-dl" href="#" onclick="tryPdf(event,'https://lmk95-tech.github.io/mission03_ad_gpo.pdf','https://lmk95-tech.github.io/mission03_ad_gpo.html')">↓ PDF</a>
         </div>
       </div>
 
@@ -510,7 +510,7 @@
         <div class="mtechs"><span class="tt">pfSense</span><span class="tt">NAT/PAT</span><span class="tt">Firewall</span></div>
         <div class="mcard-btns">
           <div class="mbtn-view">▶ Visualiser</div>
-          <a class="mbtn-dl" href="https://lmk95-tech.github.io/mission04_nat_pfsense.pdf" target="_blank" onclick="event.stopPropagation()">↓ PDF</a>
+          <a class="mbtn-dl" href="#" onclick="tryPdf(event,'https://lmk95-tech.github.io/mission04_nat_pfsense.pdf','https://lmk95-tech.github.io/mission04_nat_pfsense.html')">↓ PDF</a>
         </div>
       </div>
 
@@ -522,7 +522,7 @@
         <div class="mtechs"><span class="tt">HSRP</span><span class="tt">LACP</span><span class="tt">Haute dispo</span></div>
         <div class="mcard-btns">
           <div class="mbtn-view">▶ Visualiser</div>
-          <a class="mbtn-dl" href="https://lmk95-tech.github.io/mission05_hsrp_lacp.pdf" target="_blank" onclick="event.stopPropagation()">↓ PDF</a>
+          <a class="mbtn-dl" href="#" onclick="tryPdf(event,'https://lmk95-tech.github.io/mission05_hsrp_lacp.pdf','https://lmk95-tech.github.io/mission05_hsrp_lacp.html')">↓ PDF</a>
         </div>
       </div>
 
@@ -534,7 +534,7 @@
         <div class="mtechs"><span class="tt">NTFS</span><span class="tt">FSRM</span><span class="tt">ABE</span></div>
         <div class="mcard-btns">
           <div class="mbtn-view">▶ Visualiser</div>
-          <a class="mbtn-dl" href="https://lmk95-tech.github.io/mission06_ntfs_fsrm.pdf" target="_blank" onclick="event.stopPropagation()">↓ PDF</a>
+          <a class="mbtn-dl" href="#" onclick="tryPdf(event,'https://lmk95-tech.github.io/mission06_ntfs_fsrm.pdf','https://lmk95-tech.github.io/mission06_ntfs_fsrm.html')">↓ PDF</a>
         </div>
       </div>
 
@@ -546,7 +546,7 @@
         <div class="mtechs"><span class="tt">GLPI 10</span><span class="tt">ITSM</span><span class="tt">LAMP</span></div>
         <div class="mcard-btns">
           <div class="mbtn-view">▶ Visualiser</div>
-          <a class="mbtn-dl" href="https://lmk95-tech.github.io/mission07_glpi.pdf" target="_blank" onclick="event.stopPropagation()">↓ PDF</a>
+          <a class="mbtn-dl" href="#" onclick="tryPdf(event,'https://lmk95-tech.github.io/mission07_glpi.pdf','https://lmk95-tech.github.io/mission07_glpi.html')">↓ PDF</a>
         </div>
       </div>
 
@@ -558,7 +558,7 @@
         <div class="mtechs"><span class="tt">Zabbix 7</span><span class="tt">SNMP</span><span class="tt">MCO</span></div>
         <div class="mcard-btns">
           <div class="mbtn-view">▶ Visualiser</div>
-          <a class="mbtn-dl" href="https://lmk95-tech.github.io/mission08_zabbix.pdf" target="_blank" onclick="event.stopPropagation()">↓ PDF</a>
+          <a class="mbtn-dl" href="#" onclick="tryPdf(event,'https://lmk95-tech.github.io/mission08_zabbix.pdf','https://lmk95-tech.github.io/mission08_zabbix.html')">↓ PDF</a>
         </div>
       </div>
 
@@ -902,18 +902,55 @@
   /* ====== IFRAME MISSIONS ======
      - htmlFile : nom sans extension (ex: mission01)
      - title    : titre affiché dans la barre
-     - pdfFile  : nom du PDF correspondant
+     - pdfFile  : nom du fichier PDF (optionnel, sinon = htmlFile + .pdf)
   */
   const BASE = 'https://lmk95-tech.github.io/';
 
-  function openIframe(htmlFile, title, pdfFile) {
+  /* Vérifie si un fichier existe sur GitHub Pages via HEAD request.
+     Retourne true si HTTP 200, false sinon (404, etc.) */
+  async function fileExists(url) {
+    try {
+      const res = await fetch(url, { method: 'HEAD' });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  }
+
+  /* Ouvre l'iframe avec le .html et règle le bouton PDF.
+     Si le PDF n'existe pas sur GitHub Pages → le bouton ouvre le .html dans un onglet. */
+  async function openIframe(htmlFile, title, pdfFile) {
     const htmlUrl = BASE + htmlFile + '.html';
     const pdfUrl  = BASE + (pdfFile || htmlFile + '.pdf');
+
     document.getElementById('iframeTitle').textContent = title;
     document.getElementById('iframeEl').src = htmlUrl;
-    document.getElementById('iframeDlBtn').href = pdfUrl;
     document.getElementById('iframeOverlay').classList.add('open');
     document.body.style.overflow = 'hidden';
+
+    const dlBtn = document.getElementById('iframeDlBtn');
+
+    /* Vérification asynchrone : PDF dispo ? */
+    const pdfOk = await fileExists(pdfUrl);
+    if (pdfOk) {
+      dlBtn.href = pdfUrl;
+      dlBtn.textContent = '↓ Version PDF';
+      dlBtn.title = '';
+    } else {
+      /* Fallback : lien vers le HTML dans un nouvel onglet */
+      dlBtn.href = htmlUrl;
+      dlBtn.textContent = '↗ Ouvrir en plein écran';
+      dlBtn.title = 'PDF non disponible — ouverture de la version HTML';
+    }
+  }
+
+  /* Même logique pour les boutons "↓ PDF" individuels sous chaque carte :
+     Au clic, on vérifie si le PDF existe ; sinon on redirige vers le HTML. */
+  async function tryPdf(event, pdfUrl, htmlUrl) {
+    event.preventDefault();
+    event.stopPropagation();
+    const ok = await fileExists(pdfUrl);
+    window.open(ok ? pdfUrl : htmlUrl, '_blank');
   }
 
   function closeIframe() {
