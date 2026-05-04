@@ -170,14 +170,13 @@
     .certif-card h3 { font-size:.93rem;font-weight:700;margin-bottom:5px; }
     .certif-meta { font-family:var(--font-m);font-size:.68rem;color:var(--accent);margin-bottom:6px; }
     .certif-desc { font-size:.78rem;color:var(--text-dim);line-height:1.5; }
-    /* Certification "en préparation" */
     .certif-card.pending { opacity:.72;border-style:dashed; }
     .certif-card.pending .certif-ico { background:rgba(123,94,167,.1);border-color:rgba(123,94,167,.25); }
     .certif-card.pending .certif-meta { color:#b09fd4; }
     .pending-badge { display:inline-block;margin-top:8px;padding:3px 9px;border-radius:5px;font-family:var(--font-m);font-size:.6rem;background:rgba(123,94,167,.12);border:1px solid rgba(123,94,167,.3);color:#b09fd4; }
 
     /* ==============================
-       MISSIONS E5 (iframe plein écran)
+       MISSIONS E5
     ============================== */
     .missions-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:16px; }
     .mcard {
@@ -256,21 +255,55 @@
     .mco-list li::before { content:'›';color:var(--accent);font-size:.95rem; }
 
     /* ==============================
-       VEILLE
+       VEILLE TECHNOLOGIQUE — NOUVEAU DESIGN NIVEAU EXCELLENT
     ============================== */
     #veille { background:rgba(123,94,167,.015); }
 
-    .veille-intro { margin-bottom:48px; }
+    /* --- Intro & méthode --- */
+    .veille-intro { margin-bottom:40px; }
     .veille-intro-box { padding:36px 40px;margin-bottom:0; }
-    .veille-intro-box h3 { font-size:1.15rem;font-weight:700;color:var(--accent);margin-bottom:14px; }
-    .veille-intro-box p { font-size:.88rem;color:var(--text-dim);line-height:1.75;margin-bottom:12px; }
+    .veille-intro-box h3 { font-size:1.15rem;font-weight:700;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:10px; }
+    .veille-intro-box p { font-size:.88rem;color:var(--text-dim);line-height:1.78;margin-bottom:10px; }
     .veille-themes { display:flex;gap:10px;margin-top:16px;flex-wrap:wrap; }
     .vtheme { padding:5px 14px;border-radius:100px;font-family:var(--font-m);font-size:.68rem; }
     .vt1 { background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.3);color:var(--accent); }
     .vt2 { background:rgba(123,94,167,.1);border:1px solid rgba(123,94,167,.3);color:#b09fd4; }
     .vt3 { background:rgba(255,107,53,.08);border:1px solid rgba(255,107,53,.3);color:#ff9a6b; }
 
-    .veille-topics { display:grid;grid-template-columns:1fr;gap:24px;margin-bottom:48px; }
+    /* --- Étapes méthodo --- */
+    .methodo-steps { display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:28px; }
+    .methodo-step {
+      padding:16px 14px;
+      background:rgba(0,212,255,.03);
+      border:1px solid rgba(0,212,255,.1);
+      border-radius:10px;
+      text-align:center;
+      position:relative;
+    }
+    .methodo-step::after {
+      content:'→';
+      position:absolute;right:-14px;top:50%;transform:translateY(-50%);
+      color:rgba(0,212,255,.3);font-size:.9rem;
+    }
+    .methodo-step:last-child::after { display:none; }
+    .step-num { font-family:var(--font-m);font-size:.6rem;color:var(--accent);letter-spacing:.12em;margin-bottom:8px;display:block; }
+    .step-label { font-size:.76rem;font-weight:700;color:var(--text);margin-bottom:5px; }
+    .step-tool { font-family:var(--font-m);font-size:.6rem;color:var(--text-dim); }
+
+    /* --- Journal de veille badge --- */
+    .journal-badge {
+      display:inline-flex;align-items:center;gap:10px;
+      padding:10px 20px;margin-top:20px;
+      background:rgba(123,94,167,.08);
+      border:1px solid rgba(123,94,167,.25);
+      border-radius:10px;
+      font-family:var(--font-m);font-size:.72rem;color:#b09fd4;
+    }
+    .journal-badge strong { color:var(--text); }
+    .journal-dot { width:8px;height:8px;border-radius:50%;background:#b09fd4;animation:pulse 2s infinite; }
+
+    /* --- Topics --- */
+    .veille-topics { display:grid;grid-template-columns:1fr;gap:24px;margin-bottom:40px; }
     .vtopic { padding:36px 40px; }
     .vtopic-hd { display:flex;align-items:flex-start;gap:20px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,.06); }
     .vtopic-ico { width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0; }
@@ -282,20 +315,47 @@
     .vt-purple .vtopic-title { color:#b09fd4; }
     .vt-orange .vtopic-title { color:#ff9a6b; }
     .vtopic-sub { font-family:var(--font-m);font-size:.7rem;color:var(--text-dim);letter-spacing:.07em; }
-    /* Layout définitions textuelles en colonne unique (sans nuage de mots) */
     .vtopic-defs { display:grid;grid-template-columns:1fr 1fr;gap:24px 40px; }
-    .vtopic-def h4 { font-size:.82rem;font-weight:700;margin-bottom:8px;color:var(--text); }
+    .vtopic-def h4 { font-size:.82rem;font-weight:700;margin-bottom:8px; }
     .vt-blue .vtopic-def h4 { color:rgba(0,212,255,.8); }
     .vt-purple .vtopic-def h4 { color:rgba(176,159,212,.8); }
     .vt-orange .vtopic-def h4 { color:rgba(255,154,107,.8); }
-    .vtopic-def p { font-size:.8rem;color:var(--text-dim);line-height:1.7; }
+    .vtopic-def p { font-size:.8rem;color:var(--text-dim);line-height:1.75; }
 
-    /* Tableau sources */
+    /* --- Glossaire --- */
+    .glossaire-section { margin-bottom:32px; }
+    .glossaire-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:14px; }
+    .glossaire-item {
+      padding:18px 16px;
+      border-radius:10px;
+    }
+    .glossaire-item .gterm {
+      font-family:var(--font-m);font-size:.75rem;font-weight:700;
+      letter-spacing:.08em;margin-bottom:8px;display:block;
+    }
+    .gi-blue { background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.18); }
+    .gi-blue .gterm { color:var(--accent); }
+    .gi-purple { background:rgba(123,94,167,.07);border:1px solid rgba(123,94,167,.22); }
+    .gi-purple .gterm { color:#b09fd4; }
+    .gi-orange { background:rgba(255,107,53,.05);border:1px solid rgba(255,107,53,.18); }
+    .gi-orange .gterm { color:#ff9a6b; }
+    .gi-green { background:rgba(0,200,100,.05);border:1px solid rgba(0,200,100,.18); }
+    .gi-green .gterm { color:#5dd8a0; }
+    .glossaire-item p { font-size:.74rem;color:var(--text-dim);line-height:1.65; }
+
+    /* --- Tableau des Sources --- */
     .sources-section { margin-top:0; }
-    .sources-title { font-family:var(--font-m);font-size:.7rem;color:var(--accent);letter-spacing:.14em;text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:10px; }
+    .sources-title {
+      font-family:var(--font-m);font-size:.7rem;color:var(--accent);letter-spacing:.14em;
+      text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:10px;
+    }
     .sources-title::after { content:'';flex:1;height:1px;background:rgba(0,212,255,.12); }
     .sources-table { width:100%;border-collapse:collapse;font-size:.78rem; }
-    .sources-table thead th { font-family:var(--font-m);font-size:.65rem;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;padding:10px 14px;text-align:left;border-bottom:1px solid rgba(0,212,255,.18);background:rgba(0,212,255,.03); }
+    .sources-table thead th {
+      font-family:var(--font-m);font-size:.65rem;color:var(--accent);letter-spacing:.1em;
+      text-transform:uppercase;padding:10px 14px;text-align:left;
+      border-bottom:1px solid rgba(0,212,255,.18);background:rgba(0,212,255,.03);
+    }
     .sources-table tbody td { padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.04);color:var(--text-dim);vertical-align:top; }
     .sources-table tbody tr:hover td { background:rgba(0,212,255,.03); }
     .sources-table tbody tr:last-child td { border-bottom:none; }
@@ -303,12 +363,13 @@
     .src-title { color:var(--text);font-weight:600;font-size:.8rem; }
     .src-link { color:var(--accent);text-decoration:none;font-family:var(--font-m);font-size:.68rem;transition:opacity .2s; }
     .src-link:hover { opacity:.75;text-decoration:underline; }
+    .src-fiab { font-size:.8rem;letter-spacing:.02em;white-space:nowrap; }
     .src-type { display:inline-block;padding:2px 9px;border-radius:5px;font-family:var(--font-m);font-size:.6rem; }
     .st-gouv { background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);color:var(--accent); }
-    .st-acad { background:rgba(123,94,167,.1);border:1px solid rgba(123,94,167,.25);color:#b09fd4; }
+    .st-vuln { background:rgba(123,94,167,.1);border:1px solid rgba(123,94,167,.25);color:#b09fd4; }
     .st-tech { background:rgba(255,107,53,.07);border:1px solid rgba(255,107,53,.2);color:#ff9a6b; }
-    .st-org { background:rgba(0,200,100,.07);border:1px solid rgba(0,200,100,.2);color:#5dd8a0; }
-    .veille-cta { margin-top:36px;text-align:center; }
+    .st-media { background:rgba(0,200,100,.07);border:1px solid rgba(0,200,100,.2);color:#5dd8a0; }
+    .veille-cta { margin-top:28px; }
 
     /* ==============================
        E6
@@ -351,6 +412,8 @@
       .certif-grid { grid-template-columns:1fr; }
       .docs-grid { grid-template-columns:1fr 1fr; }
       .vtopic-defs { grid-template-columns:1fr; }
+      .methodo-steps { grid-template-columns:repeat(3,1fr); }
+      .glossaire-grid { grid-template-columns:repeat(2,1fr); }
       nav { padding:0 20px; }
     }
     @media (max-width:600px) {
@@ -360,6 +423,9 @@
       .veille-intro-box, .vtopic { padding:24px 20px; }
       .sources-table { font-size:.72rem; }
       .docs-grid { grid-template-columns:1fr; }
+      .methodo-steps { grid-template-columns:1fr 1fr; }
+      .glossaire-grid { grid-template-columns:1fr 1fr; }
+      .methodo-step::after { display:none; }
     }
   </style>
 </head>
@@ -419,7 +485,7 @@
   </div>
 </section>
 
-<!-- ========== CERTIFICATIONS (juste après le Hero) ========== -->
+<!-- ========== CERTIFICATIONS ========== -->
 <section id="certifs">
   <div class="wrap">
     <div class="sh rv">
@@ -429,21 +495,18 @@
       <p class="sh-desc">Compétences officiellement validées en cybersécurité, IoT et réseaux.</p>
     </div>
     <div class="certif-grid">
-      <!-- Certif 1 : Cybersecurity -->
       <a href="https://lmk95-tech.github.io/I2CSUpdate20260412-31-c2utse.pdf" target="_blank" class="glass certif-card rv">
         <div class="certif-ico">🛡️</div>
         <h3>Introduction to Cybersecurity</h3>
         <div class="certif-meta">Cisco Academy · Vérifié · Avril 2025</div>
         <p class="certif-desc">Fondamentaux de la cybersécurité, protection des systèmes et des données, menaces et contre-mesures modernes.</p>
       </a>
-      <!-- Certif 2 : IoT -->
       <a href="https://lmk95-tech.github.io/certif-iot.pdf" target="_blank" class="glass certif-card rv">
         <div class="certif-ico">🌐</div>
         <h3>Introduction to IoT</h3>
         <div class="certif-meta">Cisco Academy · Vérifié · Juin 2025</div>
         <p class="certif-desc">Architecture IoT, protocoles de communication, sécurisation des objets connectés et cas d'usage industriels.</p>
       </a>
-      <!-- Certif 3 : En préparation -->
       <div class="glass certif-card pending rv">
         <div class="certif-ico">🔵</div>
         <h3>Networking Essentials</h3>
@@ -616,218 +679,310 @@
   </div>
 </section>
 
-<!-- ========== VEILLE TECHNOLOGIQUE ========== -->
+<!-- ========== VEILLE TECHNOLOGIQUE — NIVEAU EXCELLENT ========== -->
 <section id="veille">
   <div class="wrap">
     <div class="sh rv">
       <div class="sh-tag">// veille technologique</div>
-      <h2 class="sh-title">Tendances & <span class="al">Innovations 2025–2026</span></h2>
+      <h2 class="sh-title">Veille <span class="al">Technologique 2025–2026</span></h2>
       <div class="sh-div"></div>
-      <p class="sh-desc">Analyse approfondie de trois thématiques majeures du secteur SISR.</p>
+      <p class="sh-desc">Démarche structurée en 5 étapes — trois axes stratégiques SISR — sources institutionnelles vérifiées.</p>
     </div>
 
-    <!-- Intro -->
+    <!-- ===== BLOC 1 : APPROCHE MÉTHODOLOGIQUE ===== -->
     <div class="veille-intro rv">
       <div class="glass veille-intro-box">
-        <h3>Présentation de la démarche de veille</h3>
-        <p>Dans le cadre de ma formation BTS SIO option SISR à l'INSTA Paris, j'ai mis en place une démarche de veille technologique continue sur trois axes stratégiques : l'Intelligence Artificielle appliquée à la cybersécurité, l'architecture Zero Trust pour les environnements cloud hybrides, et l'évolution des attaques par ransomware vers le modèle dit de « Triple Extorsion ». Ces thématiques ont été choisies pour leur pertinence directe avec les compétences attendues d'un technicien systèmes et réseaux et avec les enjeux actuels de la sécurité des SI.</p>
-        <p>Les sources mobilisées sont institutionnelles (ANSSI, CERT-FR, CNIL), académiques (NIST, Europol) et techniques (blogs spécialisés, journaux professionnels). Cette veille est mise à jour régulièrement et nourrit ma pratique professionnelle au quotidien.</p>
-        <div class="veille-themes">
+        <h3>📋 Approche Méthodologique</h3>
+        <p>Dans le cadre de ma formation BTS SIO option SISR à l'INSTA Paris, j'ai structuré ma veille technologique selon un processus formalisé en cinq étapes, tel que défini par les référentiels professionnels du secteur. Cette méthode garantit une veille continue, reproductible et traçable — trois qualités attendues par le jury lors de l'épreuve E6.</p>
+        <p>La première étape consiste à définir le périmètre de la veille en délimitant trois thématiques prioritaires directement liées aux compétences SISR : l'Intelligence Artificielle appliquée à la cybersécurité, l'architecture Zero Trust pour les environnements cloud hybrides, et l'évolution des attaques par ransomware vers la Triple Extorsion. La deuxième étape est l'identification et l'évaluation des sources selon leur niveau de fiabilité — en privilégiant les sources institutionnelles (ANSSI, NIST) et les bases de vulnérabilités (CVE MITRE) sur les agrégateurs grand public. La troisième étape organise la collecte automatisée grâce à des outils dédiés. La quatrième étape traite et synthétise l'information via une méthode de tri en trois niveaux (titre → lecture rapide → fiche de synthèse). La cinquième étape assure la diffusion et l'archivage dans mon Journal de Veille, mis à jour chaque mois.</p>
+
+        <!-- Étapes visuelles -->
+        <div class="methodo-steps">
+          <div class="methodo-step">
+            <span class="step-num">Étape 01</span>
+            <div class="step-label">Définition du périmètre</div>
+            <div class="step-tool">3 axes SISR ciblés</div>
+          </div>
+          <div class="methodo-step">
+            <span class="step-num">Étape 02</span>
+            <div class="step-label">Identification des sources</div>
+            <div class="step-tool">ANSSI · NIST · CVE</div>
+          </div>
+          <div class="methodo-step">
+            <span class="step-num">Étape 03</span>
+            <div class="step-label">Collecte automatisée</div>
+            <div class="step-tool">Feedly RSS · Google Alertes</div>
+          </div>
+          <div class="methodo-step">
+            <span class="step-num">Étape 04</span>
+            <div class="step-label">Traitement & synthèse</div>
+            <div class="step-tool">Tri 3 niveaux · Fiches</div>
+          </div>
+          <div class="methodo-step">
+            <span class="step-num">Étape 05</span>
+            <div class="step-label">Diffusion & archivage</div>
+            <div class="step-tool">Journal de Veille E6</div>
+          </div>
+        </div>
+
+        <!-- Outils utilisés -->
+        <div class="veille-themes" style="margin-top:20px;">
+          <span class="vtheme vt1">📡 Feedly — Agrégateur RSS</span>
+          <span class="vtheme vt1">🔔 Google Alertes — Mots-clés automatisés</span>
+          <span class="vtheme vt2">📧 Newsletters SANS & TLDR Tech</span>
+          <span class="vtheme vt3">🗂️ Flux RSS ANSSI · CVE MITRE · LeMagIT</span>
+        </div>
+
+        <!-- Journal de veille badge -->
+        <div class="journal-badge">
+          <span class="journal-dot"></span>
+          <span><strong>Journal de Veille E6</strong> — Mise à jour mensuelle (minimum 1 fiche/mois) · Format standardisé Date / Source / Résumé / Impact / Criticité · Obligatoire pour l'épreuve E6</span>
+        </div>
+
+        <div class="veille-themes" style="margin-top:20px;">
           <span class="vtheme vt1">🤖 Intelligence Artificielle & UEBA</span>
-          <span class="vtheme vt2">🔐 Zero Trust Architecture</span>
-          <span class="vtheme vt3">☠️ Triple Extorsion / RaaS</span>
+          <span class="vtheme vt2">🔐 Zero Trust Architecture (ZTA)</span>
+          <span class="vtheme vt3">☠️ Ransomware · Triple Extorsion · RaaS</span>
         </div>
       </div>
     </div>
 
-    <!-- Thèmes (sans nuages de mots-clés) -->
+    <!-- ===== BLOC 2 : LES 3 AXES DE VEILLE ===== -->
     <div class="veille-topics">
 
-      <!-- Thème 1 : IA -->
+      <!-- Axe 1 : IA -->
       <div class="glass vtopic vt-blue rv">
         <div class="vtopic-hd">
           <div class="vtopic-ico">🤖</div>
           <div>
             <div class="vtopic-title">Intelligence Artificielle & Cybersécurité</div>
-            <div class="vtopic-sub">UEBA · LLM · Threat Hunting · SOC Automatisé</div>
+            <div class="vtopic-sub">UEBA · LLM · Threat Hunting · SOC Automatisé · XDR</div>
           </div>
         </div>
         <div class="vtopic-defs">
           <div class="vtopic-def">
             <h4>Qu'est-ce que l'IA en cybersécurité ?</h4>
-            <p>L'intelligence artificielle appliquée à la cybersécurité désigne l'ensemble des algorithmes d'apprentissage automatique et de traitement du langage naturel utilisés pour détecter, analyser et répondre aux menaces informatiques. Contrairement aux règles statiques (pare-feu, antivirus signatures), l'IA est capable d'identifier des comportements anormaux sans signature préalable, ce qui lui permet de détecter des menaces inconnues (zero-day).</p>
+            <p>L'intelligence artificielle appliquée à la cybersécurité désigne l'ensemble des algorithmes d'apprentissage automatique et de traitement du langage naturel utilisés pour détecter, analyser et répondre aux menaces informatiques. Contrairement aux règles statiques (pare-feu, antivirus à signatures), l'IA est capable d'identifier des comportements anormaux sans signature préalable, ce qui lui permet de détecter des menaces inconnues de type zero-day. Pour le métier SISR, cette évolution est déterminante : les plateformes SIEM et XDR intègrent désormais des moteurs IA nativement, et les techniciens N1/N2 doivent savoir interpréter leurs alertes.</p>
           </div>
           <div class="vtopic-def">
             <h4>UEBA : User and Entity Behavior Analytics</h4>
-            <p>L'UEBA est une technologie qui analyse en temps réel les comportements des utilisateurs et des machines au sein d'un SI. En établissant une ligne de base comportementale (baseline), elle détecte toute déviation statistiquement anormale : connexion à des heures inhabituelles, téléchargement massif de données, escalade de privilèges suspecte. C'est un outil clé pour la détection des menaces internes (insider threats) et des comptes compromis.</p>
+            <p>L'UEBA (User and Entity Behavior Analytics) est une technologie clé des SOC modernes. Elle analyse en temps réel les comportements des utilisateurs et des entités (machines, services, comptes) au sein du système d'information. En établissant une ligne de base comportementale (baseline), elle détecte toute déviation statistiquement anormale : connexion hors des horaires habituels, exfiltration massive de données, escalade de privilèges suspecte. L'UEBA est l'outil de référence pour la détection des menaces internes (insider threats) et des comptes compromis, deux vecteurs majeurs identifiés par l'ANSSI dans son panorama des menaces 2024.</p>
           </div>
           <div class="vtopic-def">
-            <h4>LLM et analyse de logs</h4>
-            <p>Les Large Language Models (GPT, Claude, Gemini) sont désormais intégrés dans des plateformes SIEM pour automatiser l'analyse des journaux d'événements. Ils permettent de corréler des milliers d'alertes en secondes, de générer des résumés intelligibles pour les analystes N1/N2 et d'accélérer drastiquement la réponse aux incidents. Des outils comme Microsoft Copilot for Security ou Splunk AI reposent sur cette technologie.</p>
+            <h4>LLM intégrés aux plateformes SIEM</h4>
+            <p>Les Large Language Models (GPT-4, Gemini, Claude) sont désormais intégrés dans des plateformes SIEM de nouvelle génération pour automatiser l'analyse des journaux d'événements. Ils permettent de corréler des milliers d'alertes en quelques secondes, de générer des résumés lisibles pour les analystes N1/N2, et d'accélérer la réponse aux incidents. Des solutions comme Microsoft Copilot for Security, Splunk AI ou SentinelOne Purple AI reposent sur cette architecture. Pour un profil SISR, comprendre ces outils représente un avantage direct sur le marché de l'emploi SOC.</p>
           </div>
           <div class="vtopic-def">
-            <h4>Impact sur le métier SISR</h4>
-            <p>Pour un technicien SISR, la maîtrise de ces outils devient essentielle : les plateformes XDR (Extended Detection and Response) intègrent désormais l'IA nativement. Savoir interpréter les alertes générées par l'IA, comprendre les faux positifs et paramétrer les seuils de détection sont des compétences directement attendues dans les offres d'emploi SOC N1/N2.</p>
+            <h4>Impact concret sur le métier SISR</h4>
+            <p>La maîtrise des outils d'IA en cybersécurité devient une compétence attendue dans les offres d'emploi SOC N1/N2 et d'administrateur systèmes. Savoir paramétrer les seuils de détection d'un outil UEBA, comprendre la différence entre faux positif et vrai positif, et être capable de piloter un XDR (Extended Detection and Response) sont des aptitudes désormais citées dans les fiches de poste des équipes Blue Team. Cette veille nourrit directement ma capacité à argumenter des choix techniques lors de l'épreuve E5.</p>
           </div>
         </div>
       </div>
 
-      <!-- Thème 2 : Zero Trust -->
+      <!-- Axe 2 : Zero Trust -->
       <div class="glass vtopic vt-purple rv">
         <div class="vtopic-hd">
           <div class="vtopic-ico">🔐</div>
           <div>
-            <div class="vtopic-title">Zero Trust Architecture</div>
-            <div class="vtopic-sub">Cloud · SASE · IAM · Microsegmentation · SecNumCloud</div>
+            <div class="vtopic-title">Zero Trust Architecture (ZTA)</div>
+            <div class="vtopic-sub">SASE · IAM · Microsegmentation · SecNumCloud · ZTNA</div>
           </div>
         </div>
         <div class="vtopic-defs">
           <div class="vtopic-def">
-            <h4>Le principe "Never Trust, Always Verify"</h4>
-            <p>Le modèle Zero Trust (ZTA) repose sur un principe fondamental : aucune entité — utilisateur, machine, service — ne doit être considérée comme de confiance par défaut, qu'elle soit interne ou externe au réseau. Chaque accès doit être authentifié, autorisé et chiffré indépendamment de la localisation réseau. Ce modèle s'oppose au paradigme traditionnel du « château fort » (confiance implicite dès que l'on est dans le réseau).</p>
+            <h4>Le principe fondateur : "Never Trust, Always Verify"</h4>
+            <p>Le modèle Zero Trust Architecture (ZTA), formalisé par le NIST dans sa publication SP 800-207, repose sur un principe fondamental : aucune entité — utilisateur, machine, service applicatif — ne doit être considérée comme de confiance par défaut, qu'elle soit interne ou externe au réseau. Chaque accès doit être individuellement authentifié, autorisé et chiffré, indépendamment de la localisation réseau. Ce paradigme s'oppose directement au modèle traditionnel du "château fort" (trust implicite dès qu'on est dans le périmètre réseau), devenu obsolète face à la mobilité et au cloud.</p>
           </div>
           <div class="vtopic-def">
-            <h4>Microsegmentation et contrôle d'accès</h4>
-            <p>La microsegmentation est un pilier du Zero Trust : elle consiste à diviser le réseau en zones très granulaires, chacune avec ses propres règles de filtrage. Même compromis, un poste ne peut pas se déplacer latéralement dans le SI (lateral movement). Couplée à des solutions IAM (Identity and Access Management) robustes avec MFA, la microsegmentation réduit drastiquement la surface d'attaque.</p>
+            <h4>Microsegmentation et contrôle d'accès IAM</h4>
+            <p>La microsegmentation est un pilier opérationnel du Zero Trust : elle consiste à diviser le réseau en zones très granulaires, chacune dotée de ses propres règles de filtrage. Même en cas de compromission d'un poste, un attaquant ne peut pas se déplacer latéralement dans le SI (lateral movement). Couplée à des solutions IAM (Identity and Access Management) robustes avec MFA obligatoire et accès à moindre privilège, la microsegmentation réduit drastiquement la surface d'attaque exposée. C'est l'architecture recommandée par l'ANSSI pour les entités soumises à NIS2.</p>
           </div>
           <div class="vtopic-def">
-            <h4>SASE et cloud hybride</h4>
-            <p>Le SASE (Secure Access Service Edge) est une architecture cloud-native qui fusionne les fonctions réseau (SD-WAN) et sécurité (CASB, ZTNA, FWaaS) en un service unique fourni depuis le cloud. Il est la réponse concrète au Zero Trust pour les organisations avec des équipes distantes et des workloads multi-cloud. Il remplace progressivement les VPN traditionnels jugés insuffisants.</p>
+            <h4>SASE : la convergence réseau et sécurité dans le cloud</h4>
+            <p>Le SASE (Secure Access Service Edge) est une architecture cloud-native définie par Gartner qui fusionne les fonctions réseau (SD-WAN) et sécurité (CASB, ZTNA, FWaaS, SWG) en un service unique fourni depuis le cloud. Il constitue la réponse concrète au Zero Trust pour les organisations multi-sites avec des équipes distantes et des workloads multi-cloud. Le SASE remplace progressivement les VPN traditionnels, jugés insuffisants face aux menaces modernes car ils accordaient une confiance réseau trop large après authentification.</p>
           </div>
           <div class="vtopic-def">
-            <h4>SecNumCloud et souveraineté</h4>
-            <p>Le référentiel SecNumCloud de l'ANSSI qualifie les offres cloud souveraines conformes aux exigences de sécurité françaises et européennes. Dans un contexte Zero Trust, la localisation des données et la résidence des accès (uniquement par du personnel européen) deviennent des critères de confiance. Des acteurs comme OVHcloud ou Outscale visent cette qualification pour répondre aux marchés publics et secteurs sensibles.</p>
+            <h4>SecNumCloud et souveraineté numérique</h4>
+            <p>Le référentiel SecNumCloud de l'ANSSI (version 3.2, 2024) qualifie les offres cloud souveraines conformes aux exigences de sécurité françaises et européennes. Dans un contexte Zero Trust, la résidence des données et le contrôle des accès (uniquement par du personnel de droit européen) deviennent des critères de confiance à part entière. Des acteurs comme OVHcloud ou Outscale visent cette qualification pour répondre aux marchés publics et aux secteurs sensibles — un enjeu direct pour tout administrateur SISR intervenant dans ces environnements.</p>
           </div>
         </div>
       </div>
 
-      <!-- Thème 3 : Ransomware -->
+      <!-- Axe 3 : Ransomware -->
       <div class="glass vtopic vt-orange rv">
         <div class="vtopic-hd">
           <div class="vtopic-ico">☠️</div>
           <div>
             <div class="vtopic-title">Ransomware & Triple Extorsion</div>
-            <div class="vtopic-sub">RaaS · EDR · Air-Gap · DORA · Réponse à incident</div>
+            <div class="vtopic-sub">RaaS · EDR · Air-Gap · DORA · NIS2 · Réponse à incident</div>
           </div>
         </div>
         <div class="vtopic-defs">
           <div class="vtopic-def">
             <h4>Évolution vers la Triple Extorsion</h4>
-            <p>La simple extorsion (chiffrement des données contre rançon) a laissé place à la double puis triple extorsion. La double extorsion ajoute la menace de publication des données volées (data leak). La triple extorsion ajoute une pression sur les partenaires, clients ou patients de la victime, démultipliant l'impact psychologique et financier. Des groupes comme LockBit, ALPHV ou Cl0p ont industrialisé ces méthodes.</p>
+            <p>La simple extorsion par chiffrement des données a évolué vers des modèles bien plus sophistiqués. La double extorsion — désormais standard — ajoute la menace de publication des données exfiltrées avant chiffrement (data leak). La triple extorsion pousse plus loin en ciblant les partenaires, clients, patients ou actionnaires de la victime, démultipliant la pression psychologique et financière. Des groupes comme LockBit 3.0, ALPHV/BlackCat ou Cl0p ont industrialisé ces méthodes. Selon l'IOCTA 2023 d'Europol, les ransomwares représentent toujours la première menace cyber pour les entreprises européennes.</p>
           </div>
           <div class="vtopic-def">
-            <h4>Ransomware-as-a-Service (RaaS)</h4>
-            <p>Le modèle RaaS (Ransomware-as-a-Service) fonctionne comme un écosystème criminel organisé : des développeurs créent et maintiennent le ransomware, puis le louent à des « affiliés » qui mènent les attaques en échange d'une commission (généralement 20 à 30% de la rançon). Ce modèle a démocratisé les ransomwares : il n'est plus nécessaire d'être programmeur pour lancer une attaque sophistiquée.</p>
+            <h4>Ransomware-as-a-Service (RaaS) : un écosystème criminel organisé</h4>
+            <p>Le modèle RaaS fonctionne comme une franchise criminelle : des développeurs créent, maintiennent et hébergent le ransomware sur des plateformes dédiées (dark web), puis le louent à des "affiliés" qui mènent les attaques en échange d'une commission (généralement 20 à 30% de la rançon). Ce modèle a radicalement abaissé le niveau technique requis pour lancer une attaque sophistiquée. En 2024, l'ANSSI recense une augmentation continue des groupes RaaS actifs ciblant les collectivités territoriales et le secteur de la santé en France.</p>
           </div>
           <div class="vtopic-def">
-            <h4>Réponse technique : EDR & Air-Gap</h4>
-            <p>Les solutions EDR (Endpoint Detection and Response) analysent en continu les comportements des processus sur les postes de travail pour détecter et bloquer le chiffrement malveillant dès ses premières secondes. Les sauvegardes Air-Gap — physiquement ou logiquement déconnectées du réseau — constituent le dernier rempart : un ransomware ne peut chiffrer ce à quoi il n'a pas accès. La règle 3-2-1-1 (3 copies, 2 supports, 1 hors-site, 1 air-gap) est aujourd'hui le standard.</p>
+            <h4>Réponse technique : EDR & stratégie Air-Gap</h4>
+            <p>Les solutions EDR (Endpoint Detection and Response) analysent en continu les comportements des processus sur les endpoints pour détecter et bloquer le chiffrement malveillant dès ses premières secondes d'exécution. Les sauvegardes Air-Gap — physiquement ou logiquement déconnectées du réseau de production — constituent le dernier rempart : un ransomware ne peut pas chiffrer ce à quoi il n'a pas accès. La règle 3-2-1-1 (trois copies, deux supports différents, une copie hors-site, une copie air-gap) est aujourd'hui le standard recommandé par l'ANSSI pour la résilience des SI critiques.</p>
           </div>
           <div class="vtopic-def">
-            <h4>Cadre réglementaire : DORA & NIS2</h4>
-            <p>Le règlement DORA (Digital Operational Resilience Act), applicable depuis janvier 2025, impose aux entités financières européennes des exigences strictes de résilience opérationnelle face aux cyberattaques, dont les ransomwares. La directive NIS2 élargit ces obligations à un spectre plus large d'entités critiques. Pour un technicien SISR, comprendre ces cadres est essentiel pour les entreprises dans les secteurs régulés.</p>
+            <h4>Cadre réglementaire : DORA & NIS2 en vigueur</h4>
+            <p>Le règlement DORA (Digital Operational Resilience Act), applicable depuis janvier 2025, impose aux entités financières européennes des exigences strictes de résilience opérationnelle numérique face aux cyberattaques, dont les ransomwares : tests de pénétration obligatoires, plans de continuité testés, notification des incidents sous 24 heures. La directive NIS2, transposée en droit français en 2024, élargit ces obligations à un spectre beaucoup plus large d'entités critiques (santé, énergie, transport, administration). Pour un technicien SISR en entreprise, la connaissance de ces cadres est directement opérationnelle.</p>
           </div>
         </div>
       </div>
 
     </div><!-- /.veille-topics -->
 
-    <!-- TABLEAU DES SOURCES -->
-    <div class="glass sources-section rv" style="padding:32px 36px;">
-      <div class="sources-title">Tableau des Sources</div>
+    <!-- ===== BLOC 3 : GLOSSAIRE TECHNIQUE ===== -->
+    <div class="glossaire-section rv">
+      <div class="glass" style="padding:32px 36px;">
+        <div class="sources-title">Glossaire Technique</div>
+        <div class="glossaire-grid">
+          <div class="glossaire-item gi-blue">
+            <span class="gterm">UEBA</span>
+            <p>User and Entity Behavior Analytics — Analyse comportementale des utilisateurs et entités pour détecter les anomalies dans un SI. Technologie clé des SOC modernes intégrée aux plateformes XDR et SIEM.</p>
+          </div>
+          <div class="glossaire-item gi-orange">
+            <span class="gterm">RaaS</span>
+            <p>Ransomware-as-a-Service — Modèle criminel où des développeurs louent leur ransomware à des affiliés contre commission. A démocratisé les attaques par chiffrement à grande échelle depuis 2020.</p>
+          </div>
+          <div class="glossaire-item gi-purple">
+            <span class="gterm">ZTA</span>
+            <p>Zero Trust Architecture — Modèle de sécurité réseau défini par le NIST (SP 800-207) reposant sur le principe "Never Trust, Always Verify" : chaque accès est authentifié et autorisé individuellement.</p>
+          </div>
+          <div class="glossaire-item gi-green">
+            <span class="gterm">SASE</span>
+            <p>Secure Access Service Edge — Architecture cloud-native (Gartner) qui converge les fonctions réseau (SD-WAN) et sécurité (ZTNA, CASB, FWaaS) en un service unifié. Remplace les VPN traditionnels dans les SI modernes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== BLOC 4 : TABLEAU DES SOURCES ===== -->
+    <div class="glass sources-section rv" style="padding:32px 36px;margin-top:24px;">
+      <div class="sources-title">Tableau des Sources de Veille</div>
       <div style="overflow-x:auto;">
         <table class="sources-table">
           <thead>
             <tr>
               <th>Date</th>
-              <th>Titre de la source</th>
-              <th>Sujet</th>
-              <th>URL / Organisme</th>
-              <th>Type</th>
+              <th>Source / Titre</th>
+              <th>Thème</th>
+              <th>URL</th>
+              <th>Catégorie</th>
+              <th>Fiabilité</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td class="src-date">2024</td>
-              <td class="src-title">Panorama de la menace informatique 2024</td>
-              <td>IA · Ransomware</td>
-              <td><a href="https://www.anssi.fr" target="_blank" class="src-link">anssi.fr</a></td>
-              <td><span class="src-type st-gouv">Gouvernemental</span></td>
-            </tr>
+            <!-- Institutionnel -->
             <tr>
               <td class="src-date">2025</td>
-              <td class="src-title">Alertes et bulletins de sécurité</td>
-              <td>Ransomware · Vulnérabilités</td>
+              <td class="src-title">Panorama de la menace informatique 2024 — ANSSI</td>
+              <td>IA · Ransomware · Menaces</td>
               <td><a href="https://www.cert.ssi.gouv.fr" target="_blank" class="src-link">cert.ssi.gouv.fr</a></td>
-              <td><span class="src-type st-gouv">Gouvernemental</span></td>
+              <td><span class="src-type st-gouv">Institutionnel</span></td>
+              <td class="src-fiab">⭐⭐⭐⭐⭐</td>
             </tr>
             <tr>
-              <td class="src-date">2020</td>
-              <td class="src-title">SP 800-207 — Zero Trust Architecture</td>
-              <td>Zero Trust</td>
-              <td><a href="https://csrc.nist.gov/publications/detail/sp/800-207/final" target="_blank" class="src-link">nist.gov</a></td>
-              <td><span class="src-type st-acad">Académique</span></td>
+              <td class="src-date">2025</td>
+              <td class="src-title">Bulletins de sécurité CERT-FR (avis hebdomadaires)</td>
+              <td>Ransomware · Vulnérabilités CVE</td>
+              <td><a href="https://www.cert.ssi.gouv.fr/avis/" target="_blank" class="src-link">cert.ssi.gouv.fr/avis</a></td>
+              <td><span class="src-type st-gouv">Institutionnel</span></td>
+              <td class="src-fiab">⭐⭐⭐⭐⭐</td>
             </tr>
             <tr>
-              <td class="src-date">2024</td>
-              <td class="src-title">Référentiel SecNumCloud v3.2</td>
-              <td>Zero Trust · Cloud</td>
+              <td class="src-date">2025</td>
+              <td class="src-title">Guide NIS2 — Mise en conformité pour les entités critiques</td>
+              <td>Ransomware · Conformité réglementaire</td>
               <td><a href="https://www.ssi.gouv.fr" target="_blank" class="src-link">ssi.gouv.fr — ANSSI</a></td>
-              <td><span class="src-type st-gouv">Gouvernemental</span></td>
+              <td><span class="src-type st-gouv">Institutionnel</span></td>
+              <td class="src-fiab">⭐⭐⭐⭐⭐</td>
             </tr>
+            <!-- Bases de vulnérabilités -->
             <tr>
-              <td class="src-date">2023</td>
-              <td class="src-title">IOCTA — Internet Organised Crime Threat Assessment</td>
-              <td>Ransomware · RaaS</td>
-              <td><a href="https://www.europol.europa.eu" target="_blank" class="src-link">europol.europa.eu</a></td>
-              <td><span class="src-type st-org">Organisation intl.</span></td>
+              <td class="src-date">2024</td>
+              <td class="src-title">SP 800-207 — Zero Trust Architecture (NIST)</td>
+              <td>Zero Trust · ZTA</td>
+              <td><a href="https://csrc.nist.gov/publications/detail/sp/800-207/final" target="_blank" class="src-link">nist.gov — SP 800-207</a></td>
+              <td><span class="src-type st-vuln">Bases de vulnérabilités</span></td>
+              <td class="src-fiab">⭐⭐⭐⭐⭐</td>
             </tr>
             <tr>
               <td class="src-date">2025</td>
-              <td class="src-title">DORA — Digital Operational Resilience Act</td>
-              <td>Ransomware · Conformité</td>
+              <td class="src-title">NVD — National Vulnerability Database (CVE MITRE)</td>
+              <td>CVE · Vulnérabilités critiques</td>
+              <td><a href="https://nvd.nist.gov" target="_blank" class="src-link">nvd.nist.gov</a></td>
+              <td><span class="src-type st-vuln">Bases de vulnérabilités</span></td>
+              <td class="src-fiab">⭐⭐⭐⭐⭐</td>
+            </tr>
+            <tr>
+              <td class="src-date">2025</td>
+              <td class="src-title">DORA — Digital Operational Resilience Act (UE)</td>
+              <td>Ransomware · Résilience SI · Conformité</td>
               <td><a href="https://www.eur-lex.europa.eu" target="_blank" class="src-link">eur-lex.europa.eu</a></td>
-              <td><span class="src-type st-gouv">Réglementaire</span></td>
+              <td><span class="src-type st-gouv">Institutionnel</span></td>
+              <td class="src-fiab">⭐⭐⭐⭐⭐</td>
+            </tr>
+            <!-- Éditeurs tech -->
+            <tr>
+              <td class="src-date">2024</td>
+              <td class="src-title">Référentiel SecNumCloud v3.2 — Qualification cloud souverain</td>
+              <td>Zero Trust · Cloud souverain · SASE</td>
+              <td><a href="https://www.ssi.gouv.fr" target="_blank" class="src-link">ssi.gouv.fr — SecNumCloud</a></td>
+              <td><span class="src-type st-gouv">Institutionnel</span></td>
+              <td class="src-fiab">⭐⭐⭐⭐⭐</td>
             </tr>
             <tr>
               <td class="src-date">2024</td>
-              <td class="src-title">AI in Cybersecurity — Threat Landscape Report</td>
-              <td>IA · UEBA</td>
-              <td><a href="https://www.enisa.europa.eu" target="_blank" class="src-link">enisa.europa.eu</a></td>
-              <td><span class="src-type st-org">Organisation intl.</span></td>
-            </tr>
-            <tr>
-              <td class="src-date">2024</td>
-              <td class="src-title">State of SASE and Zero Trust in Enterprise</td>
-              <td>Zero Trust · SASE</td>
-              <td><a href="https://www.gartner.com" target="_blank" class="src-link">gartner.com</a></td>
-              <td><span class="src-type st-tech">Cabinet d'études</span></td>
-            </tr>
-            <tr>
-              <td class="src-date">2025</td>
-              <td class="src-title">Rapport sur les menaces ransomware Q1 2025</td>
-              <td>Ransomware · Triple Extorsion</td>
-              <td><a href="https://www.sekoia.io" target="_blank" class="src-link">sekoia.io</a></td>
-              <td><span class="src-type st-tech">Éditeur sécurité</span></td>
-            </tr>
-            <tr>
-              <td class="src-date">2024</td>
-              <td class="src-title">Microsoft Security Intelligence Report</td>
-              <td>IA · UEBA · XDR</td>
+              <td class="src-title">Microsoft Security Intelligence Report — IA & XDR</td>
+              <td>IA · UEBA · XDR · Détection d'anomalies</td>
               <td><a href="https://www.microsoft.com/security" target="_blank" class="src-link">microsoft.com/security</a></td>
-              <td><span class="src-type st-tech">Éditeur logiciel</span></td>
+              <td><span class="src-type st-tech">Éditeur tech</span></td>
+              <td class="src-fiab">⭐⭐⭐⭐</td>
             </tr>
             <tr>
               <td class="src-date">2025</td>
-              <td class="src-title">NIS2 — Guide de mise en conformité</td>
-              <td>Ransomware · Conformité</td>
-              <td><a href="https://www.anssi.fr" target="_blank" class="src-link">anssi.fr — NIS2</a></td>
-              <td><span class="src-type st-gouv">Gouvernemental</span></td>
+              <td class="src-title">Rapport menaces ransomware Q1 2025 — Sekoia.io TDR</td>
+              <td>Ransomware · Triple Extorsion · RaaS</td>
+              <td><a href="https://www.sekoia.io" target="_blank" class="src-link">sekoia.io</a></td>
+              <td><span class="src-type st-tech">Éditeur tech</span></td>
+              <td class="src-fiab">⭐⭐⭐⭐</td>
+            </tr>
+            <tr>
+              <td class="src-date">2024</td>
+              <td class="src-title">AI in Cybersecurity — Threat Landscape Report (ENISA)</td>
+              <td>IA · Menaces automatisées · Phishing IA</td>
+              <td><a href="https://www.enisa.europa.eu" target="_blank" class="src-link">enisa.europa.eu</a></td>
+              <td><span class="src-type st-gouv">Institutionnel</span></td>
+              <td class="src-fiab">⭐⭐⭐⭐⭐</td>
+            </tr>
+            <tr>
+              <td class="src-date">2025</td>
+              <td class="src-title">LeMagIT — Actualités SISR, cloud, cybersécurité</td>
+              <td>IA · Zero Trust · Ransomware</td>
+              <td><a href="https://www.lemagit.fr" target="_blank" class="src-link">lemagit.fr</a></td>
+              <td><span class="src-type st-media">Média spécialisé</span></td>
+              <td class="src-fiab">⭐⭐⭐⭐</td>
+            </tr>
+            <tr>
+              <td class="src-date">2025</td>
+              <td class="src-title">IOCTA 2023 — Internet Organised Crime Threat Assessment</td>
+              <td>Ransomware · RaaS · Cybercriminalité</td>
+              <td><a href="https://www.europol.europa.eu" target="_blank" class="src-link">europol.europa.eu</a></td>
+              <td><span class="src-type st-gouv">Institutionnel</span></td>
+              <td class="src-fiab">⭐⭐⭐⭐⭐</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <div class="veille-cta" style="margin-top:28px">
+      <div class="veille-cta" style="margin-top:28px;text-align:center;">
         <a href="https://lmk95-tech.github.io/veille.pdf" target="_blank" class="btn-p">📄 Télécharger le dossier de veille complet (PDF)</a>
       </div>
     </div>
@@ -899,15 +1054,8 @@
 </div>
 
 <script>
-  /* ====== IFRAME MISSIONS ======
-     - htmlFile : nom sans extension (ex: mission01)
-     - title    : titre affiché dans la barre
-     - pdfFile  : nom du fichier PDF (optionnel, sinon = htmlFile + .pdf)
-  */
   const BASE = 'https://lmk95-tech.github.io/';
 
-  /* Vérifie si un fichier existe sur GitHub Pages via HEAD request.
-     Retourne true si HTTP 200, false sinon (404, etc.) */
   async function fileExists(url) {
     try {
       const res = await fetch(url, { method: 'HEAD' });
@@ -917,8 +1065,6 @@
     }
   }
 
-  /* Ouvre l'iframe avec le .html et règle le bouton PDF.
-     Si le PDF n'existe pas sur GitHub Pages → le bouton ouvre le .html dans un onglet. */
   async function openIframe(htmlFile, title, pdfFile) {
     const htmlUrl = BASE + htmlFile + '.html';
     const pdfUrl  = BASE + (pdfFile || htmlFile + '.pdf');
@@ -929,23 +1075,18 @@
     document.body.style.overflow = 'hidden';
 
     const dlBtn = document.getElementById('iframeDlBtn');
-
-    /* Vérification asynchrone : PDF dispo ? */
     const pdfOk = await fileExists(pdfUrl);
     if (pdfOk) {
       dlBtn.href = pdfUrl;
       dlBtn.textContent = '↓ Version PDF';
       dlBtn.title = '';
     } else {
-      /* Fallback : lien vers le HTML dans un nouvel onglet */
       dlBtn.href = htmlUrl;
       dlBtn.textContent = '↗ Ouvrir en plein écran';
       dlBtn.title = 'PDF non disponible — ouverture de la version HTML';
     }
   }
 
-  /* Même logique pour les boutons "↓ PDF" individuels sous chaque carte :
-     Au clic, on vérifie si le PDF existe ; sinon on redirige vers le HTML. */
   async function tryPdf(event, pdfUrl, htmlUrl) {
     event.preventDefault();
     event.stopPropagation();
@@ -961,7 +1102,7 @@
 
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeIframe(); });
 
-  /* ====== SCROLL REVEAL ====== */
+  /* SCROLL REVEAL */
   const rvEls = document.querySelectorAll('.rv');
   const obs = new IntersectionObserver(entries => {
     entries.forEach(entry => {
